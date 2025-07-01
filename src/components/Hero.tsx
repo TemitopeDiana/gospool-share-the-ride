@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Map } from "lucide-react";
+import { Map, Quote } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -13,17 +13,26 @@ const Hero = () => {
               <span className="text-brand-blue block">Church & Fellowship</span>
             </h1>
             <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              Never miss church services or programs again. Connect with fellow believers 
-              for safe, free transportation that strengthens community bonds while making 
-              church more accessible for everyone.
+              Join a community-driven carpool network that connects church members for safe, 
+              free transportation. Never miss services again while building stronger bonds 
+              with your church family and helping the environment.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 mb-8">
               <Button size="lg" className="bg-brand-blue hover:bg-blue-600 text-white px-8 py-3 text-lg">
                 Find a Ride
               </Button>
               <Button size="lg" variant="outline" className="border-brand-green text-brand-green hover:bg-brand-green hover:text-white px-8 py-3 text-lg">
                 Register Your Church
               </Button>
+            </div>
+
+            {/* Bible Verse */}
+            <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg mt-8">
+              <Quote className="h-6 w-6 text-brand-blue mb-3" />
+              <p className="text-gray-700 italic mb-2">
+                "Let us not give up meeting together, as some are in the habit of doing, but let us encourage one another."
+              </p>
+              <p className="text-brand-blue font-semibold text-sm">Hebrews 10:25</p>
             </div>
           </div>
           

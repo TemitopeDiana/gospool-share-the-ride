@@ -1,54 +1,28 @@
+
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Church, Heart, Users, Bus, Globe, Shield, TrendingUp } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Church, Heart, Users, Bus, Globe, Shield, Quote } from "lucide-react";
 import { useState } from "react";
 
 const Sponsorship = () => {
   const [showBoardAmount, setShowBoardAmount] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedCurrency, setSelectedCurrency] = useState("");
   
-  const packages = [
-    {
-      name: "Community Partner",
-      price: "$500",
-      period: "/month",
-      features: [
-        "Church logo in app",
-        "Monthly usage analytics",
-        "Priority customer support",
-        "Community impact reports"
-      ],
-      popular: false
-    },
-    {
-      name: "Faith Leader",
-      price: "$1,200",
-      period: "/month",
-      features: [
-        "Everything in Community Partner",
-        "Custom church branding",
-        "Event integration",
-        "Advanced analytics dashboard",
-        "Priority feature requests"
-      ],
-      popular: true
-    },
-    {
-      name: "Regional Champion",
-      price: "$2,500",
-      period: "/month",
-      features: [
-        "Everything in Faith Leader",
-        "Multi-church network support",
-        "Custom church network support",
-        "Custom integrations",
-        "Dedicated account manager",
-        "Beta feature access",
-        "Annual strategy session"
-      ],
-      popular: false
-    }
+  const countries = [
+    { name: "Nigeria", currency: "NGN (₦)" },
+    { name: "United States", currency: "USD ($)" },
+    { name: "United Kingdom", currency: "GBP (£)" },
+    { name: "Canada", currency: "CAD ($)" },
+    { name: "Germany", currency: "EUR (€)" },
+    { name: "France", currency: "EUR (€)" },
+    { name: "South Africa", currency: "ZAR (R)" },
+    { name: "Ghana", currency: "GHS (₵)" },
+    { name: "Kenya", currency: "KES (KSh)" },
+    { name: "Other", currency: "Multiple currencies available" }
   ];
 
   const boardMembers = [
@@ -78,6 +52,12 @@ const Sponsorship = () => {
     }
   ];
 
+  const handleCountryChange = (country: string) => {
+    setSelectedCountry(country);
+    const selectedCountryData = countries.find(c => c.name === country);
+    setSelectedCurrency(selectedCountryData?.currency || "");
+  };
+
   return (
     <div className="min-h-screen font-inter">
       <Navigation />
@@ -93,6 +73,15 @@ const Sponsorship = () => {
             Help us create a world where no one misses church due to transportation barriers. 
             Your contribution powers free rides, connects communities, and strengthens faith.
           </p>
+          
+          {/* Bible Verse */}
+          <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg max-w-2xl mx-auto mt-8">
+            <Quote className="h-8 w-8 text-brand-blue mx-auto mb-4" />
+            <p className="text-gray-700 italic text-lg mb-2">
+              "And how can anyone preach unless they are sent? As it is written: 'How beautiful are the feet of those who bring good news!'"
+            </p>
+            <p className="text-brand-blue font-semibold">Romans 10:15</p>
+          </div>
         </div>
       </section>
 
@@ -113,26 +102,44 @@ const Sponsorship = () => {
               <CardHeader className="text-center pb-6">
                 <CardTitle className="text-2xl text-gray-900">Support Our Mission</CardTitle>
                 <CardDescription className="text-gray-600">
-                  Choose your currency and contribute any amount to sponsor Gospool's development
+                  Select your country and contribute any amount to sponsor Gospool's development
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <Button className="bg-green-600 hover:bg-green-700 text-white py-4 text-lg">
-                    Donate in Naira (₦)
-                  </Button>
-                  <Button className="bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg">
-                    Donate in USD ($)
-                  </Button>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Select Your Country
+                    </label>
+                    <Select onValueChange={handleCountryChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Choose your country" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {countries.map((country) => (
+                          <SelectItem key={country.name} value={country.name}>
+                            {country.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  {selectedCountry && (
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <p className="text-sm text-gray-600 mb-2">Currency for {selectedCountry}:</p>
+                      <p className="font-semibold text-gray-900">{selectedCurrency}</p>
+                    </div>
+                  )}
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <Button variant="outline" className="border-gray-300 py-4 text-lg">
-                    Donate in Euro (€)
-                  </Button>
-                  <Button variant="outline" className="border-gray-300 py-4 text-lg">
-                    Other Currencies
-                  </Button>
-                </div>
+                
+                <Button 
+                  className="w-full bg-brand-blue hover:bg-blue-600 text-white py-4 text-lg"
+                  disabled={!selectedCountry}
+                >
+                  Donate Now
+                </Button>
+                
                 <div className="text-center pt-4">
                   <p className="text-sm text-gray-500">
                     Secure payments powered by trusted payment processors
@@ -144,7 +151,7 @@ const Sponsorship = () => {
         </div>
       </section>
 
-      {/* Board of Sponsors Section */}
+      {/* Become a Board Member Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -156,8 +163,8 @@ const Sponsorship = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-8 mb-16">
-            {/* Become a Board Member */}
+          {/* Become a Board Member */}
+          <div className="max-w-3xl mx-auto mb-16">
             <Card className="border-2 border-brand-blue">
               <CardHeader className="text-center">
                 <CardTitle className="text-3xl text-brand-blue mb-2">
@@ -172,7 +179,7 @@ const Sponsorship = () => {
                   <div className="text-6xl">👑</div>
                   <div className="space-y-2">
                     <h3 className="font-semibold text-xl">Exclusive Benefits</h3>
-                    <ul className="text-left space-y-2 text-gray-600">
+                    <ul className="text-left space-y-2 text-gray-600 max-w-md mx-auto">
                       <li>• Permanent recognition on our website and app</li>
                       <li>• Quarterly impact reports and updates</li>
                       <li>• Direct input on app features and expansion</li>
@@ -202,8 +209,10 @@ const Sponsorship = () => {
                 )}
               </CardContent>
             </Card>
+          </div>
 
-            {/* Current Board Members */}
+          {/* Current Board Members */}
+          <div className="max-w-3xl mx-auto">
             <Card>
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl text-gray-900 mb-2">
@@ -299,73 +308,20 @@ const Sponsorship = () => {
               </div>
             </CardContent>
           </Card>
-        </div>
-      </section>
 
-      {/* Pricing Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="font-playfair text-4xl font-bold text-gray-900 mb-4">
-              Choose Your Partnership Level
-            </h2>
-            <p className="text-xl text-gray-600">
-              Flexible sponsorship options designed to fit churches of all sizes
+          {/* Bible Verse */}
+          <div className="bg-gradient-to-r from-blue-50 to-green-50 p-8 rounded-lg mt-16 text-center">
+            <Quote className="h-8 w-8 text-brand-blue mx-auto mb-4" />
+            <p className="text-gray-700 italic text-lg mb-2">
+              "Give, and it will be given to you. A good measure, pressed down, shaken together and running over, will be poured into your lap."
             </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {packages.map((pkg, index) => (
-              <Card 
-                key={index} 
-                className={`relative ${pkg.popular ? 'border-brand-blue shadow-lg scale-105' : ''}`}
-              >
-                {pkg.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-brand-blue text-white px-4 py-1 rounded-full text-sm font-medium">
-                      Most Popular
-                    </span>
-                  </div>
-                )}
-                
-                <CardHeader className="text-center">
-                  <CardTitle className="text-2xl font-bold text-gray-900">
-                    {pkg.name}
-                  </CardTitle>
-                  <CardDescription className="text-gray-600">
-                    <span className="text-4xl font-bold text-gray-900">{pkg.price}</span>
-                    <span className="text-lg">{pkg.period}</span>
-                  </CardDescription>
-                </CardHeader>
-                
-                <CardContent>
-                  <ul className="space-y-3 mb-6">
-                    {pkg.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center">
-                        <div className="w-2 h-2 bg-brand-green rounded-full mr-3"></div>
-                        <span className="text-gray-700">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  <Button 
-                    className={`w-full ${
-                      pkg.popular 
-                        ? 'bg-brand-blue hover:bg-blue-600 text-white' 
-                        : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
-                    }`}
-                  >
-                    Get Started
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+            <p className="text-brand-blue font-semibold">Luke 6:38</p>
           </div>
         </div>
       </section>
 
       {/* Impact Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="font-playfair text-4xl font-bold text-gray-900 mb-4">
@@ -400,15 +356,14 @@ const Sponsorship = () => {
             Ready to Transform Your Community?
           </h2>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join hundreds of churches already using Gospool to build stronger, 
-            more connected communities through shared transportation.
+            Join the mission to make church accessible for everyone through free, safe transportation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-white text-brand-blue hover:bg-gray-100 px-8 py-3 text-lg">
-              Schedule a Demo
+              Become a Board Member
             </Button>
             <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-brand-blue px-8 py-3 text-lg">
-              Download Partnership Kit
+              Donate to the Cause
             </Button>
           </div>
         </div>
