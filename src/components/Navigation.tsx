@@ -3,10 +3,19 @@ import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
 import { Moon, Sun } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const Navigation = () => {
   const location = useLocation();
   const [isDark, setIsDark] = useState(false);
+  const { toast } = useToast();
+
+  const handleComingSoon = () => {
+    toast({
+      title: "Coming Soon",
+      description: "This feature will be available soon!",
+    });
+  };
   
   useEffect(() => {
     const darkMode = localStorage.getItem('darkMode') === 'true';
@@ -74,7 +83,10 @@ const Navigation = () => {
             >
               {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
-            <Button className="bg-brand-primary hover:bg-brand-primary/90 text-white">
+            <Button 
+              className="bg-brand-primary hover:bg-brand-primary/90 text-white"
+              onClick={handleComingSoon}
+            >
               Join Now
             </Button>
           </div>

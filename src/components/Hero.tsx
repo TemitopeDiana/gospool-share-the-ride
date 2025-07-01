@@ -1,8 +1,17 @@
-
 import { Button } from "@/components/ui/button";
 import { Quote } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const Hero = () => {
+  const { toast } = useToast();
+
+  const handleComingSoon = () => {
+    toast({
+      title: "Coming Soon",
+      description: "This feature will be available soon!",
+    });
+  };
+
   return (
     <section className="relative bg-gradient-to-br from-white via-brand-light-mint/10 to-gray-50 dark:from-gray-900 dark:via-brand-dark-teal/10 dark:to-gray-800 py-24 overflow-hidden">
       {/* Modern geometric background elements */}
@@ -27,10 +36,19 @@ const Hero = () => {
               with your church family and helping the environment.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 mb-16">
-              <Button size="lg" className="bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-primary text-white px-12 py-6 text-xl font-poppins font-semibold shadow-2xl transform hover:scale-105 transition-all duration-300 rounded-2xl">
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-primary text-white px-12 py-6 text-xl font-poppins font-semibold shadow-2xl transform hover:scale-105 transition-all duration-300 rounded-2xl"
+                onClick={handleComingSoon}
+              >
                 Find a Ride
               </Button>
-              <Button size="lg" variant="outline" className="border-3 border-brand-mint text-brand-mint hover:bg-brand-mint hover:text-white dark:border-brand-light-mint dark:text-brand-light-mint dark:hover:bg-brand-light-mint dark:hover:text-brand-dark-teal px-12 py-6 text-xl font-poppins font-semibold shadow-2xl transform hover:scale-105 transition-all duration-300 rounded-2xl">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-3 border-brand-mint text-brand-mint hover:bg-brand-mint hover:text-white dark:border-brand-light-mint dark:text-brand-light-mint dark:hover:bg-brand-light-mint dark:hover:text-brand-dark-teal px-12 py-6 text-xl font-poppins font-semibold shadow-2xl transform hover:scale-105 transition-all duration-300 rounded-2xl"
+                onClick={handleComingSoon}
+              >
                 Register Your Church
               </Button>
             </div>

@@ -4,6 +4,7 @@ import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import CallToAction from "@/components/CallToAction";
 import Footer from "@/components/Footer";
+import { Toaster } from "@/components/ui/toaster";
 
 const Index = () => {
   return (
@@ -13,6 +14,7 @@ const Index = () => {
       <Features />
       <CallToAction />
       <Footer />
+      <Toaster />
     </div>
   );
 };
