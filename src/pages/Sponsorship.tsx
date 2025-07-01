@@ -32,7 +32,7 @@ const Sponsorship = () => {
   };
 
   return (
-    <div className="min-h-screen font-inter">
+    <div className="min-h-screen font-inter overflow-x-hidden">
       <Navigation />
       <SponsorshipHero onDonateClick={handleDonateClick} onJoinBoardClick={handleJoinBoardClick} />
       <div ref={donationRef}>
