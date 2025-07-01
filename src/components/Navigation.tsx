@@ -32,15 +32,17 @@ const Navigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gray-900 dark:bg-white rounded-xl flex items-center justify-center">
-              <div className="w-6 h-6 relative">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <svg viewBox="0 0 24 24" className="w-6 h-6 fill-white dark:fill-gray-900">
-                    <path d="M4 4h6v6H4V4zm0 10h6v6H4v-6zm10-10h6v6h-6V4zm0 10h6v6h-6v-6z" fillRule="evenodd" clipRule="evenodd"/>
-                    <circle cx="12" cy="12" r="2" className="fill-gray-900 dark:fill-white"/>
-                  </svg>
-                </div>
-              </div>
+            <div className="w-10 h-10 flex items-center justify-center">
+              <img 
+                src="/lovable-uploads/bb40c7c8-e5f2-456f-93e1-67a40d9ff480.png" 
+                alt="Gospool Logo" 
+                className="w-10 h-10 dark:hidden"
+              />
+              <img 
+                src="/lovable-uploads/2ddb1688-61b9-4b51-b259-c1f342934418.png" 
+                alt="Gospool Logo" 
+                className="w-10 h-10 hidden dark:block"
+              />
             </div>
             <span className="font-playfair text-2xl font-bold text-gray-900 dark:text-white">
               GOSPOOL
@@ -50,16 +52,16 @@ const Navigation = () => {
           <div className="hidden md:flex items-center space-x-8">
             <Link 
               to="/" 
-              className={`text-gray-700 dark:text-gray-300 hover:text-brand-blue dark:hover:text-brand-blue transition-colors font-medium ${
-                location.pathname === '/' ? 'text-brand-blue' : ''
+              className={`text-gray-700 dark:text-gray-300 hover:text-brand-teal dark:hover:text-brand-teal transition-colors font-medium ${
+                location.pathname === '/' ? 'text-brand-teal' : ''
               }`}
             >
               Home
             </Link>
             <Link 
               to="/sponsorship" 
-              className={`text-gray-700 dark:text-gray-300 hover:text-brand-blue dark:hover:text-brand-blue transition-colors font-medium ${
-                location.pathname === '/sponsorship' ? 'text-brand-blue' : ''
+              className={`text-gray-700 dark:text-gray-300 hover:text-brand-teal dark:hover:text-brand-teal transition-colors font-medium ${
+                location.pathname === '/sponsorship' ? 'text-brand-teal' : ''
               }`}
             >
               Sponsorship
@@ -72,7 +74,7 @@ const Navigation = () => {
             >
               {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
-            <Button className="bg-brand-blue hover:bg-blue-600 text-white">
+            <Button className="bg-brand-teal hover:bg-teal-700 text-white">
               Join Now
             </Button>
           </div>

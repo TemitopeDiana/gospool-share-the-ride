@@ -8,15 +8,17 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
-                <div className="w-6 h-6 relative">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <svg viewBox="0 0 24 24" className="w-6 h-6 fill-gray-900">
-                      <path d="M4 4h6v6H4V4zm0 10h6v6H4v-6zm10-10h6v6h-6V4zm0 10h6v6h-6v-6z" fillRule="evenodd" clipRule="evenodd"/>
-                      <circle cx="12" cy="12" r="2" className="fill-white"/>
-                    </svg>
-                  </div>
-                </div>
+              <div className="w-10 h-10 flex items-center justify-center">
+                <img 
+                  src="/lovable-uploads/bb40c7c8-e5f2-456f-93e1-67a40d9ff480.png" 
+                  alt="Gospool Logo" 
+                  className="w-10 h-10 dark:hidden"
+                />
+                <img 
+                  src="/lovable-uploads/2ddb1688-61b9-4b51-b259-c1f342934418.png" 
+                  alt="Gospool Logo" 
+                  className="w-10 h-10 hidden dark:block"
+                />
               </div>
               <span className="font-playfair text-2xl font-bold">GOSPOOL</span>
             </div>
@@ -25,13 +27,13 @@ const Footer = () => {
               Building fellowship one journey at a time.
             </p>
             <div className="flex space-x-4">
-              <div className="w-10 h-10 bg-brand-blue rounded-full flex items-center justify-center cursor-pointer hover:bg-blue-600 transition-colors">
+              <div className="w-10 h-10 bg-brand-teal rounded-full flex items-center justify-center cursor-pointer hover:bg-teal-700 transition-colors">
                 <span className="text-sm font-bold">f</span>
               </div>
-              <div className="w-10 h-10 bg-brand-blue rounded-full flex items-center justify-center cursor-pointer hover:bg-blue-600 transition-colors">
+              <div className="w-10 h-10 bg-brand-teal rounded-full flex items-center justify-center cursor-pointer hover:bg-teal-700 transition-colors">
                 <span className="text-sm font-bold">@</span>
               </div>
-              <div className="w-10 h-10 bg-brand-blue rounded-full flex items-center justify-center cursor-pointer hover:bg-blue-600 transition-colors">
+              <div className="w-10 h-10 bg-brand-teal rounded-full flex items-center justify-center cursor-pointer hover:bg-teal-700 transition-colors">
                 <span className="text-sm font-bold">in</span>
               </div>
             </div>
