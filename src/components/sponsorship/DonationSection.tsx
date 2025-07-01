@@ -2,10 +2,14 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DonationForm from "./DonationForm";
 
-const DonationSection = () => {
+interface DonationSectionProps {
+  shouldAutoOpen?: boolean;
+}
+
+const DonationSection = ({ shouldAutoOpen }: DonationSectionProps) => {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedCurrency, setSelectedCurrency] = useState("");
   const [showDonationForm, setShowDonationForm] = useState(false);
@@ -22,6 +26,14 @@ const DonationSection = () => {
     { name: "Kenya", currency: "KES (KSh)" },
     { name: "Other", currency: "Multiple currencies available" }
   ];
+
+  useEffect(() => {
+    if (shouldAutoOpen) {
+      // Auto-select Nigeria as default when opened from hero
+      setSelectedCountry("Nigeria");
+      setSelectedCurrency("NGN (₦)");
+    }
+  }, [shouldAutoOpen]);
 
   const handleCountryChange = (country: string) => {
     setSelectedCountry(country);
@@ -75,7 +87,7 @@ const DonationSection = () => {
                   <label className="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-3 font-poppins">
                     Select Your Country
                   </label>
-                  <Select onValueChange={handleCountryChange}>
+                  <Select onValueChange={handleCountryChange} value={selectedCountry}>
                     <SelectTrigger className="w-full h-14 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-2xl text-lg">
                       <SelectValue placeholder="Choose your country" />
                     </SelectTrigger>

@@ -1,16 +1,25 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BoardMemberForm from "./BoardMemberForm";
 
-const BoardMemberSection = () => {
+interface BoardMemberSectionProps {
+  shouldAutoOpen?: boolean;
+}
+
+const BoardMemberSection = ({ shouldAutoOpen }: BoardMemberSectionProps) => {
   const [showBoardAmount, setShowBoardAmount] = useState(false);
   const [showBoardForm, setShowBoardForm] = useState(false);
 
   const boardMembers = [
     { name: "Coming Soon", role: "Be the first board member", amount: "Founding Member" },
   ];
+
+  useEffect(() => {
+    if (shouldAutoOpen) {
+      setShowBoardAmount(true);
+    }
+  }, [shouldAutoOpen]);
 
   if (showBoardForm) {
     return (

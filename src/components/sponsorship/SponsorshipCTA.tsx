@@ -1,7 +1,12 @@
 
 import { Button } from "@/components/ui/button";
 
-const SponsorshipCTA = () => {
+interface SponsorshipCTAProps {
+  onDonateClick?: () => void;
+  onJoinBoardClick?: () => void;
+}
+
+const SponsorshipCTA = ({ onDonateClick, onJoinBoardClick }: SponsorshipCTAProps) => {
   return (
     <section className="py-24 bg-gradient-to-br from-brand-primary via-brand-dark-teal to-brand-mint relative overflow-hidden">
       {/* Modern geometric background */}
@@ -20,10 +25,19 @@ const SponsorshipCTA = () => {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-6 justify-center max-w-2xl mx-auto">
-          <Button size="lg" className="bg-white text-brand-primary hover:bg-brand-light-mint hover:text-brand-dark-teal px-12 py-6 text-xl font-poppins font-semibold shadow-2xl rounded-2xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20">
+          <Button 
+            size="lg" 
+            className="bg-white text-brand-primary hover:bg-brand-light-mint hover:text-brand-dark-teal px-12 py-6 text-xl font-poppins font-semibold shadow-2xl rounded-2xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20"
+            onClick={onJoinBoardClick}
+          >
             Become a Board Member
           </Button>
-          <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-brand-primary px-12 py-6 text-xl font-poppins font-semibold shadow-2xl rounded-2xl transform hover:scale-105 transition-all duration-300 bg-white/10 backdrop-blur-sm">
+          <Button 
+            size="lg" 
+            variant="outline" 
+            className="border-2 border-white text-white hover:bg-white hover:text-brand-primary px-12 py-6 text-xl font-poppins font-semibold shadow-2xl rounded-2xl transform hover:scale-105 transition-all duration-300 bg-white/10 backdrop-blur-sm"
+            onClick={onDonateClick}
+          >
             Donate to the Cause
           </Button>
         </div>
