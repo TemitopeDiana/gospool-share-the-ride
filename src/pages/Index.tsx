@@ -8,7 +8,7 @@ import { Toaster } from "@/components/ui/toaster";
 
 const Index = () => {
   return (
-    <div className="min-h-screen font-inter">
+    <div className="min-h-screen font-inter overflow-x-hidden">
       <Navigation />
       <Hero />
       <Features />
