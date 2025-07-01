@@ -34,7 +34,7 @@ const Navigation = () => {
           <Link to="/" className="flex items-center space-x-3">
             <div className="w-10 h-10 flex items-center justify-center">
               <img 
-                src="/lovable-uploads/bb40c7c8-e5f2-456f-93e1-67a40d9ff480.png" 
+                src="/lovable-uploads/52524576-df42-4ff1-ae6b-916c64b5f607.png" 
                 alt="Gospool Logo" 
                 className="w-10 h-10 dark:hidden"
               />
@@ -44,7 +44,7 @@ const Navigation = () => {
                 className="w-10 h-10 hidden dark:block"
               />
             </div>
-            <span className="font-playfair text-2xl font-bold text-gray-900 dark:text-white">
+            <span className="font-poppins text-2xl font-bold text-gray-900 dark:text-white">
               GOSPOOL
             </span>
           </Link>
@@ -52,16 +52,16 @@ const Navigation = () => {
           <div className="hidden md:flex items-center space-x-8">
             <Link 
               to="/" 
-              className={`text-gray-700 dark:text-gray-300 hover:text-brand-teal dark:hover:text-brand-teal transition-colors font-medium ${
-                location.pathname === '/' ? 'text-brand-teal' : ''
+              className={`text-gray-700 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary transition-colors font-medium font-ibm-plex ${
+                location.pathname === '/' ? 'text-brand-primary' : ''
               }`}
             >
               Home
             </Link>
             <Link 
               to="/sponsorship" 
-              className={`text-gray-700 dark:text-gray-300 hover:text-brand-teal dark:hover:text-brand-teal transition-colors font-medium ${
-                location.pathname === '/sponsorship' ? 'text-brand-teal' : ''
+              className={`text-gray-700 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary transition-colors font-medium font-ibm-plex ${
+                location.pathname === '/sponsorship' ? 'text-brand-primary' : ''
               }`}
             >
               Sponsorship
@@ -74,7 +74,7 @@ const Navigation = () => {
             >
               {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
-            <Button className="bg-brand-teal hover:bg-teal-700 text-white">
+            <Button className="bg-brand-primary hover:bg-brand-primary/90 text-white">
               Join Now
             </Button>
           </div>

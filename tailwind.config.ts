@@ -22,6 +22,8 @@ export default {
 			fontFamily: {
 				'inter': ['Inter', 'sans-serif'],
 				'playfair': ['Playfair Display', 'serif'],
+				'ibm-plex': ['IBM Plex Sans', 'sans-serif'],
+				'poppins': ['Poppins', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -67,6 +69,8 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
+				'brand-primary': '#223333',
+				'brand-teal': '#223333',
 				'brand-blue': '#3B82F6',
 				'brand-green': '#10B981',
 				'brand-purple': '#8B5CF6',
