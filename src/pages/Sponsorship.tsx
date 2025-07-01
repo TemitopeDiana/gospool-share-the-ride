@@ -74,13 +74,13 @@ const Sponsorship = () => {
             Your contribution powers free rides, connects communities, and strengthens faith.
           </p>
           
-          {/* Bible Verse */}
-          <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg max-w-2xl mx-auto mt-8">
+          {/* Bible Verse about Supporting Gospel Workers */}
+          <div className="bg-white/80 backdrop-blur-sm p-8 rounded-lg max-w-3xl mx-auto mt-8">
             <Quote className="h-8 w-8 text-brand-blue mx-auto mb-4" />
-            <p className="text-gray-700 italic text-lg mb-2">
-              "And how can anyone preach unless they are sent? As it is written: 'How beautiful are the feet of those who bring good news!'"
+            <p className="text-gray-700 italic text-lg mb-3">
+              "But how can they call on him to save them unless they believe in him? And how can they believe in him if they have never heard about him? And how can they hear about him unless someone tells them? And how will anyone go and tell them without being sent? That is why the Scriptures say, 'How beautiful are the feet of messengers who bring good news!'"
             </p>
-            <p className="text-brand-blue font-semibold">Romans 10:15</p>
+            <p className="text-brand-blue font-semibold">Romans 10:14-15</p>
           </div>
         </div>
       </section>
@@ -92,9 +92,18 @@ const Sponsorship = () => {
             <h2 className="font-playfair text-4xl font-bold text-gray-900 mb-4">
               Make a Donation
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
               Every contribution, no matter the size, helps us provide free transportation and build stronger church communities.
             </p>
+            
+            {/* Bible Verse about Generous Giving */}
+            <div className="bg-gradient-to-r from-blue-50 to-green-50 p-6 rounded-lg max-w-2xl mx-auto mb-8">
+              <Quote className="h-6 w-6 text-brand-green mx-auto mb-3" />
+              <p className="text-gray-700 italic mb-2">
+                "Remember this—a farmer who plants only a few seeds will get a small crop. But the one who plants generously will get a generous crop. For God loves a person who gives cheerfully."
+              </p>
+              <p className="text-brand-green font-semibold text-sm">2 Corinthians 9:6-8</p>
+            </div>
           </div>
           
           <div className="max-w-2xl mx-auto">
@@ -158,9 +167,18 @@ const Sponsorship = () => {
             <h2 className="font-playfair text-4xl font-bold text-gray-900 mb-4">
               Board of Sponsors
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
               Join our exclusive board of visionary sponsors who are making a transformational impact on church communities across Nigeria and beyond.
             </p>
+            
+            {/* Bible Verse about Supporting Gospel Workers */}
+            <div className="bg-white p-6 rounded-lg max-w-2xl mx-auto">
+              <Quote className="h-6 w-6 text-brand-purple mx-auto mb-3" />
+              <p className="text-gray-700 italic mb-2">
+                "In the same way, the Lord ordered that those who preach the Good News should be supported by those who benefit from it."
+              </p>
+              <p className="text-brand-purple font-semibold text-sm">1 Corinthians 9:14</p>
+            </div>
           </div>
           
           {/* Become a Board Member */}
@@ -253,9 +271,18 @@ const Sponsorship = () => {
             <h2 className="font-playfair text-4xl font-bold text-gray-900 mb-4">
               Your Impact & How We Use Funds
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
               Transparency is core to our mission. See exactly how your contribution creates lasting change in church communities.
             </p>
+            
+            {/* Bible Verse about Using Resources for God's Kingdom */}
+            <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-lg max-w-3xl mx-auto">
+              <Quote className="h-6 w-6 text-brand-purple mx-auto mb-3" />
+              <p className="text-gray-700 italic mb-2">
+                "Tell them to use their money to do good. They should be rich in good works and generous to those in need, always being ready to share with others."
+              </p>
+              <p className="text-brand-purple font-semibold text-sm">1 Timothy 6:18</p>
+            </div>
           </div>
           
           <div className="grid md:grid-cols-2 gap-8 mb-16">
@@ -279,7 +306,7 @@ const Sponsorship = () => {
           </div>
 
           {/* Fund Allocation */}
-          <Card className="p-8 bg-gradient-to-r from-blue-50 to-green-50">
+          <Card className="p-8 bg-gradient-to-r from-blue-50 to-green-50 mb-16">
             <CardHeader className="text-center">
               <CardTitle className="text-3xl text-gray-900 mb-4">
                 Fund Allocation Breakdown
@@ -309,13 +336,23 @@ const Sponsorship = () => {
             </CardContent>
           </Card>
 
-          {/* Bible Verse */}
-          <div className="bg-gradient-to-r from-blue-50 to-green-50 p-8 rounded-lg mt-16 text-center">
-            <Quote className="h-8 w-8 text-brand-blue mx-auto mb-4" />
-            <p className="text-gray-700 italic text-lg mb-2">
-              "Give, and it will be given to you. A good measure, pressed down, shaken together and running over, will be poured into your lap."
-            </p>
-            <p className="text-brand-blue font-semibold">Luke 6:38</p>
+          {/* Additional Bible Verses about Giving */}
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="bg-gradient-to-r from-blue-50 to-green-50 p-8 rounded-lg">
+              <Quote className="h-8 w-8 text-brand-blue mb-4" />
+              <p className="text-gray-700 italic text-lg mb-3">
+                "Honor the Lord with your wealth and with the best part of everything you produce."
+              </p>
+              <p className="text-brand-blue font-semibold">Proverbs 3:9-10</p>
+            </div>
+            
+            <div className="bg-gradient-to-r from-green-50 to-purple-50 p-8 rounded-lg">
+              <Quote className="h-8 w-8 text-brand-green mb-4" />
+              <p className="text-gray-700 italic text-lg mb-3">
+                "We who are strong must be considerate of those who are sensitive about things like this. We must not just please ourselves."
+              </p>
+              <p className="text-brand-green font-semibold">Romans 15:1-2</p>
+            </div>
           </div>
         </div>
       </section>
@@ -358,6 +395,16 @@ const Sponsorship = () => {
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
             Join the mission to make church accessible for everyone through free, safe transportation.
           </p>
+          
+          {/* Bible Verse about Treasure in Heaven */}
+          <div className="bg-white/20 backdrop-blur-sm p-6 rounded-lg max-w-2xl mx-auto mb-8">
+            <Quote className="h-6 w-6 text-white mx-auto mb-3" />
+            <p className="text-white italic mb-2">
+              "Sell your possessions and give to the poor. This will store up treasure for you in heaven!"
+            </p>
+            <p className="text-blue-100 font-semibold text-sm">Luke 12:33-34</p>
+          </div>
+          
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-white text-brand-blue hover:bg-gray-100 px-8 py-3 text-lg">
               Become a Board Member

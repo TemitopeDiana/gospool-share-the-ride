@@ -1,5 +1,5 @@
 
-import { Church } from "lucide-react";
+import { Church, Quote } from "lucide-react";
 
 const Features = () => {
   const features = [
@@ -48,7 +48,7 @@ const Features = () => {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {features.map((feature, index) => (
             <div 
               key={index}
@@ -64,6 +64,41 @@ const Features = () => {
               </p>
             </div>
           ))}
+        </div>
+
+        {/* Bible Verses about Supporting Each Other */}
+        <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          <div className="bg-gradient-to-r from-blue-50 to-green-50 p-8 rounded-lg">
+            <Quote className="h-8 w-8 text-brand-blue mb-4" />
+            <p className="text-gray-700 italic text-lg mb-3">
+              "Share each other's burdens, and in this way obey the law of Christ."
+            </p>
+            <p className="text-brand-blue font-semibold">Galatians 6:2</p>
+          </div>
+          
+          <div className="bg-gradient-to-r from-green-50 to-purple-50 p-8 rounded-lg">
+            <Quote className="h-8 w-8 text-brand-green mb-4" />
+            <p className="text-gray-700 italic text-lg mb-3">
+              "So encourage each other and build each other up, just as you are already doing."
+            </p>
+            <p className="text-brand-green font-semibold">1 Thessalonians 5:11</p>
+          </div>
+          
+          <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-8 rounded-lg">
+            <Quote className="h-8 w-8 text-brand-purple mb-4" />
+            <p className="text-gray-700 italic text-lg mb-3">
+              "As iron sharpens iron, so a friend sharpens a friend."
+            </p>
+            <p className="text-brand-purple font-semibold">Proverbs 27:17</p>
+          </div>
+          
+          <div className="bg-gradient-to-r from-blue-50 to-green-50 p-8 rounded-lg">
+            <Quote className="h-8 w-8 text-brand-blue mb-4" />
+            <p className="text-gray-700 italic text-lg mb-3">
+              "If one part suffers, all the parts suffer with it, and if one part is honored, all the parts are glad."
+            </p>
+            <p className="text-brand-blue font-semibold">1 Corinthians 12:26</p>
+          </div>
         </div>
       </div>
     </section>

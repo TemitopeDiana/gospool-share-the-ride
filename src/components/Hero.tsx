@@ -26,13 +26,23 @@ const Hero = () => {
               </Button>
             </div>
 
-            {/* Bible Verse */}
-            <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg mt-8">
-              <Quote className="h-6 w-6 text-brand-blue mb-3" />
-              <p className="text-gray-700 italic mb-2">
-                "Let us not give up meeting together, as some are in the habit of doing, but let us encourage one another."
-              </p>
-              <p className="text-brand-blue font-semibold text-sm">Hebrews 10:25</p>
+            {/* Bible Verses */}
+            <div className="space-y-6">
+              <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg">
+                <Quote className="h-6 w-6 text-brand-blue mb-3" />
+                <p className="text-gray-700 italic mb-2">
+                  "Let us think of ways to motivate one another to acts of love and good works. And let us not neglect our meeting together, as some people do, but encourage one another."
+                </p>
+                <p className="text-brand-blue font-semibold text-sm">Hebrews 10:24-25</p>
+              </div>
+              
+              <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg">
+                <Quote className="h-6 w-6 text-brand-green mb-3" />
+                <p className="text-gray-700 italic mb-2">
+                  "Two people are better off than one, for they can help each other succeed. If one person falls, the other can reach out and help."
+                </p>
+                <p className="text-brand-green font-semibold text-sm">Ecclesiastes 4:9-10</p>
+              </div>
             </div>
           </div>
           
