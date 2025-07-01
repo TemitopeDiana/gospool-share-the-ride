@@ -24,8 +24,8 @@ const CallToAction = () => {
           <Button size="lg" className="bg-white text-brand-primary hover:bg-brand-light-mint hover:text-brand-dark-teal px-8 py-3 text-lg shadow-xl transform hover:scale-105 transition-all duration-300 font-poppins font-semibold">
             Get Started Free
           </Button>
-          <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-brand-primary px-8 py-3 text-lg shadow-xl transform hover:scale-105 transition-all duration-300 font-poppins font-semibold">
-            <Link to="/sponsorship" className="text-inherit no-underline">
+          <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-brand-primary px-8 py-3 text-lg shadow-xl transform hover:scale-105 transition-all duration-300 font-poppins font-semibold bg-white/10 backdrop-blur-sm">
+            <Link to="/sponsorship" className="text-white hover:text-brand-primary">
               Register Your Church
             </Link>
           </Button>

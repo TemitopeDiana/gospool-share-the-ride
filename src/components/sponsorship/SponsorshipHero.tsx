@@ -3,7 +3,7 @@ import { Quote } from "lucide-react";
 
 const SponsorshipHero = () => {
   return (
-    <section className="relative bg-gradient-to-br from-white via-brand-light-mint/20 to-brand-mint/10 dark:from-gray-900 dark:via-brand-dark-teal/20 dark:to-brand-teal/10 py-24 overflow-hidden">
+    <section className="relative bg-gradient-to-br from-white via-brand-light-mint/20 to-brand-mint/10 dark:from-gray-900 dark:via-brand-dark-teal/20 dark:to-brand-teal/10 py-32 overflow-hidden">
       {/* Modern geometric background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-20 w-40 h-40 bg-gradient-to-br from-brand-mint/30 to-brand-light-mint/20 rounded-3xl rotate-12 animate-float"></div>
@@ -33,6 +33,15 @@ const SponsorshipHero = () => {
           Help us create a world where no one misses church due to transportation barriers. 
           Your contribution powers free rides, connects communities, and strengthens faith.
         </p>
+
+        {/* Bible Verse */}
+        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg p-8 rounded-3xl border-2 border-brand-light-mint/30 dark:border-brand-mint/30 shadow-2xl max-w-4xl mx-auto mb-12">
+          <Quote className="h-8 w-8 text-brand-primary dark:text-brand-mint mb-4 mx-auto" />
+          <p className="text-gray-700 dark:text-gray-300 italic text-lg mb-3 font-ibm-plex leading-relaxed">
+            "Honor the Lord with your wealth and with the best part of everything you produce. Then he will fill your barns with grain, and your vats will overflow with new wine."
+          </p>
+          <p className="text-brand-primary dark:text-brand-mint font-semibold text-lg font-poppins">Proverbs 3:9-10 (NLT)</p>
+        </div>
         
         <div className="flex flex-col sm:flex-row gap-6 justify-center max-w-md mx-auto">
           <button className="px-8 py-4 bg-gradient-to-r from-brand-primary to-brand-dark-teal text-white rounded-2xl font-poppins font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 border border-brand-dark-teal/20">
