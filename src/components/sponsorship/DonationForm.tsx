@@ -16,6 +16,8 @@ interface DonationFormProps {
 
 const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFormProps) => {
   const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [amount, setAmount] = useState("");
   const [isChristian, setIsChristian] = useState("");
   const [church, setChurch] = useState("");
@@ -35,7 +37,7 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
       return;
     }
     
-    if (!fullName || !amount || !isChristian) {
+    if (!fullName || !email || !phone || !amount || !isChristian) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields.",
@@ -79,6 +81,12 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
             <div className="space-y-2">
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex">
                 <span className="font-semibold">Name:</span> {isAnonymous ? "Anonymous" : fullName}
+              </p>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex">
+                <span className="font-semibold">Email:</span> {email}
+              </p>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex">
+                <span className="font-semibold">Phone:</span> {phone}
               </p>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex">
                 <span className="font-semibold">Amount:</span> {selectedCurrency} {amount}
@@ -135,6 +143,36 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
               onChange={(e) => setFullName(e.target.value)}
               className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
               placeholder="Enter your full name"
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="email" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+              Email Address *
+            </Label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
+              placeholder="Enter your email address"
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="phone" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+              Phone Number *
+            </Label>
+            <Input
+              id="phone"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
+              placeholder="Enter your phone number"
               required
             />
           </div>

@@ -8,6 +8,8 @@ import BoardMemberSection from "@/components/sponsorship/BoardMemberSection";
 import BenefitsSection from "@/components/sponsorship/BenefitsSection";
 import ImpactSection from "@/components/sponsorship/ImpactSection";
 import SponsorshipCTA from "@/components/sponsorship/SponsorshipCTA";
+import DownloadReportSection from "@/components/sponsorship/DownloadReportSection";
+import ViewImpactSection from "@/components/shared/ViewImpactSection";
 import { Toaster } from "@/components/ui/toaster";
 import { useState, useRef } from "react";
 
@@ -44,6 +46,8 @@ const Sponsorship = () => {
       </div>
       <BenefitsSection />
       <ImpactSection />
+      <DownloadReportSection />
+      <ViewImpactSection />
       <SponsorshipCTA onDonateClick={handleDonateClick} onJoinBoardClick={handleJoinBoardClick} />
       <Footer />
       <Toaster />
