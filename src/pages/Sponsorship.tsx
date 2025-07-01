@@ -1,9 +1,8 @@
-
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { church } from "lucide-react";
+import { Church } from "lucide-react";
 
 const Sponsorship = () => {
   const packages = [
@@ -55,7 +54,7 @@ const Sponsorship = () => {
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-blue-50 via-white to-green-50 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <church className="h-16 w-16 text-brand-blue mx-auto mb-6" />
+          <Church className="h-16 w-16 text-brand-blue mx-auto mb-6" />
           <h1 className="font-playfair text-5xl font-bold text-gray-900 mb-6">
             Partner With Gospool
           </h1>

@@ -1,6 +1,5 @@
-
 import { Button } from "@/components/ui/button";
-import { map } from "lucide-react";
+import { Map } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -30,7 +29,7 @@ const Hero = () => {
           <div className="relative animate-fade-in">
             <div className="bg-white rounded-2xl shadow-2xl p-8 transform rotate-3 hover:rotate-0 transition-transform duration-300">
               <div className="flex items-center justify-center mb-6">
-                <map className="h-16 w-16 text-brand-green" />
+                <Map className="h-16 w-16 text-brand-green" />
               </div>
               <h3 className="font-semibold text-xl text-gray-900 mb-4 text-center">
                 Your Journey Starts Here

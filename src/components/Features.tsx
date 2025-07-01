@@ -1,5 +1,5 @@
 
-import { church } from "lucide-react";
+import { Church } from "lucide-react";
 
 const Features = () => {
   const features = [

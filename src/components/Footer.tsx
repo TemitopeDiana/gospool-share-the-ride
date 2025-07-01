@@ -1,6 +1,5 @@
-
 import { Link } from "react-router-dom";
-import { church } from "lucide-react";
+import { Church } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -9,7 +8,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
-              <church className="h-8 w-8 text-brand-blue" />
+              <Church className="h-8 w-8 text-brand-blue" />
               <span className="font-playfair text-2xl font-bold">Gospool</span>
             </div>
             <p className="text-gray-400 mb-4 max-w-md">
