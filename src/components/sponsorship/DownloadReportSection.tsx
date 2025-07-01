@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { download } from "lucide-react";
+import { Download } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -53,7 +53,7 @@ const DownloadReportSection = () => {
           <Card className="p-4 sm:p-6 dark:bg-gray-800/80 dark:border-gray-700 backdrop-blur-lg border border-brand-light-mint/30 dark:border-brand-mint/30 shadow-xl rounded-xl mx-4 sm:mx-0">
             <CardHeader className="text-center pb-4">
               <CardTitle className="text-lg sm:text-xl text-gray-900 dark:text-white font-playfair flex items-center justify-center gap-2">
-                <download className="h-5 w-5" />
+                <Download className="h-5 w-5" />
                 Download Impact Report
               </CardTitle>
               <CardDescription className="text-sm sm:text-base text-gray-600 dark:text-gray-400 font-ibm-plex">

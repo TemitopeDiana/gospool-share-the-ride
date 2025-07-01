@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { view } from "lucide-react";
+import { Eye } from "lucide-react";
 
 const ViewImpactSection = () => {
   return (
@@ -26,7 +26,7 @@ const ViewImpactSection = () => {
               size="lg" 
               className="bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-poppins font-semibold shadow-xl rounded-xl sm:rounded-2xl transform hover:scale-105 transition-all duration-300 inline-flex items-center gap-2 touch-manipulation"
             >
-              <view className="h-4 w-4 sm:h-5 sm:w-5" />
+              <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
               View Our Impact
             </Button>
           </Link>
