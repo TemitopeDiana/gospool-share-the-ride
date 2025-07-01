@@ -71,6 +71,10 @@ export default {
 				},
 				'brand-primary': '#223333',
 				'brand-teal': '#223333',
+				'brand-dark-teal': '#0d4740',
+				'brand-mint': '#4EA699',
+				'brand-light-mint': '#BFFDE0',
+				'brand-gold': '#FDBO22',
 				'brand-blue': '#3B82F6',
 				'brand-green': '#10B981',
 				'brand-purple': '#8B5CF6',
@@ -117,13 +121,22 @@ export default {
 						opacity: '1',
 						transform: 'translateX(0)'
 					}
+				},
+				'float': {
+					'0%, 100%': {
+						transform: 'translateY(0px)'
+					},
+					'50%': {
+						transform: 'translateY(-10px)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.6s ease-out',
-				'slide-in-left': 'slide-in-left 0.6s ease-out'
+				'slide-in-left': 'slide-in-left 0.6s ease-out',
+				'float': 'float 3s ease-in-out infinite'
 			}
 		}
 	},

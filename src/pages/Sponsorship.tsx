@@ -1,3 +1,4 @@
+
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -30,24 +31,28 @@ const Sponsorship = () => {
 
   const benefits = [
     {
-      icon: <Heart className="h-8 w-8 text-brand-teal" />,
+      icon: <Heart className="h-8 w-8 text-brand-mint" />,
       title: "Transform Lives",
-      description: "Your contribution directly impacts thousands of church members by removing transportation barriers and strengthening faith communities."
+      description: "Your contribution directly impacts thousands of church members by removing transportation barriers and strengthening faith communities.",
+      gradient: "from-brand-mint to-brand-light-mint"
     },
     {
-      icon: <Bus className="h-8 w-8 text-brand-green" />,
+      icon: <Bus className="h-8 w-8 text-brand-primary" />,
       title: "Free Transportation Fleet",
-      description: "Funds help us purchase and maintain buses that provide completely free transportation to church services across Nigeria and beyond."
+      description: "Funds help us purchase and maintain buses that provide completely free transportation to church services across Nigeria and beyond.",
+      gradient: "from-brand-primary to-brand-dark-teal"
     },
     {
-      icon: <Globe className="h-8 w-8 text-brand-purple" />,
+      icon: <Globe className="h-8 w-8 text-brand-dark-teal" />,
       title: "Nationwide Expansion",
-      description: "Support our mission to reach every church in Nigeria and expand to other countries, connecting millions of believers."
+      description: "Support our mission to reach every church in Nigeria and expand to other countries, connecting millions of believers.",
+      gradient: "from-brand-dark-teal to-brand-mint"
     },
     {
-      icon: <Shield className="h-8 w-8 text-brand-teal" />,
+      icon: <Shield className="h-8 w-8 text-brand-mint" />,
       title: "Safe & Reliable Service",
-      description: "Your donations ensure we maintain the highest safety standards and provide reliable transportation for all church members."
+      description: "Your donations ensure we maintain the highest safety standards and provide reliable transportation for all church members.",
+      gradient: "from-brand-light-mint to-brand-primary"
     }
   ];
 
@@ -62,76 +67,82 @@ const Sponsorship = () => {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="w-16 h-16 flex items-center justify-center mx-auto mb-6">
+      <section className="bg-gradient-to-br from-brand-light-mint/30 via-white to-brand-mint/20 dark:from-brand-dark-teal dark:via-gray-800 dark:to-brand-teal py-20 relative overflow-hidden">
+        {/* Decorative background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-20 left-10 w-32 h-32 bg-brand-mint/20 dark:bg-brand-mint/10 rounded-full animate-float"></div>
+          <div className="absolute bottom-40 right-20 w-24 h-24 bg-brand-light-mint/30 dark:bg-brand-light-mint/15 rounded-full animate-float" style={{ animationDelay: '1s' }}></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <div className="w-16 h-16 flex items-center justify-center mx-auto mb-6 bg-gradient-to-br from-brand-mint to-brand-light-mint rounded-full p-2 shadow-lg">
             <img 
               src="/lovable-uploads/7eae2d36-486c-4f8e-aa01-ca9414ab4528.png" 
               alt="Gospool Logo" 
-              className="w-16 h-16 dark:hidden"
+              className="w-12 h-12 dark:hidden"
             />
             <img 
               src="/lovable-uploads/2ddb1688-61b9-4b51-b259-c1f342934418.png" 
               alt="Gospool Logo" 
-              className="w-16 h-16 hidden dark:block"
+              className="w-12 h-12 hidden dark:block"
             />
           </div>
-          <h1 className="font-playfair text-5xl font-bold text-gray-900 dark:text-white mb-6">
+          <h1 className="font-playfair text-5xl font-bold bg-gradient-to-r from-brand-primary to-brand-dark-teal dark:from-brand-mint dark:to-brand-light-mint bg-clip-text text-transparent mb-6">
             Support Gospool's Mission
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 font-ibm-plex">
             Help us create a world where no one misses church due to transportation barriers. 
             Your contribution powers free rides, connects communities, and strengthens faith.
           </p>
           
           {/* Bible Verse about Supporting Gospel Workers */}
-          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-8 rounded-lg max-w-3xl mx-auto mt-8">
-            <Quote className="h-8 w-8 text-brand-teal mx-auto mb-4" />
-            <p className="text-gray-700 dark:text-gray-300 italic text-lg mb-3">
+          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-8 rounded-xl max-w-3xl mx-auto mt-8 border border-brand-light-mint/30 dark:border-brand-mint/30 shadow-lg">
+            <Quote className="h-8 w-8 text-brand-primary dark:text-brand-mint mx-auto mb-4" />
+            <p className="text-gray-700 dark:text-gray-300 italic text-lg mb-3 font-ibm-plex">
               "But how can they call on him to save them unless they believe in him? And how can they believe in him if they have never heard about him? And how can they hear about him unless someone tells them? And how will anyone go and tell them without being sent? That is why the Scriptures say, 'How beautiful are the feet of messengers who bring good news!'"
             </p>
-            <p className="text-brand-teal font-semibold">Romans 10:14-15</p>
+            <p className="text-brand-primary dark:text-brand-mint font-semibold font-poppins">Romans 10:14-15</p>
           </div>
         </div>
       </section>
 
       {/* General Donation Section */}
-      <section className="py-20 bg-white dark:bg-gray-900">
+      <section className="py-20 bg-gradient-to-br from-white via-brand-light-mint/10 to-white dark:from-gray-900 dark:via-brand-dark-teal/10 dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="font-playfair text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="font-playfair text-4xl font-bold bg-gradient-to-r from-brand-primary to-brand-dark-teal dark:from-brand-mint dark:to-brand-light-mint bg-clip-text text-transparent mb-4">
               Make a Donation
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8 font-ibm-plex">
               Every contribution, no matter the size, helps us provide free transportation and build stronger church communities.
             </p>
             
             {/* Bible Verse about Generous Giving */}
-            <div className="bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-900/20 dark:to-green-900/20 p-6 rounded-lg max-w-2xl mx-auto mb-8">
-              <Quote className="h-6 w-6 text-brand-green mx-auto mb-3" />
-              <p className="text-gray-700 dark:text-gray-300 italic mb-2">
+            <div className="bg-gradient-to-r from-brand-light-mint/20 to-brand-mint/20 dark:from-brand-dark-teal/20 dark:to-brand-mint/20 p-6 rounded-xl max-w-2xl mx-auto mb-8 border border-brand-light-mint/50 dark:border-brand-mint/30 shadow-lg">
+              <Quote className="h-6 w-6 text-brand-mint dark:text-brand-light-mint mx-auto mb-3" />
+              <p className="text-gray-700 dark:text-gray-300 italic mb-2 font-ibm-plex">
                 "Remember this—a farmer who plants only a few seeds will get a small crop. But the one who plants generously will get a generous crop. For God loves a person who gives cheerfully."
               </p>
-              <p className="text-brand-green font-semibold text-sm">2 Corinthians 9:6-8</p>
+              <p className="text-brand-mint dark:text-brand-light-mint font-semibold text-sm font-poppins">2 Corinthians 9:6-8</p>
             </div>
           </div>
           
           <div className="max-w-2xl mx-auto">
-            <Card className="p-8 dark:bg-gray-800 dark:border-gray-700">
+            <Card className="p-8 dark:bg-gray-800/80 dark:border-gray-700 backdrop-blur-sm border border-brand-light-mint/30 dark:border-brand-mint/30 shadow-xl">
               <CardHeader className="text-center pb-6">
-                <CardTitle className="text-2xl text-gray-900 dark:text-white">Support Our Mission</CardTitle>
-                <CardDescription className="text-gray-600 dark:text-gray-400">
+                <CardTitle className="text-2xl text-gray-900 dark:text-white font-poppins">Support Our Mission</CardTitle>
+                <CardDescription className="text-gray-600 dark:text-gray-400 font-ibm-plex">
                   Select your country and contribute any amount to sponsor Gospool's development
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
                       Select Your Country
                     </label>
                     <Select onValueChange={handleCountryChange}>
-                      <SelectTrigger className="w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                      <SelectTrigger className="w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white border-brand-light-mint/50 focus:border-brand-mint">
                         <SelectValue placeholder="Choose your country" />
                       </SelectTrigger>
                       <SelectContent className="dark:bg-gray-700 dark:border-gray-600">
@@ -145,22 +156,22 @@ const Sponsorship = () => {
                   </div>
                   
                   {selectedCountry && (
-                    <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Currency for {selectedCountry}:</p>
-                      <p className="font-semibold text-gray-900 dark:text-white">{selectedCurrency}</p>
+                    <div className="bg-gradient-to-r from-brand-light-mint/20 to-brand-mint/20 dark:bg-gray-700 p-4 rounded-lg border border-brand-light-mint/50">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-ibm-plex">Currency for {selectedCountry}:</p>
+                      <p className="font-semibold text-gray-900 dark:text-white font-poppins">{selectedCurrency}</p>
                     </div>
                   )}
                 </div>
                 
                 <Button 
-                  className="w-full bg-brand-blue hover:bg-blue-600 text-white py-4 text-lg"
+                  className="w-full bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white py-4 text-lg font-poppins shadow-lg transform hover:scale-105 transition-all duration-300"
                   disabled={!selectedCountry}
                 >
                   Donate Now
                 </Button>
                 
                 <div className="text-center pt-4">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 font-ibm-plex">
                     Secure payments powered by trusted payment processors
                   </p>
                 </div>
