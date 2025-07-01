@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -19,13 +18,42 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [churchDenomination, setChurchDenomination] = useState("");
   const [amount, setAmount] = useState("");
+  const [currency, setCurrency] = useState("");
   const [preferredContact, setPreferredContact] = useState("");
   const { toast } = useToast();
+
+  const currencies = [
+    { value: "NGN", label: "Nigerian Naira (₦)", minimum: "5,000,000" },
+    { value: "USD", label: "US Dollar ($)", minimum: "5,000" },
+    { value: "GBP", label: "British Pound (£)", minimum: "4,000" },
+    { value: "EUR", label: "Euro (€)", minimum: "4,500" },
+    { value: "CAD", label: "Canadian Dollar ($)", minimum: "6,500" },
+  ];
+
+  const getMinimumAmount = (selectedCurrency: string) => {
+    const currencyData = currencies.find(c => c.value === selectedCurrency);
+    return currencyData?.minimum || "5,000";
+  };
+
+  const validateAmount = (amount: string, currency: string) => {
+    if (!currency) return false;
+    
+    const numericAmount = parseFloat(amount.replace(/,/g, ''));
+    const minimumAmounts: { [key: string]: number } = {
+      'NGN': 5000000,
+      'USD': 5000,
+      'GBP': 4000,
+      'EUR': 4500,
+      'CAD': 6500
+    };
+    
+    return numericAmount >= minimumAmounts[currency];
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!fullName || !email || !phone || !amount || !preferredContact) {
+    if (!fullName || !email || !phone || !amount || !currency || !preferredContact) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields.",
@@ -34,11 +62,11 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
       return;
     }
 
-    const amountNumber = parseInt(amount.replace(/,/g, ''));
-    if (amountNumber < 5000000) {
+    if (!validateAmount(amount, currency)) {
+      const selectedCurrency = currencies.find(c => c.value === currency);
       toast({
         title: "Invalid Amount",
-        description: "Minimum amount for board membership is ₦5,000,000.",
+        description: `Minimum amount for board membership is ${selectedCurrency?.label} ${getMinimumAmount(currency)}.`,
         variant: "destructive",
       });
       return;
@@ -60,32 +88,32 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
   };
 
   return (
-    <Card className="max-w-3xl mx-auto p-6 dark:bg-gray-800/80 dark:border-gray-700 backdrop-blur-lg border border-brand-light-mint/30 dark:border-brand-mint/30 shadow-2xl rounded-3xl">
-      <CardHeader className="text-center pb-6">
-        <CardTitle className="text-3xl text-gray-900 dark:text-white font-playfair">Board Membership Application</CardTitle>
-        <CardDescription className="text-lg text-gray-600 dark:text-gray-400 font-ibm-plex">
+    <Card className="max-w-3xl mx-auto p-4 sm:p-6 dark:bg-gray-800/80 dark:border-gray-700 backdrop-blur-lg border border-brand-light-mint/30 dark:border-brand-mint/30 shadow-2xl rounded-2xl sm:rounded-3xl mx-4 sm:mx-auto">
+      <CardHeader className="text-center pb-4 sm:pb-6">
+        <CardTitle className="text-xl sm:text-2xl lg:text-3xl text-gray-900 dark:text-white font-playfair">Board Membership Application</CardTitle>
+        <CardDescription className="text-base sm:text-lg text-gray-600 dark:text-gray-400 font-ibm-plex">
           Join our founding board of sponsors
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <div>
-              <Label htmlFor="fullName" className="text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+              <Label htmlFor="fullName" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
                 Full Name *
               </Label>
               <Input
                 id="fullName"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-lg"
+                className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
                 placeholder="Enter your full name"
                 required
               />
             </div>
 
             <div>
-              <Label htmlFor="email" className="text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+              <Label htmlFor="email" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
                 Email Address *
               </Label>
               <Input
@@ -93,16 +121,16 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-lg"
+                className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
                 placeholder="Enter your email"
                 required
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <div>
-              <Label htmlFor="phone" className="text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+              <Label htmlFor="phone" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
                 Phone Number *
               </Label>
               <Input
@@ -110,14 +138,14 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-lg"
+                className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
                 placeholder="Enter your phone number"
                 required
               />
             </div>
 
             <div>
-              <Label htmlFor="profilePicture" className="text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+              <Label htmlFor="profilePicture" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
                 Profile Picture *
               </Label>
               <Input
@@ -125,59 +153,79 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
                 type="file"
                 accept="image/*"
                 onChange={handleFileChange}
-                className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-lg"
+                className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
                 required
               />
             </div>
           </div>
 
           <div>
-            <Label htmlFor="churchDenomination" className="text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+            <Label htmlFor="churchDenomination" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
               Church Denomination (Optional)
             </Label>
             <Input
               id="churchDenomination"
               value={churchDenomination}
               onChange={(e) => setChurchDenomination(e.target.value)}
-              className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-lg"
+              className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
               placeholder="Enter your church denomination"
             />
           </div>
 
-          <div>
-            <Label htmlFor="amount" className="text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
-              Amount (Minimum ₦5,000,000) *
-            </Label>
-            <Input
-              id="amount"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-lg"
-              placeholder="₦5,000,000"
-              required
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            <div>
+              <Label className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+                Currency *
+              </Label>
+              <Select onValueChange={setCurrency} required>
+                <SelectTrigger className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation">
+                  <SelectValue placeholder="Select currency" />
+                </SelectTrigger>
+                <SelectContent className="dark:bg-gray-700 dark:border-gray-600">
+                  {currencies.map((curr) => (
+                    <SelectItem key={curr.value} value={curr.value} className="dark:text-white text-base sm:text-lg py-3 touch-manipulation">
+                      {curr.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="amount" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+                Amount {currency ? `(Min: ${getMinimumAmount(currency)})` : ''} *
+              </Label>
+              <Input
+                id="amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
+                placeholder={currency ? getMinimumAmount(currency) : "Select currency first"}
+                required
+              />
+            </div>
           </div>
 
           <div>
-            <Label className="text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+            <Label className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
               Preferred Mode of Contact *
             </Label>
             <Select onValueChange={setPreferredContact} required>
-              <SelectTrigger className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-lg">
+              <SelectTrigger className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation">
                 <SelectValue placeholder="Select preferred contact method" />
               </SelectTrigger>
               <SelectContent className="dark:bg-gray-700 dark:border-gray-600">
-                <SelectItem value="email" className="dark:text-white text-lg py-3">Email</SelectItem>
-                <SelectItem value="phone" className="dark:text-white text-lg py-3">Phone</SelectItem>
-                <SelectItem value="whatsapp" className="dark:text-white text-lg py-3">WhatsApp</SelectItem>
+                <SelectItem value="email" className="dark:text-white text-base sm:text-lg py-3 touch-manipulation">Email</SelectItem>
+                <SelectItem value="phone" className="dark:text-white text-base sm:text-lg py-3 touch-manipulation">Phone</SelectItem>
+                <SelectItem value="whatsapp" className="dark:text-white text-base sm:text-lg py-3 touch-manipulation">WhatsApp</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <div className="flex space-x-4 pt-4">
+          <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
             <Button
               type="submit"
-              className="flex-1 bg-gradient-to-r from-brand-blue to-blue-600 hover:from-blue-600 hover:to-brand-blue text-white py-4 text-xl font-poppins font-semibold shadow-2xl rounded-2xl"
+              className="w-full bg-gradient-to-r from-brand-blue to-blue-600 hover:from-blue-600 hover:to-brand-blue text-white py-3 sm:py-4 text-lg sm:text-xl font-poppins font-semibold shadow-2xl rounded-xl sm:rounded-2xl touch-manipulation"
             >
               Submit Application
             </Button>
@@ -185,7 +233,7 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
               type="button"
               variant="outline"
               onClick={onClose}
-              className="flex-1 border-2 border-gray-300 text-gray-700 dark:text-gray-300 py-4 text-xl font-poppins font-semibold rounded-2xl"
+              className="w-full border-2 border-gray-300 text-gray-700 dark:text-gray-300 py-3 sm:py-4 text-lg sm:text-xl font-poppins font-semibold rounded-xl sm:rounded-2xl touch-manipulation"
             >
               Cancel
             </Button>

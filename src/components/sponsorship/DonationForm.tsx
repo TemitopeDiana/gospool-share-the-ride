@@ -26,6 +26,15 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!selectedCountry) {
+      toast({
+        title: "Country Required",
+        description: "Please go back and select your country first.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     if (!fullName || !amount || !isChristian) {
       toast({
         title: "Missing Information",
@@ -57,38 +66,38 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
 
   if (showPayment) {
     return (
-      <Card className="max-w-2xl mx-auto p-6 dark:bg-gray-800/80 dark:border-gray-700 backdrop-blur-lg border border-brand-light-mint/30 dark:border-brand-mint/30 shadow-2xl rounded-3xl">
-        <CardHeader className="text-center pb-6">
-          <CardTitle className="text-2xl text-gray-900 dark:text-white font-playfair">Complete Payment</CardTitle>
-          <CardDescription className="text-lg text-gray-600 dark:text-gray-400 font-ibm-plex">
+      <Card className="max-w-2xl mx-auto p-4 sm:p-6 dark:bg-gray-800/80 dark:border-gray-700 backdrop-blur-lg border border-brand-light-mint/30 dark:border-brand-mint/30 shadow-2xl rounded-2xl sm:rounded-3xl mx-4 sm:mx-auto">
+        <CardHeader className="text-center pb-4 sm:pb-6">
+          <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-white font-playfair">Complete Payment</CardTitle>
+          <CardDescription className="text-base sm:text-lg text-gray-600 dark:text-gray-400 font-ibm-plex">
             Ready to process your donation of {selectedCurrency} {amount}
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="bg-gradient-to-r from-brand-light-mint/30 to-brand-mint/20 dark:bg-gradient-to-r dark:from-gray-700 dark:to-gray-600 p-6 rounded-2xl border border-brand-light-mint/50">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white font-poppins mb-4">Donation Summary</h3>
+        <CardContent className="space-y-4 sm:space-y-6">
+          <div className="bg-gradient-to-r from-brand-light-mint/30 to-brand-mint/20 dark:bg-gradient-to-r dark:from-gray-700 dark:to-gray-600 p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-brand-light-mint/50">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white font-poppins mb-3 sm:mb-4">Donation Summary</h3>
             <div className="space-y-2">
-              <p className="text-gray-600 dark:text-gray-300 font-ibm-plex">
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex">
                 <span className="font-semibold">Name:</span> {isAnonymous ? "Anonymous" : fullName}
               </p>
-              <p className="text-gray-600 dark:text-gray-300 font-ibm-plex">
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex">
                 <span className="font-semibold">Amount:</span> {selectedCurrency} {amount}
               </p>
-              <p className="text-gray-600 dark:text-gray-300 font-ibm-plex">
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex">
                 <span className="font-semibold">Country:</span> {selectedCountry}
               </p>
               {isChristian === "yes" && church && (
-                <p className="text-gray-600 dark:text-gray-300 font-ibm-plex">
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex">
                   <span className="font-semibold">Church:</span> {church}
                 </p>
               )}
             </div>
           </div>
 
-          <div className="flex space-x-4 pt-4">
+          <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
             <Button
               onClick={handlePayment}
-              className="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-600 text-white py-4 text-xl font-poppins font-semibold shadow-2xl rounded-2xl"
+              className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-600 text-white py-3 sm:py-4 text-lg sm:text-xl font-poppins font-semibold shadow-2xl rounded-xl sm:rounded-2xl touch-manipulation"
             >
               Make Payment
             </Button>
@@ -96,7 +105,7 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
               type="button"
               variant="outline"
               onClick={() => setShowPayment(false)}
-              className="flex-1 border-2 border-gray-300 text-gray-700 dark:text-gray-300 py-4 text-xl font-poppins font-semibold rounded-2xl"
+              className="w-full border-2 border-gray-300 text-gray-700 dark:text-gray-300 py-3 sm:py-4 text-lg sm:text-xl font-poppins font-semibold rounded-xl sm:rounded-2xl touch-manipulation"
             >
               Back
             </Button>
@@ -107,31 +116,31 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
   }
 
   return (
-    <Card className="max-w-2xl mx-auto p-6 dark:bg-gray-800/80 dark:border-gray-700 backdrop-blur-lg border border-brand-light-mint/30 dark:border-brand-mint/30 shadow-2xl rounded-3xl">
-      <CardHeader className="text-center pb-6">
-        <CardTitle className="text-2xl text-gray-900 dark:text-white font-playfair">Complete Your Donation</CardTitle>
-        <CardDescription className="text-lg text-gray-600 dark:text-gray-400 font-ibm-plex">
+    <Card className="max-w-2xl mx-auto p-4 sm:p-6 dark:bg-gray-800/80 dark:border-gray-700 backdrop-blur-lg border border-brand-light-mint/30 dark:border-brand-mint/30 shadow-2xl rounded-2xl sm:rounded-3xl mx-4 sm:mx-auto">
+      <CardHeader className="text-center pb-4 sm:pb-6">
+        <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-white font-playfair">Complete Your Donation</CardTitle>
+        <CardDescription className="text-base sm:text-lg text-gray-600 dark:text-gray-400 font-ibm-plex">
           Donating from {selectedCountry} in {selectedCurrency}
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <div>
-            <Label htmlFor="fullName" className="text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+            <Label htmlFor="fullName" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
               Full Name *
             </Label>
             <Input
               id="fullName"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-lg"
+              className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
               placeholder="Enter your full name"
               required
             />
           </div>
 
           <div>
-            <Label htmlFor="amount" className="text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+            <Label htmlFor="amount" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
               Amount to Donate *
             </Label>
             <Input
@@ -139,37 +148,37 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-lg"
+              className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
               placeholder="Enter amount"
               required
             />
           </div>
 
           <div>
-            <Label className="text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+            <Label className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
               Are you a Christian? *
             </Label>
             <Select onValueChange={setIsChristian} required>
-              <SelectTrigger className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-lg">
+              <SelectTrigger className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation">
                 <SelectValue placeholder="Select an option" />
               </SelectTrigger>
               <SelectContent className="dark:bg-gray-700 dark:border-gray-600">
-                <SelectItem value="yes" className="dark:text-white text-lg py-3">Yes</SelectItem>
-                <SelectItem value="no" className="dark:text-white text-lg py-3">No</SelectItem>
+                <SelectItem value="yes" className="dark:text-white text-base sm:text-lg py-3 touch-manipulation">Yes</SelectItem>
+                <SelectItem value="no" className="dark:text-white text-base sm:text-lg py-3 touch-manipulation">No</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {isChristian === "yes" && (
             <div>
-              <Label htmlFor="church" className="text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+              <Label htmlFor="church" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
                 What Church? *
               </Label>
               <Input
                 id="church"
                 value={church}
                 onChange={(e) => setChurch(e.target.value)}
-                className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-lg"
+                className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
                 placeholder="Enter your church name"
                 required={isChristian === "yes"}
               />
@@ -183,15 +192,15 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
               onCheckedChange={(checked) => setIsAnonymous(checked as boolean)}
               className="border-2 border-brand-light-mint/50 data-[state=checked]:bg-brand-mint"
             />
-            <Label htmlFor="anonymous" className="text-lg text-gray-700 dark:text-gray-300 font-poppins">
+            <Label htmlFor="anonymous" className="text-base sm:text-lg text-gray-700 dark:text-gray-300 font-poppins">
               Display my donation anonymously on the website
             </Label>
           </div>
 
-          <div className="flex space-x-4 pt-4">
+          <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
             <Button
               type="submit"
-              className="flex-1 bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white py-4 text-xl font-poppins font-semibold shadow-2xl rounded-2xl"
+              className="w-full bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white py-3 sm:py-4 text-lg sm:text-xl font-poppins font-semibold shadow-2xl rounded-xl sm:rounded-2xl touch-manipulation"
             >
               Continue to Payment
             </Button>
@@ -199,7 +208,7 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
               type="button"
               variant="outline"
               onClick={onClose}
-              className="flex-1 border-2 border-gray-300 text-gray-700 dark:text-gray-300 py-4 text-xl font-poppins font-semibold rounded-2xl"
+              className="w-full border-2 border-gray-300 text-gray-700 dark:text-gray-300 py-3 sm:py-4 text-lg sm:text-xl font-poppins font-semibold rounded-xl sm:rounded-2xl touch-manipulation"
             >
               Cancel
             </Button>

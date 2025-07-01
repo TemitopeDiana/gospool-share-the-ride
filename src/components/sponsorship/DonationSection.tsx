@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState, useEffect } from "react";
 import DonationForm from "./DonationForm";
+import { useToast } from "@/hooks/use-toast";
 
 interface DonationSectionProps {
   shouldAutoOpen?: boolean;
@@ -13,6 +14,7 @@ const DonationSection = ({ shouldAutoOpen }: DonationSectionProps) => {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedCurrency, setSelectedCurrency] = useState("");
   const [showDonationForm, setShowDonationForm] = useState(false);
+  const { toast } = useToast();
   
   const countries = [
     { name: "Nigeria", currency: "NGN (₦)" },
@@ -42,14 +44,20 @@ const DonationSection = ({ shouldAutoOpen }: DonationSectionProps) => {
   };
 
   const handleDonateClick = () => {
-    if (selectedCountry) {
-      setShowDonationForm(true);
+    if (!selectedCountry) {
+      toast({
+        title: "Country Required",
+        description: "Please select your country before proceeding.",
+        variant: "destructive",
+      });
+      return;
     }
+    setShowDonationForm(true);
   };
 
   if (showDonationForm) {
     return (
-      <section className="py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-gray-50 via-white to-brand-light-mint/10 dark:from-gray-900 dark:via-gray-800 dark:to-brand-dark-teal/10">
+      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-gray-50 via-white to-brand-light-mint/10 dark:from-gray-900 dark:via-gray-800 dark:to-brand-dark-teal/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <DonationForm
             selectedCountry={selectedCountry}
@@ -62,38 +70,38 @@ const DonationSection = ({ shouldAutoOpen }: DonationSectionProps) => {
   }
 
   return (
-    <section className="py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-gray-50 via-white to-brand-light-mint/10 dark:from-gray-900 dark:via-gray-800 dark:to-brand-dark-teal/10">
+    <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-gray-50 via-white to-brand-light-mint/10 dark:from-gray-900 dark:via-gray-800 dark:to-brand-dark-teal/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12 sm:mb-16 lg:mb-20">
-          <h2 className="font-playfair text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold bg-gradient-to-r from-brand-primary to-brand-mint dark:from-brand-mint dark:to-brand-light-mint bg-clip-text text-transparent mb-4 sm:mb-6 px-2">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16">
+          <h2 className="font-playfair text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-brand-primary to-brand-mint dark:from-brand-mint dark:to-brand-light-mint bg-clip-text text-transparent mb-3 sm:mb-4 px-2">
             Make a Donation
           </h2>
-          <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto font-ibm-plex leading-relaxed px-4">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto font-ibm-plex leading-relaxed px-4">
             Every contribution, no matter the size, helps us provide free transportation and build stronger church communities.
           </p>
         </div>
         
         <div className="max-w-3xl mx-auto">
-          <Card className="p-6 sm:p-8 lg:p-10 dark:bg-gray-800/80 dark:border-gray-700 backdrop-blur-lg border border-brand-light-mint/30 dark:border-brand-mint/30 shadow-2xl rounded-2xl sm:rounded-3xl mx-4 sm:mx-0">
-            <CardHeader className="text-center pb-6 sm:pb-8">
-              <CardTitle className="text-2xl sm:text-3xl text-gray-900 dark:text-white font-playfair mb-2">Support Our Mission</CardTitle>
-              <CardDescription className="text-base sm:text-lg text-gray-600 dark:text-gray-400 font-ibm-plex">
+          <Card className="p-4 sm:p-6 lg:p-8 dark:bg-gray-800/80 dark:border-gray-700 backdrop-blur-lg border border-brand-light-mint/30 dark:border-brand-mint/30 shadow-2xl rounded-xl sm:rounded-2xl mx-4 sm:mx-0">
+            <CardHeader className="text-center pb-4 sm:pb-6">
+              <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-white font-playfair mb-2">Support Our Mission</CardTitle>
+              <CardDescription className="text-sm sm:text-base text-gray-600 dark:text-gray-400 font-ibm-plex">
                 Select your country and contribute any amount to sponsor Gospool's development
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6 sm:space-y-8">
-              <div className="space-y-4 sm:space-y-6">
+            <CardContent className="space-y-4 sm:space-y-6">
+              <div className="space-y-3 sm:space-y-4">
                 <div>
-                  <label className="block text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 mb-2 sm:mb-3 font-poppins">
-                    Select Your Country
+                  <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
+                    Select Your Country *
                   </label>
                   <Select onValueChange={handleCountryChange} value={selectedCountry}>
-                    <SelectTrigger className="w-full h-12 sm:h-14 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl sm:rounded-2xl text-base sm:text-lg">
+                    <SelectTrigger className="w-full h-12 sm:h-14 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-sm sm:text-base touch-manipulation">
                       <SelectValue placeholder="Choose your country" />
                     </SelectTrigger>
-                    <SelectContent className="dark:bg-gray-700 dark:border-gray-600 rounded-xl sm:rounded-2xl z-50">
+                    <SelectContent className="dark:bg-gray-700 dark:border-gray-600 rounded-xl z-50">
                       {countries.map((country) => (
-                        <SelectItem key={country.name} value={country.name} className="dark:text-white dark:focus:bg-gray-600 text-base sm:text-lg py-2 sm:py-3">
+                        <SelectItem key={country.name} value={country.name} className="dark:text-white dark:focus:bg-gray-600 text-sm sm:text-base py-2 sm:py-3 touch-manipulation">
                           {country.name}
                         </SelectItem>
                       ))}
@@ -102,23 +110,22 @@ const DonationSection = ({ shouldAutoOpen }: DonationSectionProps) => {
                 </div>
                 
                 {selectedCountry && (
-                  <div className="bg-gradient-to-r from-brand-light-mint/30 to-brand-mint/20 dark:bg-gradient-to-r dark:from-gray-700 dark:to-gray-600 p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-brand-light-mint/50">
-                    <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 mb-2 font-ibm-plex">Currency for {selectedCountry}:</p>
-                    <p className="font-bold text-lg sm:text-xl text-gray-900 dark:text-white font-poppins">{selectedCurrency}</p>
+                  <div className="bg-gradient-to-r from-brand-light-mint/30 to-brand-mint/20 dark:bg-gradient-to-r dark:from-gray-700 dark:to-gray-600 p-3 sm:p-4 rounded-xl border border-brand-light-mint/50">
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-1 font-ibm-plex">Currency for {selectedCountry}:</p>
+                    <p className="font-bold text-base sm:text-lg text-gray-900 dark:text-white font-poppins">{selectedCurrency}</p>
                   </div>
                 )}
               </div>
               
               <Button 
-                className="w-full bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white py-4 sm:py-6 text-lg sm:text-xl font-poppins font-semibold shadow-2xl transform hover:scale-105 transition-all duration-300 rounded-xl sm:rounded-2xl"
-                disabled={!selectedCountry}
+                className="w-full bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white py-3 sm:py-4 text-base sm:text-lg font-poppins font-semibold shadow-2xl transform hover:scale-105 transition-all duration-300 rounded-xl touch-manipulation"
                 onClick={handleDonateClick}
               >
                 Donate Now
               </Button>
               
-              <div className="text-center pt-4 sm:pt-6">
-                <p className="text-base sm:text-lg text-gray-500 dark:text-gray-400 font-ibm-plex">
+              <div className="text-center pt-3 sm:pt-4">
+                <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 font-ibm-plex">
                   Secure payments powered by trusted payment processors
                 </p>
               </div>
