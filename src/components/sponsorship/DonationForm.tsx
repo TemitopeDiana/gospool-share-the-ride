@@ -20,6 +20,7 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
   const [isChristian, setIsChristian] = useState("");
   const [church, setChurch] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -43,13 +44,67 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
       return;
     }
 
+    setShowPayment(true);
+  };
+
+  const handlePayment = () => {
     toast({
-      title: "Donation Submitted",
-      description: "Thank you for your generous donation! We'll process it shortly.",
+      title: "Payment Processing",
+      description: "Payment integration coming soon! Thank you for your donation intent.",
     });
-    
     onClose();
   };
+
+  if (showPayment) {
+    return (
+      <Card className="max-w-2xl mx-auto p-6 dark:bg-gray-800/80 dark:border-gray-700 backdrop-blur-lg border border-brand-light-mint/30 dark:border-brand-mint/30 shadow-2xl rounded-3xl">
+        <CardHeader className="text-center pb-6">
+          <CardTitle className="text-2xl text-gray-900 dark:text-white font-playfair">Complete Payment</CardTitle>
+          <CardDescription className="text-lg text-gray-600 dark:text-gray-400 font-ibm-plex">
+            Ready to process your donation of {selectedCurrency} {amount}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="bg-gradient-to-r from-brand-light-mint/30 to-brand-mint/20 dark:bg-gradient-to-r dark:from-gray-700 dark:to-gray-600 p-6 rounded-2xl border border-brand-light-mint/50">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white font-poppins mb-4">Donation Summary</h3>
+            <div className="space-y-2">
+              <p className="text-gray-600 dark:text-gray-300 font-ibm-plex">
+                <span className="font-semibold">Name:</span> {isAnonymous ? "Anonymous" : fullName}
+              </p>
+              <p className="text-gray-600 dark:text-gray-300 font-ibm-plex">
+                <span className="font-semibold">Amount:</span> {selectedCurrency} {amount}
+              </p>
+              <p className="text-gray-600 dark:text-gray-300 font-ibm-plex">
+                <span className="font-semibold">Country:</span> {selectedCountry}
+              </p>
+              {isChristian === "yes" && church && (
+                <p className="text-gray-600 dark:text-gray-300 font-ibm-plex">
+                  <span className="font-semibold">Church:</span> {church}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="flex space-x-4 pt-4">
+            <Button
+              onClick={handlePayment}
+              className="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-600 text-white py-4 text-xl font-poppins font-semibold shadow-2xl rounded-2xl"
+            >
+              Make Payment
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowPayment(false)}
+              className="flex-1 border-2 border-gray-300 text-gray-700 dark:text-gray-300 py-4 text-xl font-poppins font-semibold rounded-2xl"
+            >
+              Back
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="max-w-2xl mx-auto p-6 dark:bg-gray-800/80 dark:border-gray-700 backdrop-blur-lg border border-brand-light-mint/30 dark:border-brand-mint/30 shadow-2xl rounded-3xl">
@@ -138,7 +193,7 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
               type="submit"
               className="flex-1 bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white py-4 text-xl font-poppins font-semibold shadow-2xl rounded-2xl"
             >
-              Submit Donation
+              Continue to Payment
             </Button>
             <Button
               type="button"

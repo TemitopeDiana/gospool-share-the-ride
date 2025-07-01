@@ -1,7 +1,17 @@
 
 import { Quote } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const SponsorshipHero = () => {
+  const { toast } = useToast();
+
+  const handleComingSoon = (buttonName: string) => {
+    toast({
+      title: "Coming Soon!",
+      description: `${buttonName} functionality will be available soon.`,
+    });
+  };
+
   return (
     <section className="relative bg-gradient-to-br from-white via-brand-light-mint/20 to-brand-mint/10 dark:from-gray-900 dark:via-brand-dark-teal/20 dark:to-brand-teal/10 py-32 overflow-hidden">
       {/* Modern geometric background elements */}
@@ -44,10 +54,16 @@ const SponsorshipHero = () => {
         </div>
         
         <div className="flex flex-col sm:flex-row gap-6 justify-center max-w-md mx-auto">
-          <button className="px-8 py-4 bg-gradient-to-r from-brand-primary to-brand-dark-teal text-white rounded-2xl font-poppins font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 border border-brand-dark-teal/20">
+          <button 
+            onClick={() => handleComingSoon("Donate Now")}
+            className="px-8 py-4 bg-gradient-to-r from-brand-primary to-brand-dark-teal text-white rounded-2xl font-poppins font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 border border-brand-dark-teal/20"
+          >
             Donate Now
           </button>
-          <button className="px-8 py-4 bg-white dark:bg-gray-800 text-brand-primary dark:text-brand-mint rounded-2xl font-poppins font-semibold text-lg shadow-xl hover:shadow-2xl border-2 border-brand-mint dark:border-brand-light-mint transform hover:scale-105 transition-all duration-300">
+          <button 
+            onClick={() => handleComingSoon("Join Board")}
+            className="px-8 py-4 bg-white dark:bg-gray-800 text-brand-primary dark:text-brand-mint rounded-2xl font-poppins font-semibold text-lg shadow-xl hover:shadow-2xl border-2 border-brand-mint dark:border-brand-light-mint transform hover:scale-105 transition-all duration-300"
+          >
             Join Board
           </button>
         </div>
