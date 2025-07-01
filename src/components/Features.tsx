@@ -4,34 +4,34 @@ import { Church } from "lucide-react";
 const Features = () => {
   const features = [
     {
-      icon: "🤝",
-      title: "Faith-Based Community",
-      description: "Connect with verified church members and fellow believers for safe, trusted rides."
+      icon: "🙏",
+      title: "Never Miss Church Again",
+      description: "Reliable transportation ensures you can attend every service, bible study, and special program your church offers."
     },
     {
-      icon: "💰",
-      title: "Share the Cost",
-      description: "Split fuel costs fairly while building meaningful relationships along the way."
+      icon: "🆓",
+      title: "Completely Free",
+      description: "No cost to ride! Our platform connects you with church members offering free rides, removing financial barriers to worship."
     },
     {
       icon: "🛡️",
-      title: "Safety First",
-      description: "All drivers are verified church members with background checks and references."
+      title: "Safe & Trusted",
+      description: "Travel with verified church members and fellow believers. Every driver is part of your faith community with proper verification."
+    },
+    {
+      icon: "🤝",
+      title: "Build Lasting Friendships",
+      description: "Form meaningful connections with other church members during your journey. Strengthen fellowship beyond Sunday services."
+    },
+    {
+      icon: "🚌",
+      title: "Church Bus Coordination",
+      description: "Easy coordination for church-provided transportation. Organize group travel for retreats, conferences, and special events."
     },
     {
       icon: "🌱",
-      title: "Eco-Friendly",
-      description: "Reduce carbon footprint by sharing rides and caring for God's creation."
-    },
-    {
-      icon: "📱",
-      title: "Easy to Use",
-      description: "Simple app interface designed for all ages and technical skill levels."
-    },
-    {
-      icon: "⛪",
-      title: "Church Integration",
-      description: "Seamlessly connects with your church directory and event calendar."
+      title: "Eco-Friendly Impact",
+      description: "Reduce traffic and environmental impact by sharing rides. Care for God's creation through community transportation."
     }
   ];
 
@@ -40,11 +40,11 @@ const Features = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="font-playfair text-4xl font-bold text-gray-900 mb-4">
-            Built for Community
+            Bringing the Church Family Together
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Gospool brings together technology and faith to create meaningful connections 
-            while making transportation more accessible and affordable for everyone.
+            Gospool removes transportation barriers and creates opportunities for fellowship, 
+            ensuring every member can participate fully in church life while building stronger community bonds.
           </p>
         </div>
         
