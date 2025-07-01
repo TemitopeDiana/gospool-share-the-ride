@@ -2,12 +2,13 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Quote } from "lucide-react";
 import { useState } from "react";
+import DonationForm from "./DonationForm";
 
 const DonationSection = () => {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedCurrency, setSelectedCurrency] = useState("");
+  const [showDonationForm, setShowDonationForm] = useState(false);
   
   const countries = [
     { name: "Nigeria", currency: "NGN (₦)" },
@@ -27,6 +28,26 @@ const DonationSection = () => {
     const selectedCountryData = countries.find(c => c.name === country);
     setSelectedCurrency(selectedCountryData?.currency || "");
   };
+
+  const handleDonateClick = () => {
+    if (selectedCountry) {
+      setShowDonationForm(true);
+    }
+  };
+
+  if (showDonationForm) {
+    return (
+      <section className="py-24 bg-gradient-to-br from-gray-50 via-white to-brand-light-mint/10 dark:from-gray-900 dark:via-gray-800 dark:to-brand-dark-teal/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <DonationForm
+            selectedCountry={selectedCountry}
+            selectedCurrency={selectedCurrency}
+            onClose={() => setShowDonationForm(false)}
+          />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-24 bg-gradient-to-br from-gray-50 via-white to-brand-light-mint/10 dark:from-gray-900 dark:via-gray-800 dark:to-brand-dark-teal/10">
@@ -79,6 +100,7 @@ const DonationSection = () => {
               <Button 
                 className="w-full bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white py-6 text-xl font-poppins font-semibold shadow-2xl transform hover:scale-105 transition-all duration-300 rounded-2xl"
                 disabled={!selectedCountry}
+                onClick={handleDonateClick}
               >
                 Donate Now
               </Button>

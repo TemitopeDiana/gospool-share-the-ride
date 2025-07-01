@@ -2,13 +2,25 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
+import BoardMemberForm from "./BoardMemberForm";
 
 const BoardMemberSection = () => {
   const [showBoardAmount, setShowBoardAmount] = useState(false);
+  const [showBoardForm, setShowBoardForm] = useState(false);
 
   const boardMembers = [
     { name: "Coming Soon", role: "Be the first board member", amount: "Founding Member" },
   ];
+
+  if (showBoardForm) {
+    return (
+      <section className="py-24 bg-gradient-to-br from-brand-light-mint/20 via-white to-gray-50 dark:from-brand-dark-teal/20 dark:via-gray-800 dark:to-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <BoardMemberForm onClose={() => setShowBoardForm(false)} />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-24 bg-gradient-to-br from-brand-light-mint/20 via-white to-gray-50 dark:from-brand-dark-teal/20 dark:via-gray-800 dark:to-gray-900">
@@ -76,7 +88,10 @@ const BoardMemberSection = () => {
                     <p className="text-4xl font-bold font-poppins mb-2">₦5,000,000</p>
                     <p className="text-lg font-ibm-plex">Minimum contribution for board membership</p>
                   </div>
-                  <Button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-600 text-white px-12 py-4 text-xl font-poppins font-semibold rounded-2xl shadow-xl transform hover:scale-105 transition-all duration-300">
+                  <Button 
+                    onClick={() => setShowBoardForm(true)}
+                    className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-600 text-white px-12 py-4 text-xl font-poppins font-semibold rounded-2xl shadow-xl transform hover:scale-105 transition-all duration-300"
+                  >
                     Join the Board Now
                   </Button>
                 </div>
