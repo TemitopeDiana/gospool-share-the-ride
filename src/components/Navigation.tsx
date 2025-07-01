@@ -86,6 +86,14 @@ const Navigation = () => {
             >
               Sponsorship
             </Link>
+            <Link 
+              to="/impact" 
+              className={`text-gray-700 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary transition-colors font-medium font-ibm-plex ${
+                location.pathname === '/impact' ? 'text-brand-primary' : ''
+              }`}
+            >
+              Gospool Impact
+            </Link>
             <Button
               variant="ghost"
               size="sm"
@@ -143,6 +151,15 @@ const Navigation = () => {
                 }`}
               >
                 Sponsorship
+              </Link>
+              <Link 
+                to="/impact" 
+                onClick={closeMenu}
+                className={`block text-gray-700 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary transition-colors font-medium font-ibm-plex py-2 ${
+                  location.pathname === '/impact' ? 'text-brand-primary' : ''
+                }`}
+              >
+                Gospool Impact
               </Link>
               <Button 
                 className="bg-brand-primary hover:bg-brand-primary/90 text-white w-full mt-4"
