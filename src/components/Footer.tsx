@@ -1,15 +1,24 @@
+
 import { Link } from "react-router-dom";
-import { Church } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-white py-12">
+    <footer className="bg-gray-900 dark:bg-black text-white py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
-            <div className="flex items-center space-x-2 mb-4">
-              <Church className="h-8 w-8 text-brand-blue" />
-              <span className="font-playfair text-2xl font-bold">Gospool</span>
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
+                <div className="w-6 h-6 relative">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <svg viewBox="0 0 24 24" className="w-6 h-6 fill-gray-900">
+                      <path d="M4 4h6v6H4V4zm0 10h6v6H4v-6zm10-10h6v6h-6V4zm0 10h6v6h-6v-6z" fillRule="evenodd" clipRule="evenodd"/>
+                      <circle cx="12" cy="12" r="2" className="fill-white"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <span className="font-playfair text-2xl font-bold">GOSPOOL</span>
             </div>
             <p className="text-gray-400 mb-4 max-w-md">
               Connecting church communities through safe, affordable ride sharing. 
