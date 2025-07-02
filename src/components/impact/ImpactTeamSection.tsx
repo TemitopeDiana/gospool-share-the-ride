@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -60,7 +61,10 @@ const ImpactTeamSection = () => {
       church: "TBD",
       linkedin: "#",
       avatar: ""
-    },
+    }
+  ];
+
+  const boardAdvisors = [
     {
       role: "Board of Advisors",
       name: "Coming Soon",
@@ -126,8 +130,17 @@ const ImpactTeamSection = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-12">
           {teamMembers.map((member, index) => renderTeamMember(member, index))}
+        </div>
+
+        <div className="mb-8 sm:mb-12">
+          <h3 className="font-playfair text-xl sm:text-2xl lg:text-3xl font-bold text-center bg-gradient-to-r from-brand-primary to-brand-mint dark:from-brand-mint dark:to-brand-light-mint bg-clip-text text-transparent mb-6 sm:mb-8">
+            Board of Advisors
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
+            {boardAdvisors.map((advisor, index) => renderTeamMember(advisor, index))}
+          </div>
         </div>
 
         <div className="text-center mt-8 sm:mt-12">
