@@ -20,6 +20,8 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
   const [amount, setAmount] = useState("");
   const [currency, setCurrency] = useState("");
   const [preferredContact, setPreferredContact] = useState("");
+  const [memberType, setMemberType] = useState("individual");
+  const [organizationName, setOrganizationName] = useState("");
   const { toast } = useToast();
 
   const currencies = [
@@ -53,7 +55,7 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!fullName || !email || !phone || !amount || !currency || !preferredContact) {
+    if (!fullName || !email || !phone || !amount || !currency || !preferredContact || (memberType === "organization" && !organizationName)) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields.",
@@ -97,6 +99,37 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+          <div>
+            <Label className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+              Member Type *
+            </Label>
+            <Select onValueChange={setMemberType} value={memberType} required>
+              <SelectTrigger className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation">
+                <SelectValue placeholder="Select member type" />
+              </SelectTrigger>
+              <SelectContent className="dark:bg-gray-700 dark:border-gray-600">
+                <SelectItem value="individual" className="dark:text-white text-base sm:text-lg py-3 touch-manipulation">Individual</SelectItem>
+                <SelectItem value="organization" className="dark:text-white text-base sm:text-lg py-3 touch-manipulation">Organization</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {memberType === "organization" && (
+            <div>
+              <Label htmlFor="organizationName" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+                Organization Name *
+              </Label>
+              <Input
+                id="organizationName"
+                value={organizationName}
+                onChange={(e) => setOrganizationName(e.target.value)}
+                className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
+                placeholder="Enter organization name"
+                required={memberType === "organization"}
+              />
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <Label htmlFor="fullName" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">

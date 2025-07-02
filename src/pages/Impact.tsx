@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import ImpactHero from "@/components/impact/ImpactHero";
 import ProjectsSection from "@/components/impact/ProjectsSection";
 import NewsSection from "@/components/impact/NewsSection";
-import InitiativesSection from "@/components/impact/InitiativesSection";
+import ImpactTeamSection from "@/components/impact/ImpactTeamSection";
 import { Toaster } from "@/components/ui/toaster";
 
 const Impact = () => {
@@ -14,7 +14,7 @@ const Impact = () => {
       <ImpactHero />
       <ProjectsSection />
       <NewsSection />
-      <InitiativesSection />
+      <ImpactTeamSection />
       <Footer />
       <Toaster />
     </div>
