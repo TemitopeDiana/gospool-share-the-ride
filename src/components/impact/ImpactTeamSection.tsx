@@ -10,48 +10,70 @@ const ImpactTeamSection = () => {
       name: "Coming Soon",
       church: "TBD",
       linkedin: "#",
-      avatar: "",
-      count: 1
+      avatar: ""
     },
     {
       role: "Product Manager",
       name: "Coming Soon",
       church: "TBD", 
       linkedin: "#",
-      avatar: "",
-      count: 1
+      avatar: ""
     },
     {
       role: "Full Stack Developer",
       name: "Coming Soon",
       church: "TBD",
       linkedin: "#",
-      avatar: "",
-      count: 3
+      avatar: ""
+    },
+    {
+      role: "Full Stack Developer",
+      name: "Coming Soon",
+      church: "TBD",
+      linkedin: "#",
+      avatar: ""
+    },
+    {
+      role: "Full Stack Developer",
+      name: "Coming Soon",
+      church: "TBD",
+      linkedin: "#",
+      avatar: ""
     },
     {
       role: "Mobile Developer",
       name: "Coming Soon",
       church: "TBD",
       linkedin: "#",
-      avatar: "",
-      count: 2
+      avatar: ""
+    },
+    {
+      role: "Mobile Developer",
+      name: "Coming Soon",
+      church: "TBD",
+      linkedin: "#",
+      avatar: ""
     },
     {
       role: "UI/UX Designer",
       name: "Coming Soon",
       church: "TBD",
       linkedin: "#",
-      avatar: "",
-      count: 1
+      avatar: ""
     },
     {
       role: "Board of Advisors",
       name: "Coming Soon",
       church: "TBD",
       linkedin: "#",
-      avatar: "",
-      count: 2
+      avatar: ""
+    },
+    {
+      role: "Board of Advisors",
+      name: "Coming Soon",
+      church: "TBD",
+      linkedin: "#",
+      avatar: ""
     }
   ];
 
@@ -78,11 +100,6 @@ const ImpactTeamSection = () => {
           <p className="text-sm text-gray-600 dark:text-gray-400 font-ibm-plex">
             <span className="font-medium">Church:</span> {member.church}
           </p>
-          {member.count > 1 && (
-            <p className="text-xs text-brand-blue dark:text-brand-mint font-medium font-poppins">
-              {member.count} positions available
-            </p>
-          )}
         </div>
         <Button
           size="sm"
