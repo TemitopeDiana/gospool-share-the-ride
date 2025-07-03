@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
@@ -5,12 +6,16 @@ import { AdminDataTable } from '@/components/admin/AdminDataTable';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { Database } from '@/integrations/supabase/types';
+import { Button } from '@/components/ui/button';
+import { Eye, EyeOff } from 'lucide-react';
+import { useState } from 'react';
 
 type DonationStatus = Database['public']['Enums']['donation_status'];
 
 export const DonationsPage = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [showAnonymousDetails, setShowAnonymousDetails] = useState(false);
 
   const { data: donations = [], isLoading } = useQuery({
     queryKey: ['admin-donations'],
@@ -54,12 +59,32 @@ export const DonationsPage = () => {
     {
       key: 'donor_name',
       label: 'Donor Name',
-      render: (value: string, row: any) => row.is_anonymous ? 'Anonymous' : (value || 'N/A'),
+      render: (value: string, row: any) => {
+        if (row.is_anonymous && !showAnonymousDetails) {
+          return 'Anonymous';
+        }
+        return value || 'N/A';
+      },
     },
     {
       key: 'donor_email',
       label: 'Email',
-      render: (value: string, row: any) => row.is_anonymous ? 'Hidden' : (value || 'N/A'),
+      render: (value: string, row: any) => {
+        if (row.is_anonymous && !showAnonymousDetails) {
+          return 'Hidden';
+        }
+        return value || 'N/A';
+      },
+    },
+    {
+      key: 'donor_phone',
+      label: 'Phone',
+      render: (value: string, row: any) => {
+        if (row.is_anonymous && !showAnonymousDetails) {
+          return 'Hidden';
+        }
+        return value || 'N/A';
+      },
     },
     {
       key: 'amount',
@@ -70,6 +95,11 @@ export const DonationsPage = () => {
       key: 'created_at',
       label: 'Date',
       render: (value: string) => format(new Date(value), 'MMM dd, yyyy'),
+    },
+    {
+      key: 'is_anonymous',
+      label: 'Anonymous',
+      render: (value: boolean) => value ? 'Yes' : 'No',
     },
     {
       key: 'message',
@@ -100,9 +130,19 @@ export const DonationsPage = () => {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Donations</h1>
-          <p className="text-gray-600">Manage all donations and contributions</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Donations</h1>
+            <p className="text-gray-600">Manage all donations and contributions</p>
+          </div>
+          <Button
+            onClick={() => setShowAnonymousDetails(!showAnonymousDetails)}
+            variant={showAnonymousDetails ? "default" : "outline"}
+            className="flex items-center gap-2"
+          >
+            {showAnonymousDetails ? <EyeOff size={16} /> : <Eye size={16} />}
+            {showAnonymousDetails ? 'Hide' : 'Show'} Anonymous Details
+          </Button>
         </div>
 
         <AdminDataTable

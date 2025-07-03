@@ -1,5 +1,5 @@
 
-import { useEffect } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { usePaystackPayment } from '@/hooks/usePaystackPayment';
 import { useToast } from '@/hooks/use-toast';
 
@@ -40,24 +40,36 @@ const PaystackPayment = ({
 }: PaystackPaymentProps) => {
   const { initializePayment, verifyPayment, isLoading } = usePaystackPayment();
   const { toast } = useToast();
+  const paymentInitialized = useRef(false);
 
-  useEffect(() => {
-    // Load Paystack script
-    const script = document.createElement('script');
-    script.src = 'https://js.paystack.co/v1/inline.js';
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      // Clean up script
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-    };
-  }, []);
-
-  const handlePayment = async () => {
+  const handlePaymentSuccess = useCallback(async (response: any) => {
     try {
+      await verifyPayment(response.reference);
+      toast({
+        title: "Payment Successful!",
+        description: "Thank you for your donation. Your payment has been processed successfully.",
+      });
+      onSuccess();
+    } catch (error) {
+      console.error('Payment verification failed:', error);
+      onError('Payment verification failed');
+    }
+  }, [verifyPayment, toast, onSuccess, onError]);
+
+  const handlePaymentClose = useCallback(() => {
+    toast({
+      title: "Payment Cancelled",
+      description: "You have cancelled the payment process.",
+      variant: "destructive",
+    });
+  }, [toast]);
+
+  const handlePayment = useCallback(async () => {
+    if (paymentInitialized.current) return;
+    
+    try {
+      paymentInitialized.current = true;
+      
       const paymentData = await initializePayment({
         amount,
         email,
@@ -70,9 +82,9 @@ const PaystackPayment = ({
       });
 
       const handler = window.PaystackPop.setup({
-        key: 'pk_live_1030aa73b63d2d22a4d02071a506a328de4ab853', // Replace with your actual Paystack public key
+        key: 'pk_live_1030aa73b63d2d22a4d02071a506a328de4ab853',
         email,
-        amount: Math.round(amount * 100), // Convert to kobo
+        amount: Math.round(amount * 100),
         currency,
         ref: paymentData.reference,
         metadata: {
@@ -82,48 +94,55 @@ const PaystackPayment = ({
           church,
           is_christian: isChristian,
         },
-        callback: async (response: any) => {
-          try {
-            await verifyPayment(response.reference);
-            toast({
-              title: "Payment Successful!",
-              description: "Thank you for your donation. Your payment has been processed successfully.",
-            });
-            onSuccess();
-          } catch (error) {
-            console.error('Payment verification failed:', error);
-            onError('Payment verification failed');
-          }
-        },
-        onClose: () => {
-          toast({
-            title: "Payment Cancelled",
-            description: "You have cancelled the payment process.",
-            variant: "destructive",
-          });
-        },
+        callback: handlePaymentSuccess,
+        onClose: handlePaymentClose,
       });
 
       handler.openIframe();
     } catch (error) {
       console.error('Payment error:', error);
+      paymentInitialized.current = false;
       onError(error.message || 'Payment failed');
     }
-  };
+  }, [
+    amount,
+    email,
+    donorName,
+    phone,
+    currency,
+    isAnonymous,
+    church,
+    isChristian,
+    initializePayment,
+    handlePaymentSuccess,
+    handlePaymentClose,
+    onError
+  ]);
 
   useEffect(() => {
-    // Only attempt payment if Paystack is loaded
-    const attemptPayment = () => {
-      if (window.PaystackPop) {
-        handlePayment();
-      } else {
-        // Retry after a short delay if Paystack isn't loaded yet
-        setTimeout(attemptPayment, 500);
+    const script = document.createElement('script');
+    script.src = 'https://js.paystack.co/v1/inline.js';
+    script.async = true;
+    script.onload = () => {
+      // Wait a bit for Paystack to be fully initialized
+      setTimeout(() => {
+        if (window.PaystackPop && !paymentInitialized.current) {
+          handlePayment();
+        }
+      }, 100);
+    };
+    script.onerror = () => {
+      onError('Failed to load payment processor');
+    };
+    
+    document.body.appendChild(script);
+
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
       }
     };
-
-    attemptPayment();
-  }, []);
+  }, [handlePayment, onError]);
 
   if (isLoading) {
     return (
