@@ -21,7 +21,7 @@ serve(async (req) => {
     const { amount, email, donorName, phone, currency = 'NGN', isAnonymous = false, church = '', isChristian = '' } = await req.json()
 
     if (!amount || !email) {
-      throw new Error('Missing required fields: amount and email')
+      throw new Error('Missing required fields: amount and email ')
     }
 
     // Generate unique reference
