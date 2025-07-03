@@ -17,6 +17,7 @@ import { TeamPage } from "./pages/admin/TeamPage";
 import { AdvisorsPage } from "./pages/admin/AdvisorsPage";
 import { SponsorsPage } from "./pages/admin/SponsorsPage";
 import { ApplicationsPage } from "./pages/admin/ApplicationsPage";
+import { AdminUsersPage } from "./pages/admin/AdminUsersPage";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +43,7 @@ const App = () => (
           <Route path="/admin/advisors" element={<AdvisorsPage />} />
           <Route path="/admin/sponsors" element={<SponsorsPage />} />
           <Route path="/admin/applications" element={<ApplicationsPage />} />
+          <Route path="/admin/users" element={<AdminUsersPage />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

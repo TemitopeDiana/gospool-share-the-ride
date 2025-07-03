@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
@@ -20,7 +19,7 @@ export const TeamMemberForm = ({ member, onClose, onSuccess }: TeamMemberFormPro
   const [formData, setFormData] = useState({
     name: '',
     role: '',
-    team_role: 'member',
+    team_role: '',
     bio: '',
     email: '',
     linkedin_url: '',
@@ -36,7 +35,7 @@ export const TeamMemberForm = ({ member, onClose, onSuccess }: TeamMemberFormPro
       setFormData({
         name: member.name || '',
         role: member.role || '',
-        team_role: member.team_role || 'member',
+        team_role: member.team_role || '',
         bio: member.bio || '',
         email: member.email || '',
         linkedin_url: member.linkedin_url || '',
@@ -128,17 +127,12 @@ export const TeamMemberForm = ({ member, onClose, onSuccess }: TeamMemberFormPro
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="team_role">Team Role</Label>
-              <Select value={formData.team_role} onValueChange={(value) => setFormData({ ...formData, team_role: value })}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="member">Member</SelectItem>
-                  <SelectItem value="manager">Manager</SelectItem>
-                  <SelectItem value="support">Support</SelectItem>
-                  <SelectItem value="compliance">Compliance</SelectItem>
-                </SelectContent>
-              </Select>
+              <Input
+                id="team_role"
+                value={formData.team_role}
+                onChange={(e) => setFormData({ ...formData, team_role: e.target.value })}
+                placeholder="e.g., Technical Lead, Strategy Expert, Design Lead"
+              />
             </div>
 
             <div className="space-y-2">
