@@ -40,7 +40,7 @@ const BoardMemberSection = ({ shouldAutoOpen }: BoardMemberSectionProps) => {
             Impact Sponsors
           </h2>
           <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto font-ibm-plex leading-relaxed px-4">
-            Join our exclusive community of visionary impact sponsors who are making a transformational impact on church communities across Nigeria and beyond.
+            Join our exclusive community of visionary impact sponsors making a transformational difference in Christian communities across Nigeria and beyond. Whether you're an individual, church, or organization, your partnership enables us to break down transportation barriers and strengthen faith communities.
           </p>
         </div>
         
@@ -53,7 +53,7 @@ const BoardMemberSection = ({ shouldAutoOpen }: BoardMemberSectionProps) => {
                 Become an Impact Sponsor
               </CardTitle>
               <CardDescription className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-300 font-ibm-plex px-2">
-                Join our founding community of impact sponsors and shape the future of church transportation
+                Join our founding community of impact sponsors and shape the future of church transportation. Individuals, churches, and organizations are all welcome to contribute and make a lasting impact.
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center space-y-4 sm:space-y-6">
@@ -63,11 +63,11 @@ const BoardMemberSection = ({ shouldAutoOpen }: BoardMemberSectionProps) => {
                   <ul className="text-left space-y-1 sm:space-y-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-ibm-plex">
                     <li className="flex items-start space-x-2 sm:space-x-3">
                       <div className="w-2 h-2 bg-brand-mint rounded-full mt-2 flex-shrink-0"></div>
-                      <span>Permanent recognition on our website and app</span>
+                      <span>Permanent recognition on our website</span>
                     </li>
                     <li className="flex items-start space-x-2 sm:space-x-3">
                       <div className="w-2 h-2 bg-brand-mint rounded-full mt-2 flex-shrink-0"></div>
-                      <span>Quarterly impact reports and updates</span>
+                      <span>Biannual impact reports and updates</span>
                     </li>
                     <li className="flex items-start space-x-2 sm:space-x-3">
                       <div className="w-2 h-2 bg-brand-mint rounded-full mt-2 flex-shrink-0"></div>
@@ -79,7 +79,7 @@ const BoardMemberSection = ({ shouldAutoOpen }: BoardMemberSectionProps) => {
                     </li>
                     <li className="flex items-start space-x-2 sm:space-x-3">
                       <div className="w-2 h-2 bg-brand-mint rounded-full mt-2 flex-shrink-0"></div>
-                      <span>Annual appreciation event invitation</span>
+                      <span>Priority access to all features and offerings of the platform and many more</span>
                     </li>
                   </ul>
                 </div>

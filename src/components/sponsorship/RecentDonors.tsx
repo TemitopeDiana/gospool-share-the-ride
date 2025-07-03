@@ -8,38 +8,76 @@ const RecentDonors = () => {
     { name: "Sarah Johnson", amount: "₦100,000", date: "2024-12-26", isAnonymous: false },
     { name: "Anonymous", amount: "₦75,000", date: "2024-12-25", isAnonymous: true },
     { name: "Michael Brown", amount: "₦30,000", date: "2024-12-24", isAnonymous: false },
+    { name: "Grace Chapel", amount: "₦150,000", date: "2024-12-23", isAnonymous: false },
+    { name: "David Wilson", amount: "₦45,000", date: "2024-12-22", isAnonymous: false },
+    { name: "Anonymous", amount: "₦60,000", date: "2024-12-21", isAnonymous: true },
+    { name: "Faith Community", amount: "₦200,000", date: "2024-12-20", isAnonymous: false },
+    { name: "Mary Okafor", amount: "₦35,000", date: "2024-12-19", isAnonymous: false },
+    { name: "Anonymous", amount: "₦80,000", date: "2024-12-18", isAnonymous: true },
+    { name: "Peter Adebayo", amount: "₦40,000", date: "2024-12-17", isAnonymous: false },
+    { name: "Hope Church", amount: "₦120,000", date: "2024-12-16", isAnonymous: false },
+    { name: "Anonymous", amount: "₦55,000", date: "2024-12-15", isAnonymous: true },
+    { name: "Ruth Ogbonna", amount: "₦65,000", date: "2024-12-14", isAnonymous: false },
+    { name: "Samuel Eze", amount: "₦90,000", date: "2024-12-13", isAnonymous: false },
+    { name: "Anonymous", amount: "₦70,000", date: "2024-12-12", isAnonymous: true },
+    { name: "Victory Assembly", amount: "₦180,000", date: "2024-12-11", isAnonymous: false },
+    { name: "James Uche", amount: "₦50,000", date: "2024-12-10", isAnonymous: false },
+    { name: "Anonymous", amount: "₦95,000", date: "2024-12-09", isAnonymous: true },
   ];
 
   return (
     <section className="py-16 bg-gradient-to-br from-white via-brand-light-mint/10 to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-brand-dark-teal/10">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <Card className="dark:bg-gray-800/80 dark:border-gray-700 rounded-3xl shadow-2xl border border-brand-light-mint/30">
-          <CardHeader className="text-center pb-8">
-            <CardTitle className="text-3xl text-gray-900 dark:text-white mb-4 font-playfair">
+          <CardHeader className="text-center pb-6">
+            <CardTitle className="text-2xl lg:text-3xl text-gray-900 dark:text-white mb-3 font-playfair">
               Recent Donors
             </CardTitle>
-            <CardDescription className="text-xl text-gray-600 dark:text-gray-300 font-ibm-plex">
+            <CardDescription className="text-lg text-gray-600 dark:text-gray-300 font-ibm-plex">
               Thank you to our generous supporters
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {recentDonors.map((donor, index) => (
-                <div key={index} className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-brand-light-mint/10 dark:from-gray-700 dark:to-gray-600 rounded-2xl">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-dark-teal rounded-full flex items-center justify-center text-white font-bold text-lg font-poppins shadow-lg">
-                      {donor.name.charAt(0)}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* First column - 10 donors */}
+              <div className="space-y-2">
+                {recentDonors.slice(0, 10).map((donor, index) => (
+                  <div key={index} className="flex items-center justify-between p-2 bg-gradient-to-r from-gray-50 to-brand-light-mint/10 dark:from-gray-700 dark:to-gray-600 rounded-lg">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-dark-teal rounded-full flex items-center justify-center text-white font-bold text-xs font-poppins shadow-lg flex-shrink-0">
+                        {donor.name.charAt(0)}
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="font-semibold text-sm text-gray-900 dark:text-white font-poppins truncate">{donor.name}</h4>
+                        <p className="text-xs text-gray-600 dark:text-gray-300 font-ibm-plex">{donor.date}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-lg text-gray-900 dark:text-white font-poppins">{donor.name}</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-300 font-ibm-plex">{donor.date}</p>
+                    <div className="text-right">
+                      <p className="font-bold text-sm text-brand-primary dark:text-brand-mint font-poppins">{donor.amount}</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-bold text-lg text-brand-primary dark:text-brand-mint font-poppins">{donor.amount}</p>
+                ))}
+              </div>
+              
+              {/* Second column - 10 donors */}
+              <div className="space-y-2">
+                {recentDonors.slice(10, 20).map((donor, index) => (
+                  <div key={index + 10} className="flex items-center justify-between p-2 bg-gradient-to-r from-gray-50 to-brand-light-mint/10 dark:from-gray-700 dark:to-gray-600 rounded-lg">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-dark-teal rounded-full flex items-center justify-center text-white font-bold text-xs font-poppins shadow-lg flex-shrink-0">
+                        {donor.name.charAt(0)}
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="font-semibold text-sm text-gray-900 dark:text-white font-poppins truncate">{donor.name}</h4>
+                        <p className="text-xs text-gray-600 dark:text-gray-300 font-ibm-plex">{donor.date}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold text-sm text-brand-primary dark:text-brand-mint font-poppins">{donor.amount}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </CardContent>
         </Card>
