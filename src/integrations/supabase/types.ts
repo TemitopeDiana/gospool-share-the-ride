@@ -9,6 +9,36 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      admin_permissions: {
+        Row: {
+          can_edit: boolean | null
+          can_view: boolean | null
+          created_at: string | null
+          id: string
+          permission_type: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          can_edit?: boolean | null
+          can_view?: boolean | null
+          created_at?: string | null
+          id?: string
+          permission_type: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          can_edit?: boolean | null
+          can_view?: boolean | null
+          created_at?: string | null
+          id?: string
+          permission_type?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       board_advisors: {
         Row: {
           bio: string | null
@@ -200,6 +230,7 @@ export type Database = {
           category: string | null
           content: string
           created_at: string | null
+          created_by: string | null
           excerpt: string | null
           id: string
           image_url: string | null
@@ -207,12 +238,14 @@ export type Database = {
           published_at: string | null
           title: string
           updated_at: string | null
+          updated_by: string | null
         }
         Insert: {
           author_name?: string | null
           category?: string | null
           content: string
           created_at?: string | null
+          created_by?: string | null
           excerpt?: string | null
           id?: string
           image_url?: string | null
@@ -220,12 +253,14 @@ export type Database = {
           published_at?: string | null
           title: string
           updated_at?: string | null
+          updated_by?: string | null
         }
         Update: {
           author_name?: string | null
           category?: string | null
           content?: string
           created_at?: string | null
+          created_by?: string | null
           excerpt?: string | null
           id?: string
           image_url?: string | null
@@ -233,6 +268,7 @@ export type Database = {
           published_at?: string | null
           title?: string
           updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: []
       }
@@ -240,6 +276,7 @@ export type Database = {
         Row: {
           budget: number | null
           created_at: string | null
+          created_by: string | null
           description: string | null
           end_date: string | null
           id: string
@@ -250,10 +287,12 @@ export type Database = {
           status: string | null
           title: string
           updated_at: string | null
+          updated_by: string | null
         }
         Insert: {
           budget?: number | null
           created_at?: string | null
+          created_by?: string | null
           description?: string | null
           end_date?: string | null
           id?: string
@@ -264,10 +303,12 @@ export type Database = {
           status?: string | null
           title: string
           updated_at?: string | null
+          updated_by?: string | null
         }
         Update: {
           budget?: number | null
           created_at?: string | null
+          created_by?: string | null
           description?: string | null
           end_date?: string | null
           id?: string
@@ -278,6 +319,7 @@ export type Database = {
           status?: string | null
           title?: string
           updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: []
       }
@@ -395,6 +437,7 @@ export type Database = {
           name: string
           order_index: number | null
           role: string
+          team_role: string | null
           updated_at: string | null
         }
         Insert: {
@@ -408,6 +451,7 @@ export type Database = {
           name: string
           order_index?: number | null
           role: string
+          team_role?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -421,6 +465,7 @@ export type Database = {
           name?: string
           order_index?: number | null
           role?: string
+          team_role?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -451,6 +496,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      has_permission: {
+        Args: { _user_id: string; _permission_type: string; _action: string }
+        Returns: boolean
+      }
       is_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
