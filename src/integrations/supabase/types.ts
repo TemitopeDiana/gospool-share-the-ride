@@ -311,6 +311,50 @@ export type Database = {
         }
         Relationships: []
       }
+      paystack_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          donation_id: string | null
+          id: string
+          paystack_response: Json | null
+          reference: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          donation_id?: string | null
+          id?: string
+          paystack_response?: Json | null
+          reference: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          donation_id?: string | null
+          id?: string
+          paystack_response?: Json | null
+          reference?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paystack_transactions_donation_id_fkey"
+            columns: ["donation_id"]
+            isOneToOne: false
+            referencedRelation: "donations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           budget: number | null
