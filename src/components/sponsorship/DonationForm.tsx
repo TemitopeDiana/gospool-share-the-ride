@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import PaystackPayment from "./PaystackPayment";
 
 interface DonationFormProps {
   selectedCountry: string;
@@ -58,12 +58,21 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
     setShowPayment(true);
   };
 
-  const handlePayment = () => {
+  const handlePaymentSuccess = () => {
     toast({
-      title: "Payment Processing",
-      description: "Payment integration coming soon! Thank you for your donation intent.",
+      title: "Donation Successful!",
+      description: "Thank you for your generous donation. You will receive a confirmation email shortly.",
     });
     onClose();
+  };
+
+  const handlePaymentError = (error: string) => {
+    toast({
+      title: "Payment Failed",
+      description: error,
+      variant: "destructive",
+    });
+    setShowPayment(false);
   };
 
   if (showPayment) {
@@ -72,50 +81,30 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
         <CardHeader className="text-center pb-4 sm:pb-6">
           <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-white font-playfair">Complete Payment</CardTitle>
           <CardDescription className="text-base sm:text-lg text-gray-600 dark:text-gray-400 font-ibm-plex">
-            Ready to process your donation of {selectedCurrency} {amount}
+            Processing your donation of {selectedCurrency} {amount}
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4 sm:space-y-6">
-          <div className="bg-gradient-to-r from-brand-light-mint/30 to-brand-mint/20 dark:bg-gradient-to-r dark:from-gray-700 dark:to-gray-600 p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-brand-light-mint/50">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white font-poppins mb-3 sm:mb-4">Donation Summary</h3>
-            <div className="space-y-2">
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex">
-                <span className="font-semibold">Name:</span> {isAnonymous ? "Anonymous" : fullName}
-              </p>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex">
-                <span className="font-semibold">Email:</span> {email}
-              </p>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex">
-                <span className="font-semibold">Phone:</span> {phone}
-              </p>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex">
-                <span className="font-semibold">Amount:</span> {selectedCurrency} {amount}
-              </p>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex">
-                <span className="font-semibold">Country:</span> {selectedCountry}
-              </p>
-              {isChristian === "yes" && church && (
-                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex">
-                  <span className="font-semibold">Church:</span> {church}
-                </p>
-              )}
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
-            <Button
-              onClick={handlePayment}
-              className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-600 text-white py-3 sm:py-4 text-lg sm:text-xl font-poppins font-semibold shadow-2xl rounded-xl sm:rounded-2xl touch-manipulation"
-            >
-              Make Payment
-            </Button>
+        <CardContent>
+          <PaystackPayment
+            amount={parseFloat(amount)}
+            email={email}
+            donorName={fullName}
+            phone={phone}
+            currency={selectedCurrency.split(' ')[0]} // Extract currency code (NGN from "NGN (₦)")
+            isAnonymous={isAnonymous}
+            church={church}
+            isChristian={isChristian}
+            onSuccess={handlePaymentSuccess}
+            onError={handlePaymentError}
+          />
+          <div className="flex justify-center mt-6">
             <Button
               type="button"
               variant="outline"
               onClick={() => setShowPayment(false)}
-              className="w-full border-2 border-gray-300 text-gray-700 dark:text-gray-300 py-3 sm:py-4 text-lg sm:text-xl font-poppins font-semibold rounded-xl sm:rounded-2xl touch-manipulation"
+              className="border-2 border-gray-300 text-gray-700 dark:text-gray-300 py-3 px-6 text-lg font-poppins font-semibold rounded-xl touch-manipulation"
             >
-              Back
+              Cancel Payment
             </Button>
           </div>
         </CardContent>
