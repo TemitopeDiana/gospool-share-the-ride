@@ -1,10 +1,12 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { AdminDataTable } from '@/components/admin/AdminDataTable';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
+import { Database } from '@/integrations/supabase/types';
+
+type DonationStatus = Database['public']['Enums']['donation_status'];
 
 export const DonationsPage = () => {
   const { toast } = useToast();
@@ -24,7 +26,7 @@ export const DonationsPage = () => {
   });
 
   const updateStatusMutation = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+    mutationFn: async ({ id, status }: { id: string; status: DonationStatus }) => {
       const { error } = await supabase
         .from('donations')
         .update({ status })
@@ -77,11 +79,11 @@ export const DonationsPage = () => {
   ];
 
   const handleApprove = (donation: any) => {
-    updateStatusMutation.mutate({ id: donation.id, status: 'completed' });
+    updateStatusMutation.mutate({ id: donation.id, status: 'completed' as DonationStatus });
   };
 
   const handleReject = (donation: any) => {
-    updateStatusMutation.mutate({ id: donation.id, status: 'failed' });
+    updateStatusMutation.mutate({ id: donation.id, status: 'failed' as DonationStatus });
   };
 
   if (isLoading) {

@@ -1,10 +1,12 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { AdminDataTable } from '@/components/admin/AdminDataTable';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
+import { Database } from '@/integrations/supabase/types';
+
+type ApplicationStatus = Database['public']['Enums']['application_status'];
 
 export const SponsorshipsPage = () => {
   const { toast } = useToast();
@@ -24,7 +26,7 @@ export const SponsorshipsPage = () => {
   });
 
   const updateStatusMutation = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+    mutationFn: async ({ id, status }: { id: string; status: ApplicationStatus }) => {
       const { error } = await supabase
         .from('sponsorship_applications')
         .update({ status })
@@ -79,7 +81,7 @@ export const SponsorshipsPage = () => {
   ];
 
   const handleApprove = async (application: any) => {
-    updateStatusMutation.mutate({ id: application.id, status: 'approved' });
+    updateStatusMutation.mutate({ id: application.id, status: 'approved' as ApplicationStatus });
     
     // Create impact sponsor record
     const { error } = await supabase
@@ -98,7 +100,7 @@ export const SponsorshipsPage = () => {
   };
 
   const handleReject = (application: any) => {
-    updateStatusMutation.mutate({ id: application.id, status: 'rejected' });
+    updateStatusMutation.mutate({ id: application.id, status: 'rejected' as ApplicationStatus });
   };
 
   if (isLoading) {
