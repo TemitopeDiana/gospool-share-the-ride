@@ -9,24 +9,24 @@ interface BoardMemberSectionProps {
 }
 
 const BoardMemberSection = ({ shouldAutoOpen }: BoardMemberSectionProps) => {
-  const [showBoardAmount, setShowBoardAmount] = useState(false);
-  const [showBoardForm, setShowBoardForm] = useState(false);
+  const [showSponsorAmount, setShowSponsorAmount] = useState(false);
+  const [showSponsorForm, setShowSponsorForm] = useState(false);
 
-  const boardMembers = [
-    { name: "Coming Soon", role: "Be the first board member", amount: "Founding Member" },
+  const impactSponsors = [
+    { name: "Coming Soon", role: "Be the first impact sponsor", amount: "Founding Sponsor" },
   ];
 
   useEffect(() => {
     if (shouldAutoOpen) {
-      setShowBoardAmount(true);
+      setShowSponsorAmount(true);
     }
   }, [shouldAutoOpen]);
 
-  if (showBoardForm) {
+  if (showSponsorForm) {
     return (
       <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-brand-light-mint/20 via-white to-gray-50 dark:from-brand-dark-teal/20 dark:via-gray-800 dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <BoardMemberForm onClose={() => setShowBoardForm(false)} />
+          <BoardMemberForm onClose={() => setShowSponsorForm(false)} />
         </div>
       </section>
     );
@@ -37,23 +37,23 @@ const BoardMemberSection = ({ shouldAutoOpen }: BoardMemberSectionProps) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 sm:mb-12 lg:mb-16">
           <h2 className="font-playfair text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4 px-2">
-            Board of Sponsors
+            Impact Sponsors
           </h2>
           <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto font-ibm-plex leading-relaxed px-4">
-            Join our exclusive board of visionary sponsors who are making a transformational impact on church communities across Nigeria and beyond.
+            Join our exclusive community of visionary impact sponsors who are making a transformational impact on church communities across Nigeria and beyond.
           </p>
         </div>
         
-        {/* Become a Board Member */}
+        {/* Become an Impact Sponsor */}
         <div className="max-w-4xl mx-auto mb-8 sm:mb-12 lg:mb-16">
           <Card className="border-3 border-brand-blue dark:bg-gray-800/80 dark:border-brand-mint rounded-xl sm:rounded-2xl shadow-2xl p-3 sm:p-4 mx-4 sm:mx-0">
             <CardHeader className="text-center pb-4 sm:pb-6">
               <div className="text-4xl sm:text-5xl lg:text-6xl mb-2 sm:mb-3">👑</div>
               <CardTitle className="text-xl sm:text-2xl lg:text-3xl text-brand-blue dark:text-brand-mint mb-2 sm:mb-3 font-playfair px-2">
-                Become a Board Member
+                Become an Impact Sponsor
               </CardTitle>
               <CardDescription className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-300 font-ibm-plex px-2">
-                Join our founding board of sponsors and shape the future of church transportation
+                Join our founding community of impact sponsors and shape the future of church transportation
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center space-y-4 sm:space-y-6">
@@ -75,7 +75,7 @@ const BoardMemberSection = ({ shouldAutoOpen }: BoardMemberSectionProps) => {
                     </li>
                     <li className="flex items-start space-x-2 sm:space-x-3">
                       <div className="w-2 h-2 bg-brand-mint rounded-full mt-2 flex-shrink-0"></div>
-                      <span>Exclusive board member certificate</span>
+                      <span>Exclusive impact sponsor certificate</span>
                     </li>
                     <li className="flex items-start space-x-2 sm:space-x-3">
                       <div className="w-2 h-2 bg-brand-mint rounded-full mt-2 flex-shrink-0"></div>
@@ -85,12 +85,12 @@ const BoardMemberSection = ({ shouldAutoOpen }: BoardMemberSectionProps) => {
                 </div>
               </div>
               
-              {!showBoardAmount ? (
+              {!showSponsorAmount ? (
                 <Button 
-                  onClick={() => setShowBoardAmount(true)}
+                  onClick={() => setShowSponsorAmount(true)}
                   className="bg-gradient-to-r from-brand-blue to-blue-600 hover:from-blue-600 hover:to-brand-blue text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-poppins font-semibold rounded-xl shadow-xl transform hover:scale-105 transition-all duration-300 w-full sm:w-auto touch-manipulation"
                 >
-                  Become a Board Member
+                  Become an Impact Sponsor
                 </Button>
               ) : (
                 <div className="space-y-3 sm:space-y-4">
@@ -105,13 +105,13 @@ const BoardMemberSection = ({ shouldAutoOpen }: BoardMemberSectionProps) => {
                         <p className="text-xs sm:text-sm font-ibm-plex">US Dollar equivalent</p>
                       </div>
                     </div>
-                    <p className="text-xs sm:text-sm font-ibm-plex mt-2 text-center">Minimum contribution for board membership</p>
+                    <p className="text-xs sm:text-sm font-ibm-plex mt-2 text-center">Minimum contribution for impact sponsorship</p>
                   </div>
                   <Button 
-                    onClick={() => setShowBoardForm(true)}
+                    onClick={() => setShowSponsorForm(true)}
                     className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-600 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-poppins font-semibold rounded-xl shadow-xl transform hover:scale-105 transition-all duration-300 w-full sm:w-auto touch-manipulation"
                   >
-                    Join the Board Now
+                    Become a Sponsor Now
                   </Button>
                 </div>
               )}
@@ -119,12 +119,12 @@ const BoardMemberSection = ({ shouldAutoOpen }: BoardMemberSectionProps) => {
           </Card>
         </div>
 
-        {/* Current Board Members */}
+        {/* Current Impact Sponsors */}
         <div className="max-w-4xl mx-auto">
           <Card className="dark:bg-gray-800/80 dark:border-gray-700 rounded-xl sm:rounded-2xl shadow-2xl border border-brand-light-mint/30 mx-4 sm:mx-0">
             <CardHeader className="text-center pb-4 sm:pb-6">
               <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-white mb-2 sm:mb-3 font-playfair px-2">
-                Current Board Members
+                Current Impact Sponsors
               </CardTitle>
               <CardDescription className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex px-2">
                 Visionary leaders supporting our mission
@@ -132,21 +132,21 @@ const BoardMemberSection = ({ shouldAutoOpen }: BoardMemberSectionProps) => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3 sm:space-y-4">
-                {boardMembers.map((member, index) => (
+                {impactSponsors.map((sponsor, index) => (
                   <div key={index} className="flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-brand-light-mint/10 dark:from-gray-700 dark:to-gray-600 rounded-xl">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-brand-blue to-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-base sm:text-lg font-poppins shadow-lg flex-shrink-0">
-                      {member.name.charAt(0)}
+                      {sponsor.name.charAt(0)}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="font-semibold text-base sm:text-lg text-gray-900 dark:text-white font-poppins truncate">{member.name}</h4>
-                      <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex">{member.role}</p>
-                      <p className="text-xs sm:text-sm text-brand-blue dark:text-brand-mint font-ibm-plex font-medium">{member.amount}</p>
+                      <h4 className="font-semibold text-base sm:text-lg text-gray-900 dark:text-white font-poppins truncate">{sponsor.name}</h4>
+                      <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex">{sponsor.role}</p>
+                      <p className="text-xs sm:text-sm text-brand-blue dark:text-brand-mint font-ibm-plex font-medium">{sponsor.amount}</p>
                     </div>
                   </div>
                 ))}
               </div>
               <div className="text-center mt-4 sm:mt-6 p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-brand-light-mint/20 dark:from-gray-700 dark:to-gray-600 rounded-xl">
-                <p className="text-brand-blue dark:text-brand-mint font-medium text-base sm:text-lg font-poppins">Be among the first to join our board!</p>
+                <p className="text-brand-blue dark:text-brand-mint font-medium text-base sm:text-lg font-poppins">Be among the first to become an impact sponsor!</p>
               </div>
             </CardContent>
           </Card>

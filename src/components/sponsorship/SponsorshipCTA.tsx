@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 
 interface SponsorshipCTAProps {
   onDonateClick?: () => void;
-  onJoinBoardClick?: () => void;
+  onJoinSponsorClick?: () => void;
 }
 
-const SponsorshipCTA = ({ onDonateClick, onJoinBoardClick }: SponsorshipCTAProps) => {
+const SponsorshipCTA = ({ onDonateClick, onJoinSponsorClick }: SponsorshipCTAProps) => {
   return (
     <section className="py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-brand-primary via-brand-dark-teal to-brand-mint relative overflow-hidden">
       {/* Modern geometric background */}
@@ -28,9 +28,9 @@ const SponsorshipCTA = ({ onDonateClick, onJoinBoardClick }: SponsorshipCTAProps
           <Button 
             size="lg" 
             className="bg-white text-brand-primary hover:bg-brand-light-mint hover:text-brand-dark-teal px-8 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl font-poppins font-semibold shadow-2xl rounded-xl sm:rounded-2xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20 w-full sm:w-auto"
-            onClick={onJoinBoardClick}
+            onClick={onJoinSponsorClick}
           >
-            Become a Board Member
+            Become an Impact Sponsor
           </Button>
           <Button 
             size="lg" 

@@ -3,10 +3,10 @@ import { Quote } from "lucide-react";
 
 interface SponsorshipHeroProps {
   onDonateClick?: () => void;
-  onJoinBoardClick?: () => void;
+  onJoinSponsorClick?: () => void;
 }
 
-const SponsorshipHero = ({ onDonateClick, onJoinBoardClick }: SponsorshipHeroProps) => {
+const SponsorshipHero = ({ onDonateClick, onJoinSponsorClick }: SponsorshipHeroProps) => {
   return (
     <section className="relative bg-gradient-to-br from-white via-brand-light-mint/20 to-brand-mint/10 dark:from-gray-900 dark:via-brand-dark-teal/20 dark:to-brand-teal/10 py-16 sm:py-24 lg:py-32 overflow-hidden">
       {/* Modern geometric background elements */}
@@ -56,10 +56,10 @@ const SponsorshipHero = ({ onDonateClick, onJoinBoardClick }: SponsorshipHeroPro
             Donate Now
           </button>
           <button 
-            onClick={onJoinBoardClick}
+            onClick={onJoinSponsorClick}
             className="px-6 sm:px-8 py-3 sm:py-4 bg-white dark:bg-gray-800 text-brand-primary dark:text-brand-mint rounded-xl sm:rounded-2xl font-poppins font-semibold text-base sm:text-lg shadow-xl hover:shadow-2xl border-2 border-brand-mint dark:border-brand-light-mint transform hover:scale-105 transition-all duration-300 w-full sm:w-auto"
           >
-            Join Board
+            Become a Sponsor
           </button>
         </div>
       </div>

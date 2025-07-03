@@ -68,7 +68,7 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
       const selectedCurrency = currencies.find(c => c.value === currency);
       toast({
         title: "Invalid Amount",
-        description: `Minimum amount for board membership is ${selectedCurrency?.label} ${getMinimumAmount(currency)}.`,
+        description: `Minimum amount for impact sponsorship is ${selectedCurrency?.label} ${getMinimumAmount(currency)}.`,
         variant: "destructive",
       });
       return;
@@ -76,7 +76,7 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
 
     toast({
       title: "Application Submitted",
-      description: "Thank you for your board membership application! We'll contact you soon.",
+      description: "Thank you for your impact sponsorship application! We'll contact you soon.",
     });
     
     onClose();
@@ -92,20 +92,20 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
   return (
     <Card className="max-w-3xl mx-auto p-4 sm:p-6 dark:bg-gray-800/80 dark:border-gray-700 backdrop-blur-lg border border-brand-light-mint/30 dark:border-brand-mint/30 shadow-2xl rounded-2xl sm:rounded-3xl mx-4 sm:mx-auto">
       <CardHeader className="text-center pb-4 sm:pb-6">
-        <CardTitle className="text-xl sm:text-2xl lg:text-3xl text-gray-900 dark:text-white font-playfair">Board Membership Application</CardTitle>
+        <CardTitle className="text-xl sm:text-2xl lg:text-3xl text-gray-900 dark:text-white font-playfair">Impact Sponsorship Application</CardTitle>
         <CardDescription className="text-base sm:text-lg text-gray-600 dark:text-gray-400 font-ibm-plex">
-          Join our founding board of sponsors
+          Join our founding community of impact sponsors
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <div>
             <Label className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
-              Member Type *
+              Sponsor Type *
             </Label>
             <Select onValueChange={setMemberType} value={memberType} required>
               <SelectTrigger className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation">
-                <SelectValue placeholder="Select member type" />
+                <SelectValue placeholder="Select sponsor type" />
               </SelectTrigger>
               <SelectContent className="dark:bg-gray-700 dark:border-gray-600">
                 <SelectItem value="individual" className="dark:text-white text-base sm:text-lg py-3 touch-manipulation">Individual</SelectItem>

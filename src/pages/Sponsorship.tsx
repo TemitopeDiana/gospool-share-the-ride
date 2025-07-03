@@ -15,9 +15,9 @@ import { useState, useRef } from "react";
 
 const Sponsorship = () => {
   const [shouldScrollToDonation, setShouldScrollToDonation] = useState(false);
-  const [shouldScrollToBoard, setShouldScrollToBoard] = useState(false);
+  const [shouldScrollToSponsor, setShouldScrollToSponsor] = useState(false);
   const donationRef = useRef<HTMLDivElement>(null);
-  const boardRef = useRef<HTMLDivElement>(null);
+  const sponsorRef = useRef<HTMLDivElement>(null);
 
   const handleDonateClick = () => {
     setShouldScrollToDonation(true);
@@ -26,29 +26,29 @@ const Sponsorship = () => {
     }, 100);
   };
 
-  const handleJoinBoardClick = () => {
-    setShouldScrollToBoard(true);
+  const handleJoinSponsorClick = () => {
+    setShouldScrollToSponsor(true);
     setTimeout(() => {
-      boardRef.current?.scrollIntoView({ behavior: 'smooth' });
+      sponsorRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
   };
 
   return (
     <div className="min-h-screen font-inter overflow-x-hidden">
       <Navigation />
-      <SponsorshipHero onDonateClick={handleDonateClick} onJoinBoardClick={handleJoinBoardClick} />
+      <SponsorshipHero onDonateClick={handleDonateClick} onJoinSponsorClick={handleJoinSponsorClick} />
       <div ref={donationRef}>
         <DonationSection shouldAutoOpen={shouldScrollToDonation} />
       </div>
       <RecentDonors />
-      <div ref={boardRef}>
-        <BoardMemberSection shouldAutoOpen={shouldScrollToBoard} />
+      <div ref={sponsorRef}>
+        <BoardMemberSection shouldAutoOpen={shouldScrollToSponsor} />
       </div>
       <BenefitsSection />
       <ImpactSection />
       <DownloadReportSection />
       <ViewImpactSection />
-      <SponsorshipCTA onDonateClick={handleDonateClick} onJoinBoardClick={handleJoinBoardClick} />
+      <SponsorshipCTA onDonateClick={handleDonateClick} onJoinSponsorClick={handleJoinSponsorClick} />
       <Footer />
       <Toaster />
     </div>
