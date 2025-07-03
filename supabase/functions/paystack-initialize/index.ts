@@ -15,21 +15,8 @@ serve(async (req) => {
   try {
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        auth: {
-          persistSession: false,
-        },
-      }
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
     )
-
-    const authHeader = req.headers.get('Authorization')!
-    const token = authHeader.replace('Bearer ', '')
-    const { data: { user } } = await supabaseClient.auth.getUser(token)
-
-    if (!user) {
-      throw new Error('Unauthorized')
-    }
 
     const { amount, email, donorName, phone, currency = 'NGN', isAnonymous = false, church = '', isChristian = '' } = await req.json()
 
@@ -59,7 +46,6 @@ serve(async (req) => {
           is_anonymous: isAnonymous,
           church,
           is_christian: isChristian,
-          user_id: user.id,
         }
       }),
     })
@@ -70,11 +56,11 @@ serve(async (req) => {
       throw new Error(paystackData.message || 'Failed to initialize payment')
     }
 
-    // Create donation record
+    // Create donation record without requiring user authentication
     const { data: donation, error: donationError } = await supabaseClient
       .from('donations')
       .insert({
-        user_id: user.id,
+        user_id: null, // Allow anonymous donations
         amount,
         currency,
         donor_name: isAnonymous ? null : donorName,

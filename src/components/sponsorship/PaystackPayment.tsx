@@ -49,7 +49,10 @@ const PaystackPayment = ({
     document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script);
+      // Clean up script
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
 
@@ -67,7 +70,7 @@ const PaystackPayment = ({
       });
 
       const handler = window.PaystackPop.setup({
-        key: 'pk_live_1030aa73b63d2d22a4d02071a506a328de4ab853', // This should be your Paystack public key
+        key: 'pk_live_1030aa73b63d2d22a4d02071a506a328de4ab853', // Replace with your actual Paystack public key
         email,
         amount: Math.round(amount * 100), // Convert to kobo
         currency,
@@ -109,9 +112,17 @@ const PaystackPayment = ({
   };
 
   useEffect(() => {
-    if (window.PaystackPop) {
-      handlePayment();
-    }
+    // Only attempt payment if Paystack is loaded
+    const attemptPayment = () => {
+      if (window.PaystackPop) {
+        handlePayment();
+      } else {
+        // Retry after a short delay if Paystack isn't loaded yet
+        setTimeout(attemptPayment, 500);
+      }
+    };
+
+    attemptPayment();
   }, []);
 
   if (isLoading) {
