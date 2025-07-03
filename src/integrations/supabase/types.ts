@@ -9,16 +9,457 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      board_advisors: {
+        Row: {
+          bio: string | null
+          company: string | null
+          created_at: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          linkedin_url: string | null
+          name: string
+          order_index: number | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          bio?: string | null
+          company?: string | null
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          linkedin_url?: string | null
+          name: string
+          order_index?: number | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          bio?: string | null
+          company?: string | null
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          linkedin_url?: string | null
+          name?: string
+          order_index?: number | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      donations: {
+        Row: {
+          amount: number
+          created_at: string | null
+          currency: string | null
+          donor_email: string | null
+          donor_name: string | null
+          donor_phone: string | null
+          id: string
+          is_anonymous: boolean | null
+          message: string | null
+          status: Database["public"]["Enums"]["donation_status"] | null
+          stripe_payment_intent_id: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          currency?: string | null
+          donor_email?: string | null
+          donor_name?: string | null
+          donor_phone?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          message?: string | null
+          status?: Database["public"]["Enums"]["donation_status"] | null
+          stripe_payment_intent_id?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          currency?: string | null
+          donor_email?: string | null
+          donor_name?: string | null
+          donor_phone?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          message?: string | null
+          status?: Database["public"]["Enums"]["donation_status"] | null
+          stripe_payment_intent_id?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      impact_reports_requests: {
+        Row: {
+          created_at: string | null
+          id: string
+          organization: string | null
+          purpose: string | null
+          report_type: string | null
+          requester_email: string
+          requester_name: string | null
+          sent_at: string | null
+          status: Database["public"]["Enums"]["application_status"] | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          organization?: string | null
+          purpose?: string | null
+          report_type?: string | null
+          requester_email: string
+          requester_name?: string | null
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["application_status"] | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          organization?: string | null
+          purpose?: string | null
+          report_type?: string | null
+          requester_email?: string
+          requester_name?: string | null
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["application_status"] | null
+        }
+        Relationships: []
+      }
+      impact_sponsors: {
+        Row: {
+          application_id: string | null
+          contribution_amount: number | null
+          created_at: string | null
+          end_date: string | null
+          id: string
+          is_active: boolean | null
+          logo_url: string | null
+          order_index: number | null
+          sponsor_name: string
+          sponsor_type: string
+          start_date: string | null
+          tier: string | null
+          updated_at: string | null
+          website_url: string | null
+        }
+        Insert: {
+          application_id?: string | null
+          contribution_amount?: number | null
+          created_at?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          order_index?: number | null
+          sponsor_name: string
+          sponsor_type: string
+          start_date?: string | null
+          tier?: string | null
+          updated_at?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          application_id?: string | null
+          contribution_amount?: number | null
+          created_at?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          order_index?: number | null
+          sponsor_name?: string
+          sponsor_type?: string
+          start_date?: string | null
+          tier?: string | null
+          updated_at?: string | null
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "impact_sponsors_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "sponsorship_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      news: {
+        Row: {
+          author_name: string | null
+          category: string | null
+          content: string
+          created_at: string | null
+          excerpt: string | null
+          id: string
+          image_url: string | null
+          is_published: boolean | null
+          published_at: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          author_name?: string | null
+          category?: string | null
+          content: string
+          created_at?: string | null
+          excerpt?: string | null
+          id?: string
+          image_url?: string | null
+          is_published?: boolean | null
+          published_at?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          author_name?: string | null
+          category?: string | null
+          content?: string
+          created_at?: string | null
+          excerpt?: string | null
+          id?: string
+          image_url?: string | null
+          is_published?: boolean | null
+          published_at?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          budget: number | null
+          created_at: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          image_url: string | null
+          location: string | null
+          progress_percentage: number | null
+          start_date: string | null
+          status: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          budget?: number | null
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          image_url?: string | null
+          location?: string | null
+          progress_percentage?: number | null
+          start_date?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          budget?: number | null
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          image_url?: string | null
+          location?: string | null
+          progress_percentage?: number | null
+          start_date?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      sponsorship_applications: {
+        Row: {
+          address: string | null
+          contact_person: string | null
+          created_at: string | null
+          email: string
+          id: string
+          motivation: string | null
+          organization_name: string | null
+          phone: string | null
+          profile_picture_url: string | null
+          sponsor_amount: number | null
+          sponsor_duration: string | null
+          sponsor_type: string
+          status: Database["public"]["Enums"]["application_status"] | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          address?: string | null
+          contact_person?: string | null
+          created_at?: string | null
+          email: string
+          id?: string
+          motivation?: string | null
+          organization_name?: string | null
+          phone?: string | null
+          profile_picture_url?: string | null
+          sponsor_amount?: number | null
+          sponsor_duration?: string | null
+          sponsor_type: string
+          status?: Database["public"]["Enums"]["application_status"] | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          address?: string | null
+          contact_person?: string | null
+          created_at?: string | null
+          email?: string
+          id?: string
+          motivation?: string | null
+          organization_name?: string | null
+          phone?: string | null
+          profile_picture_url?: string | null
+          sponsor_amount?: number | null
+          sponsor_duration?: string | null
+          sponsor_type?: string
+          status?: Database["public"]["Enums"]["application_status"] | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      team_applications: {
+        Row: {
+          created_at: string | null
+          email: string
+          experience: string | null
+          full_name: string
+          id: string
+          motivation: string | null
+          phone: string | null
+          portfolio_url: string | null
+          position_applied: string
+          resume_url: string | null
+          status: Database["public"]["Enums"]["application_status"] | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          experience?: string | null
+          full_name: string
+          id?: string
+          motivation?: string | null
+          phone?: string | null
+          portfolio_url?: string | null
+          position_applied: string
+          resume_url?: string | null
+          status?: Database["public"]["Enums"]["application_status"] | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          experience?: string | null
+          full_name?: string
+          id?: string
+          motivation?: string | null
+          phone?: string | null
+          portfolio_url?: string | null
+          position_applied?: string
+          resume_url?: string | null
+          status?: Database["public"]["Enums"]["application_status"] | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      team_members: {
+        Row: {
+          bio: string | null
+          created_at: string | null
+          email: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          linkedin_url: string | null
+          name: string
+          order_index: number | null
+          role: string
+          updated_at: string | null
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          linkedin_url?: string | null
+          name: string
+          order_index?: number | null
+          role: string
+          updated_at?: string | null
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          linkedin_url?: string | null
+          name?: string
+          order_index?: number | null
+          role?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          assigned_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      application_status: "pending" | "approved" | "rejected"
+      donation_status: "pending" | "completed" | "failed" | "refunded"
+      user_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +574,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      application_status: ["pending", "approved", "rejected"],
+      donation_status: ["pending", "completed", "failed", "refunded"],
+      user_role: ["admin", "user"],
+    },
   },
 } as const
