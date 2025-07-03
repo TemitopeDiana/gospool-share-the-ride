@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useEffect, useCallback, useRef } from 'react';
-import { usePaystackPayment } from '@/hooks/usePaystackPayment';
-import { useToast } from '@/hooks/use-toast';
+import { useEffect, useCallback, useRef } from "react";
+import { usePaystackPayment } from "@/hooks/usePaystackPayment";
+import { useToast } from "@/hooks/use-toast";
 
 interface PaystackPaymentProps {
   amount: number;
@@ -42,19 +43,24 @@ const PaystackPayment = ({
   const { toast } = useToast();
   const paymentInitialized = useRef(false);
 
-  const handlePaymentSuccess = useCallback(async (response: any) => {
-    try {
-      await verifyPayment(response.reference);
-      toast({
-        title: "Payment Successful!",
-        description: "Thank you for your donation. Your payment has been processed successfully.",
-      });
-      onSuccess();
-    } catch (error) {
-      console.error('Payment verification failed:', error);
-      onError('Payment verification failed');
-    }
-  }, [verifyPayment, toast, onSuccess, onError]);
+  const handlePaymentSuccess = useCallback(
+    (response: any) => {
+      verifyPayment(response.reference)
+        .then(() => {
+          toast({
+            title: "Payment Successful!",
+            description:
+              "Thank you for your donation. Your payment has been processed successfully.",
+          });
+          onSuccess();
+        })
+        .catch((error) => {
+          console.error("Payment verification failed:", error);
+          onError("Payment verification failed");
+        });
+    },
+    [verifyPayment, toast, onSuccess, onError]
+  );
 
   const handlePaymentClose = useCallback(() => {
     toast({
@@ -66,10 +72,10 @@ const PaystackPayment = ({
 
   const handlePayment = useCallback(async () => {
     if (paymentInitialized.current) return;
-    
+
     try {
       paymentInitialized.current = true;
-      
+
       const paymentData = await initializePayment({
         amount,
         email,
@@ -82,7 +88,7 @@ const PaystackPayment = ({
       });
 
       const handler = window.PaystackPop.setup({
-        key: 'pk_test_950d1bc6b3ca24f9416ed0cd32db7b5cc45d5947',
+        key: "pk_test_950d1bc6b3ca24f9416ed0cd32db7b5cc45d5947",
         email,
         amount: Math.round(amount * 100),
         currency,
@@ -100,9 +106,9 @@ const PaystackPayment = ({
 
       handler.openIframe();
     } catch (error) {
-      console.error('Payment error:', error);
+      console.error("Payment error:", error);
       paymentInitialized.current = false;
-      onError(error.message || 'Payment failed');
+      onError(error.message || "Payment failed");
     }
   }, [
     amount,
@@ -116,12 +122,12 @@ const PaystackPayment = ({
     initializePayment,
     handlePaymentSuccess,
     handlePaymentClose,
-    onError
+    onError,
   ]);
 
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://js.paystack.co/v1/inline.js';
+    const script = document.createElement("script");
+    script.src = "https://js.paystack.co/v1/inline.js";
     script.async = true;
     script.onload = () => {
       // Wait a bit for Paystack to be fully initialized
@@ -132,9 +138,9 @@ const PaystackPayment = ({
       }, 100);
     };
     script.onerror = () => {
-      onError('Failed to load payment processor');
+      onError("Failed to load payment processor");
     };
-    
+
     document.body.appendChild(script);
 
     return () => {

@@ -25,7 +25,7 @@ serve(async (req) => {
     }
 
     // Generate unique reference
-    const reference = `donation_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    const reference = `gospool_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
     // Initialize transaction with Paystack
     const paystackResponse = await fetch('https://api.paystack.co/transaction/initialize', {
