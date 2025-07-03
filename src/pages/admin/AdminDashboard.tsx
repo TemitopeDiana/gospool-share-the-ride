@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { DollarSign, Users, FileText, Award, Briefcase, Newspaper } from 'lucide-react';
 
 export const AdminDashboard = () => {
-  const { data: stats } = useQuery({
+  const { data: stats, isLoading } = useQuery({
     queryKey: ['admin-stats'],
     queryFn: async () => {
       const [donations, sponsorships, reports, projects, news, applications] = await Promise.all([
@@ -18,7 +18,7 @@ export const AdminDashboard = () => {
         supabase.from('team_applications').select('id', { count: 'exact' }),
       ]);
 
-      const totalDonations = donations.data?.reduce((sum, d) => sum + Number(d.amount), 0) || 0;
+      const totalDonations = donations.data?.reduce((sum, d) => sum + Number(d.amount || 0), 0) || 0;
 
       return {
         totalDonations,
@@ -35,7 +35,7 @@ export const AdminDashboard = () => {
   const statCards = [
     {
       title: 'Total Donations',
-      value: `₦${stats?.totalDonations.toLocaleString() || 0}`,
+      value: `₦${(stats?.totalDonations || 0).toLocaleString()}`,
       description: `${stats?.donationCount || 0} donations received`,
       icon: DollarSign,
       color: 'text-green-600',
@@ -77,26 +77,41 @@ export const AdminDashboard = () => {
     },
   ];
 
+  if (isLoading) {
+    return (
+      <AdminLayout>
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="h-32 bg-gray-200 rounded"></div>
+            ))}
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
   return (
     <AdminLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Welcome to the Gospool admin dashboard</p>
+          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-gray-600 mt-2">Welcome to the Gospool admin dashboard</p>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {statCards.map((stat, index) => (
-            <Card key={index}>
+            <Card key={index} className="hover:shadow-lg transition-shadow">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="text-sm font-medium text-gray-700">
                   {stat.title}
                 </CardTitle>
-                <stat.icon className={`h-4 w-4 ${stat.color}`} />
+                <stat.icon className={`h-5 w-5 ${stat.color}`} />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <CardDescription className="text-xs text-muted-foreground">
+                <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
+                <CardDescription className="text-xs text-gray-500 mt-1">
                   {stat.description}
                 </CardDescription>
               </CardContent>

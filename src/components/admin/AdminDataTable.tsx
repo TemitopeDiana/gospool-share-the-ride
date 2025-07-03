@@ -43,12 +43,13 @@ export const AdminDataTable = ({
 }: AdminDataTableProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredData = data.filter((item) =>
-    item[searchKey]?.toLowerCase().includes(searchTerm.toLowerCase()) || false
-  );
+  const filteredData = data.filter((item) => {
+    if (!item || !item[searchKey]) return false;
+    return item[searchKey]?.toString().toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   const getStatusColor = (status: string) => {
-    switch (status) {
+    switch (status?.toLowerCase()) {
       case 'approved':
       case 'completed':
       case 'active':
@@ -77,40 +78,48 @@ export const AdminDataTable = ({
         </div>
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-md border bg-white">
         <Table>
           <TableHeader>
             <TableRow>
               {columns.map((column) => (
-                <TableHead key={column.key}>{column.label}</TableHead>
+                <TableHead key={column.key} className="font-semibold">
+                  {column.label}
+                </TableHead>
               ))}
-              {showStatus && <TableHead>Status</TableHead>}
-              <TableHead className="text-right">Actions</TableHead>
+              {showStatus && <TableHead className="font-semibold">Status</TableHead>}
+              <TableHead className="text-right font-semibold">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredData.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={columns.length + (showStatus ? 1 : 0) + 1} className="text-center py-8">
-                  No data found
+                <TableCell 
+                  colSpan={columns.length + (showStatus ? 1 : 0) + 1} 
+                  className="text-center py-8 text-gray-500"
+                >
+                  {data.length === 0 ? 'No data available' : 'No matching results found'}
                 </TableCell>
               </TableRow>
             ) : (
               filteredData.map((item, index) => (
-                <TableRow key={item.id || index}>
+                <TableRow key={item.id || index} className="hover:bg-gray-50">
                   {columns.map((column) => (
-                    <TableCell key={column.key}>
-                      {column.render ? column.render(item[column.key], item) : item[column.key]}
+                    <TableCell key={column.key} className="py-3">
+                      {column.render 
+                        ? column.render(item[column.key], item) 
+                        : (item[column.key] || '-')
+                      }
                     </TableCell>
                   ))}
                   {showStatus && (
-                    <TableCell>
+                    <TableCell className="py-3">
                       <Badge className={getStatusColor(item.status)}>
                         {item.status || 'pending'}
                       </Badge>
                     </TableCell>
                   )}
-                  <TableCell className="text-right">
+                  <TableCell className="text-right py-3">
                     <div className="flex items-center justify-end space-x-2">
                       {customActions && customActions(item).map((action, actionIndex) => (
                         <Button
@@ -127,7 +136,7 @@ export const AdminDataTable = ({
                           variant="outline"
                           size="sm"
                           onClick={() => onApprove(item)}
-                          className="text-green-600 hover:text-green-700"
+                          className="text-green-600 hover:text-green-700 hover:bg-green-50"
                         >
                           <Check className="h-4 w-4" />
                         </Button>
@@ -137,7 +146,7 @@ export const AdminDataTable = ({
                           variant="outline"
                           size="sm"
                           onClick={() => onReject(item)}
-                          className="text-red-600 hover:text-red-700"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
                         >
                           <X className="h-4 w-4" />
                         </Button>
@@ -147,6 +156,7 @@ export const AdminDataTable = ({
                           variant="outline"
                           size="sm"
                           onClick={() => onEdit(item)}
+                          className="hover:bg-blue-50"
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
@@ -156,7 +166,7 @@ export const AdminDataTable = ({
                           variant="outline"
                           size="sm"
                           onClick={() => onDelete(item)}
-                          className="text-red-600 hover:text-red-700"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
