@@ -38,7 +38,7 @@ export const AdminHeader = () => {
   };
 
   return (
-    <div className="sticky top-0 z-30 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:ml-64">
+    <div className="sticky top-0 z-30 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-16 items-center gap-x-4 px-4 sm:gap-x-6 sm:px-6">
         {/* Navigation buttons */}
         <div className="flex items-center gap-x-2">

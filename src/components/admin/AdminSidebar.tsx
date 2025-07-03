@@ -2,7 +2,7 @@
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   LayoutDashboard,
   DollarSign,
@@ -17,6 +17,8 @@ import {
   Settings,
   Menu,
   X,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 
 const navigation = [
@@ -37,30 +39,60 @@ export const AdminSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    const saved = localStorage.getItem('admin-sidebar-collapsed');
+    return saved === 'true';
+  });
 
-  const SidebarContent = () => (
-    <div className="flex h-full flex-col bg-card border-r border-border">
+  useEffect(() => {
+    localStorage.setItem('admin-sidebar-collapsed', isCollapsed.toString());
+  }, [isCollapsed]);
+
+  const toggleCollapsed = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
+  const SidebarContent = ({ collapsed = false }: { collapsed?: boolean }) => (
+    <div className="flex h-full flex-col bg-sidebar border-r border-sidebar-border">
       {/* Header with Logo */}
-      <div className="flex h-16 shrink-0 items-center px-6 border-b border-border">
+      <div className={cn(
+        "flex shrink-0 items-center border-b border-sidebar-border transition-all duration-200",
+        collapsed ? "h-16 px-2 justify-center" : "h-16 px-6"
+      )}>
         <div className="flex items-center gap-3">
           <img
             className="h-8 w-auto"
             src="/lovable-uploads/52524576-df42-4ff1-ae6b-916c64b5f607.png"
             alt="Gospool"
           />
-          <div className="hidden lg:block">
-            <h1 className="text-lg font-bold text-foreground">Gospool</h1>
-            <p className="text-xs text-muted-foreground">Admin Panel</p>
-          </div>
+          {!collapsed && (
+            <div className="hidden lg:block">
+              <h1 className="text-lg font-bold text-sidebar-foreground">Gospool</h1>
+              <p className="text-xs text-sidebar-foreground/70">Admin Panel</p>
+            </div>
+          )}
         </div>
         {/* Mobile close button */}
         <Button
           variant="ghost"
           size="sm"
-          className="ml-auto lg:hidden"
+          className="ml-auto lg:hidden text-sidebar-foreground"
           onClick={() => setIsMobileOpen(false)}
         >
           <X className="h-5 w-5" />
+        </Button>
+        {/* Desktop collapse button */}
+        <Button
+          variant="ghost"
+          size="sm"
+          className="ml-auto hidden lg:flex text-sidebar-foreground"
+          onClick={toggleCollapsed}
+        >
+          {collapsed ? (
+            <ChevronRight className="h-4 w-4" />
+          ) : (
+            <ChevronLeft className="h-4 w-4" />
+          )}
         </Button>
       </div>
 
@@ -74,18 +106,25 @@ export const AdminSidebar = () => {
                 <Button
                   variant="ghost"
                   className={cn(
-                    'w-full justify-start h-10 px-3',
+                    'w-full h-10 px-3 transition-all duration-200',
+                    collapsed ? 'justify-center' : 'justify-start',
                     isActive
-                      ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                      ? 'bg-sidebar-accent text-sidebar-accent-foreground hover:bg-sidebar-accent/90'
+                      : 'text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'
                   )}
                   onClick={() => {
                     navigate(item.href);
                     setIsMobileOpen(false);
                   }}
+                  title={collapsed ? item.name : undefined}
                 >
-                  <item.icon className="h-4 w-4 mr-3 shrink-0" />
-                  {item.name}
+                  <item.icon className={cn(
+                    "h-4 w-4 shrink-0",
+                    collapsed ? "" : "mr-3"
+                  )} />
+                  {!collapsed && (
+                    <span className="truncate">{item.name}</span>
+                  )}
                 </Button>
               </li>
             );
@@ -94,9 +133,15 @@ export const AdminSidebar = () => {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-border">
-        <div className="text-xs text-muted-foreground text-center">
-          © 2024 Gospool
+      <div className={cn(
+        "p-4 border-t border-sidebar-border",
+        collapsed && "px-2"
+      )}>
+        <div className={cn(
+          "text-xs text-sidebar-foreground/70",
+          collapsed ? "text-center" : ""
+        )}>
+          {collapsed ? "© 2024" : "© 2024 Gospool"}
         </div>
       </div>
     </div>
@@ -115,8 +160,11 @@ export const AdminSidebar = () => {
       </Button>
 
       {/* Desktop Sidebar */}
-      <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
-        <SidebarContent />
+      <div className={cn(
+        "hidden lg:flex lg:flex-col transition-all duration-200",
+        isCollapsed ? "lg:w-16" : "lg:w-64"
+      )}>
+        <SidebarContent collapsed={isCollapsed} />
       </div>
 
       {/* Mobile Sidebar Overlay */}
