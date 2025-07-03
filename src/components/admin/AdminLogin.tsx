@@ -17,6 +17,8 @@ export const AdminLogin = () => {
   const { session, isAdmin, isLoading: adminLoading } = useAdmin();
   const { toast } = useToast();
 
+  console.log('AdminLogin - session:', session?.user?.email, 'isAdmin:', isAdmin, 'loading:', adminLoading);
+
   if (adminLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -26,6 +28,7 @@ export const AdminLogin = () => {
   }
 
   if (session && isAdmin) {
+    console.log('Redirecting to admin dashboard');
     return <Navigate to="/admin" replace />;
   }
 
@@ -34,24 +37,29 @@ export const AdminLogin = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      console.log('Attempting login for:', email);
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
+        console.error('Login error:', error);
         toast({
           title: "Login failed",
           description: error.message,
           variant: "destructive",
         });
       } else {
+        console.log('Login successful for:', data.user?.email);
         toast({
           title: "Login successful",
-          description: "Welcome to the admin dashboard!",
+          description: "Checking admin privileges...",
         });
       }
     } catch (error) {
+      console.error('Login exception:', error);
       toast({
         title: "Login failed",
         description: "An unexpected error occurred.",
@@ -79,6 +87,13 @@ export const AdminLogin = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {session && !isAdmin && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-sm text-red-600">
+                You are logged in as {session.user?.email} but don't have admin privileges.
+              </p>
+            </div>
+          )}
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>

@@ -3,15 +3,19 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Session } from '@supabase/supabase-js';
 
 export const useAdmin = () => {
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  const { data: isAdmin, isLoading } = useQuery({
+  const { data: isAdmin, isLoading: adminCheckLoading } = useQuery({
     queryKey: ['admin-check', session?.user?.id],
     queryFn: async () => {
       if (!session?.user?.id) return false;
+      
+      console.log('Checking admin status for user:', session.user.id);
       
       const { data, error } = await supabase
         .from('user_roles')
@@ -25,18 +29,25 @@ export const useAdmin = () => {
         return false;
       }
       
+      console.log('Admin check result:', !!data);
       return !!data;
     },
     enabled: !!session?.user?.id,
   });
 
   useEffect(() => {
+    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session:', session?.user?.email);
       setSession(session);
+      setIsLoading(false);
     });
 
+    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('Auth state changed:', session?.user?.email);
       setSession(session);
+      setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -61,7 +72,7 @@ export const useAdmin = () => {
   return {
     session,
     isAdmin: !!isAdmin,
-    isLoading,
+    isLoading: isLoading || adminCheckLoading,
     signOut,
   };
 };
