@@ -67,7 +67,7 @@ const PaystackPayment = ({
       });
 
       const handler = window.PaystackPop.setup({
-        key: 'pk_test_1234567890abcdef', // This should be your Paystack public key
+        key: 'pk_live_1030aa73b63d2d22a4d02071a506a328de4ab853', // This should be your Paystack public key
         email,
         amount: Math.round(amount * 100), // Convert to kobo
         currency,
