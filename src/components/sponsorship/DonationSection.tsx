@@ -17,16 +17,23 @@ const DonationSection = ({ shouldAutoOpen }: DonationSectionProps) => {
   const { toast } = useToast();
   
   const countries = [
-    { name: "Nigeria", currency: "NGN (₦)" },
-    { name: "United States", currency: "USD ($)" },
-    { name: "United Kingdom", currency: "GBP (£)" },
-    { name: "Canada", currency: "CAD ($)" },
-    { name: "Germany", currency: "EUR (€)" },
-    { name: "France", currency: "EUR (€)" },
-    { name: "South Africa", currency: "ZAR (R)" },
-    { name: "Ghana", currency: "GHS (₵)" },
-    { name: "Kenya", currency: "KES (KSh)" },
-    { name: "Other", currency: "Multiple currencies available" }
+    { name: "Nigeria", currency: "NGN (₦)", available: true },
+    { name: "United States", currency: "USD ($)", available: false },
+    { name: "United Kingdom", currency: "GBP (£)", available: false },
+    { name: "Canada", currency: "CAD ($)", available: false },
+    { name: "Germany", currency: "EUR (€)", available: false },
+    { name: "France", currency: "EUR (€)", available: false },
+    { name: "South Africa", currency: "ZAR (R)", available: false },
+    { name: "Ghana", currency: "GHS (₵)", available: false },
+    { name: "Kenya", currency: "KES (KSh)", available: false },
+    { name: "Uganda", currency: "UGX (USh)", available: false },
+    { name: "Tanzania", currency: "TZS (TSh)", available: false },
+    { name: "Rwanda", currency: "RWF (Fr)", available: false },
+    { name: "Ethiopia", currency: "ETB (Br)", available: false },
+    { name: "Cameroon", currency: "XAF (Fr)", available: false },
+    { name: "Ivory Coast", currency: "XOF (Fr)", available: false },
+    { name: "Senegal", currency: "XOF (Fr)", available: false },
+    { name: "Other", currency: "Multiple currencies available", available: false }
   ];
 
   useEffect(() => {
@@ -52,6 +59,17 @@ const DonationSection = ({ shouldAutoOpen }: DonationSectionProps) => {
       });
       return;
     }
+
+    const selectedCountryData = countries.find(c => c.name === selectedCountry);
+    if (!selectedCountryData?.available) {
+      toast({
+        title: "Coming Soon",
+        description: "Payment processing for this country is coming soon. Only Nigeria is currently available.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setShowDonationForm(true);
   };
 
@@ -102,7 +120,7 @@ const DonationSection = ({ shouldAutoOpen }: DonationSectionProps) => {
                     <SelectContent className="dark:bg-gray-700 dark:border-gray-600 rounded-xl z-50">
                       {countries.map((country) => (
                         <SelectItem key={country.name} value={country.name} className="dark:text-white dark:focus:bg-gray-600 text-sm sm:text-base py-2 sm:py-3 touch-manipulation">
-                          {country.name}
+                          {country.name} {!country.available && "(Coming Soon)"}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -113,12 +131,15 @@ const DonationSection = ({ shouldAutoOpen }: DonationSectionProps) => {
                   <div className="bg-gradient-to-r from-brand-light-mint/30 to-brand-mint/20 dark:bg-gradient-to-r dark:from-gray-700 dark:to-gray-600 p-3 sm:p-4 rounded-xl border border-brand-light-mint/50">
                     <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-1 font-ibm-plex">Currency for {selectedCountry}:</p>
                     <p className="font-bold text-base sm:text-lg text-gray-900 dark:text-white font-poppins">{selectedCurrency}</p>
+                    {!countries.find(c => c.name === selectedCountry)?.available && (
+                      <p className="text-sm text-orange-600 dark:text-orange-400 mt-2 font-ibm-plex">Payment processing coming soon - Only Nigeria available now</p>
+                    )}
                   </div>
                 )}
               </div>
               
               <Button 
-                className="w-full bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white py-3 sm:py-4 text-base sm:text-lg font-poppins font-semibold shadow-2xl transform hover:scale-105 transition-all duration-300 rounded-xl touch-manipulation"
+                className="w-full bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white px-8 py-4 text-base sm:text-lg font-poppins font-semibold rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 touch-manipulation"
                 onClick={handleDonateClick}
               >
                 Donate Now

@@ -179,8 +179,13 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
 
             <div>
               <Label htmlFor="profilePicture" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
-                Profile Picture *
+                {memberType === "organization" ? "Profile Picture / Logo *" : "Profile Picture *"}
               </Label>
+              {memberType === "organization" && (
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-ibm-plex">
+                  You can use your organization's logo for this field
+                </p>
+              )}
               <Input
                 id="profilePicture"
                 type="file"
@@ -258,7 +263,7 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
           <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-brand-blue to-blue-600 hover:from-blue-600 hover:to-brand-blue text-white py-3 sm:py-4 text-lg sm:text-xl font-poppins font-semibold shadow-2xl rounded-xl sm:rounded-2xl touch-manipulation"
+              className="w-full bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white px-8 py-4 text-base sm:text-lg font-poppins font-semibold rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 touch-manipulation"
             >
               Submit Application
             </Button>
@@ -266,7 +271,7 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
               type="button"
               variant="outline"
               onClick={onClose}
-              className="w-full border-2 border-gray-300 text-gray-700 dark:text-gray-300 py-3 sm:py-4 text-lg sm:text-xl font-poppins font-semibold rounded-xl sm:rounded-2xl touch-manipulation"
+              className="w-full border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 px-8 py-4 text-base sm:text-lg font-poppins font-semibold rounded-xl touch-manipulation"
             >
               Cancel
             </Button>

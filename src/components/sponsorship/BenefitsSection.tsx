@@ -30,7 +30,7 @@ const BenefitsSection = () => {
     {
       icon: <Shield className="h-10 w-10 text-brand-mint" />,
       title: "Platform Development & Incentives",
-      description: "Your donations ensure continuous platform development, maintenance, and occasional fuel allowances for car owners to encourage ride sharing within Christian communities.",
+      description: "Your donations ensure continuous platform development, maintenance, and occasional fuel allowances and free servicing for car owners to encourage ride sharing within Christian communities.",
       gradient: "from-brand-light-mint to-brand-primary"
     }
   ];
@@ -75,25 +75,25 @@ const BenefitsSection = () => {
                 Fund Allocation Breakdown
               </CardTitle>
               <CardDescription className="text-xl text-gray-600 dark:text-gray-300 font-ibm-plex">
-                Every naira and dollar is invested strategically for maximum impact
+                Every amount received is invested strategically for maximum impact
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-3 gap-8 text-center mb-8">
                 <div className="space-y-4 p-6 bg-white/60 dark:bg-gray-800/60 rounded-2xl">
-                  <div className="text-5xl font-bold text-brand-blue font-poppins">40%</div>
+                  <div className="text-5xl font-bold text-brand-blue font-poppins">30%</div>
                   <h4 className="font-semibold text-xl text-gray-900 dark:text-white font-poppins">Platform Development & Maintenance</h4>
-                  <p className="text-lg text-gray-600 dark:text-gray-300 font-ibm-plex">Continuous improvement, new features, security updates, and technical infrastructure</p>
+                  <p className="text-lg text-gray-600 dark:text-gray-300 font-ibm-plex">Continuous improvement, new features, security updates, platform sustenance and technical infrastructure</p>
                 </div>
                 <div className="space-y-4 p-6 bg-white/60 dark:bg-gray-800/60 rounded-2xl">
-                  <div className="text-5xl font-bold text-brand-green font-poppins">35%</div>
+                  <div className="text-5xl font-bold text-brand-green font-poppins">40%</div>
                   <h4 className="font-semibold text-xl text-gray-900 dark:text-white font-poppins">Transportation Fleet & Services</h4>
-                  <p className="text-lg text-gray-600 dark:text-gray-300 font-ibm-plex">Providing buses for church services, events, conferences, and fuel allowances for ride sharing</p>
+                  <p className="text-lg text-gray-600 dark:text-gray-300 font-ibm-plex">Providing buses for church services, events, conferences, and possible fuel allowances and car servicing to encourage ride sharing</p>
                 </div>
                 <div className="space-y-4 p-6 bg-white/60 dark:bg-gray-800/60 rounded-2xl">
-                  <div className="text-5xl font-bold text-brand-purple font-poppins">25%</div>
+                  <div className="text-5xl font-bold text-brand-purple font-poppins">30%</div>
                   <h4 className="font-semibold text-xl text-gray-900 dark:text-white font-poppins">Marketing & Expansion</h4>
-                  <p className="text-lg text-gray-600 dark:text-gray-300 font-ibm-plex">Promoting the platform to churches across Nigeria and expanding to other countries</p>
+                  <p className="text-lg text-gray-600 dark:text-gray-300 font-ibm-plex">Promoting the platform and its benefits to churches across Nigeria and expanding to other countries</p>
                 </div>
               </div>
               
@@ -102,7 +102,7 @@ const BenefitsSection = () => {
                   onClick={() => setShowPitchDeckForm(true)}
                   className="bg-gradient-to-r from-brand-primary to-brand-dark-teal text-white px-8 py-4 text-lg font-poppins font-semibold rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
                 >
-                  Read More About Current and Future Plans for Gospool
+                  Read Current & Future Plans
                 </Button>
               </div>
             </CardContent>

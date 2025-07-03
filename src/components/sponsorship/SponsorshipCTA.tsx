@@ -27,7 +27,7 @@ const SponsorshipCTA = ({ onDonateClick, onJoinSponsorClick }: SponsorshipCTAPro
         <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 lg:space-x-6 justify-center max-w-2xl mx-auto px-4">
           <Button 
             size="lg" 
-            className="bg-white text-brand-primary hover:bg-brand-light-mint hover:text-brand-dark-teal px-8 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl font-poppins font-semibold shadow-2xl rounded-xl sm:rounded-2xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20 w-full sm:w-auto"
+            className="bg-white text-brand-primary hover:bg-brand-light-mint hover:text-brand-dark-teal px-8 py-4 text-lg font-poppins font-semibold shadow-2xl rounded-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20 w-full sm:w-auto"
             onClick={onJoinSponsorClick}
           >
             Become an Impact Sponsor
@@ -35,7 +35,7 @@ const SponsorshipCTA = ({ onDonateClick, onJoinSponsorClick }: SponsorshipCTAPro
           <Button 
             size="lg" 
             variant="outline" 
-            className="border-2 border-white text-white hover:bg-white hover:text-brand-primary px-8 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl font-poppins font-semibold shadow-2xl rounded-xl sm:rounded-2xl transform hover:scale-105 transition-all duration-300 bg-white/10 backdrop-blur-sm w-full sm:w-auto"
+            className="border-2 border-white text-white hover:bg-white hover:text-brand-primary px-8 py-4 text-lg font-poppins font-semibold shadow-2xl rounded-xl transform hover:scale-105 transition-all duration-300 bg-white/10 backdrop-blur-sm w-full sm:w-auto"
             onClick={onDonateClick}
           >
             Donate to the Cause

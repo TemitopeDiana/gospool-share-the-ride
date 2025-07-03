@@ -51,13 +51,13 @@ const SponsorshipHero = ({ onDonateClick, onJoinSponsorClick }: SponsorshipHeroP
         <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 lg:space-x-6 justify-center max-w-lg mx-auto px-4">
           <button 
             onClick={onDonateClick}
-            className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-brand-primary to-brand-dark-teal text-white rounded-xl sm:rounded-2xl font-poppins font-semibold text-base sm:text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 border border-brand-dark-teal/20 w-full sm:w-auto"
+            className="px-8 py-4 bg-gradient-to-r from-brand-primary to-brand-dark-teal text-white rounded-xl font-poppins font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 border border-brand-dark-teal/20 w-full sm:w-auto"
           >
             Donate Now
           </button>
           <button 
             onClick={onJoinSponsorClick}
-            className="px-6 sm:px-8 py-3 sm:py-4 bg-white dark:bg-gray-800 text-brand-primary dark:text-brand-mint rounded-xl sm:rounded-2xl font-poppins font-semibold text-base sm:text-lg shadow-xl hover:shadow-2xl border-2 border-brand-mint dark:border-brand-light-mint transform hover:scale-105 transition-all duration-300 w-full sm:w-auto"
+            className="px-8 py-4 bg-white dark:bg-gray-800 text-brand-primary dark:text-brand-mint rounded-xl font-poppins font-semibold text-lg shadow-xl hover:shadow-2xl border-2 border-brand-mint dark:border-brand-light-mint transform hover:scale-105 transition-all duration-300 w-full sm:w-auto"
           >
             Become a Sponsor
           </button>
