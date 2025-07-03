@@ -21,7 +21,7 @@ export const AdminLogin = () => {
 
   if (adminLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
@@ -71,25 +71,27 @@ export const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <div className="flex items-center justify-center mb-4">
+          <div className="flex items-center justify-center mb-6">
             <img
               className="h-12 w-auto"
               src="/lovable-uploads/52524576-df42-4ff1-ae6b-916c64b5f607.png"
               alt="Gospool"
             />
           </div>
-          <CardTitle className="text-2xl text-center">Admin Login</CardTitle>
-          <CardDescription className="text-center">
+          <CardTitle className="text-2xl text-center font-bold text-foreground">
+            Admin Login
+          </CardTitle>
+          <CardDescription className="text-center text-muted-foreground">
             Enter your credentials to access the admin dashboard
           </CardDescription>
         </CardHeader>
         <CardContent>
           {session && !isAdmin && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-sm text-red-600">
+            <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
+              <p className="text-sm text-destructive">
                 You are logged in as {session.user?.email} but don't have admin privileges.
               </p>
             </div>
@@ -104,6 +106,7 @@ export const AdminLogin = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="w-full"
               />
             </div>
             <div className="space-y-2">
@@ -114,6 +117,7 @@ export const AdminLogin = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="w-full"
               />
             </div>
             <Button
