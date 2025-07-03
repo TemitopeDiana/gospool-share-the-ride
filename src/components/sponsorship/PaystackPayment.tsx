@@ -82,7 +82,7 @@ const PaystackPayment = ({
       });
 
       const handler = window.PaystackPop.setup({
-        key: 'pk_live_1030aa73b63d2d22a4d02071a506a328de4ab853',
+        key: 'pk_test_950d1bc6b3ca24f9416ed0cd32db7b5cc45d5947',
         email,
         amount: Math.round(amount * 100),
         currency,
