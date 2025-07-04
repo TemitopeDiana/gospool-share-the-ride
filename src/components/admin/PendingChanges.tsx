@@ -35,20 +35,14 @@ export const PendingChanges = () => {
     queryKey: ['pending-changes'],
     queryFn: async () => {
       try {
-        // Query the pending_changes table directly without type casting
-        const { data, error } = await supabase
-          .from('pending_changes' as any)
-          .select('*')
-          .eq('status', 'pending')
-          .order('created_at', { ascending: false });
+        const { data, error } = await supabase.rpc('get_pending_changes');
         
         if (error) {
           console.error('Error fetching pending changes:', error);
           return [];
         }
         
-        // Return the data as-is, no type casting needed
-        return data || [];
+        return (data || []) as PendingChange[];
       } catch (error) {
         console.error('Error in pending changes query:', error);
         return [];
@@ -58,14 +52,9 @@ export const PendingChanges = () => {
 
   const approveMutation = useMutation({
     mutationFn: async (changeId: string) => {
-      const { error } = await supabase
-        .from('pending_changes' as any)
-        .update({ 
-          status: 'approved',
-          approved_by: (await supabase.auth.getUser()).data.user?.id,
-          approved_at: new Date().toISOString()
-        })
-        .eq('id', changeId);
+      const { error } = await supabase.rpc('approve_pending_change', {
+        change_id: changeId
+      });
       
       if (error) throw error;
     },
@@ -80,15 +69,10 @@ export const PendingChanges = () => {
 
   const rejectMutation = useMutation({
     mutationFn: async ({ changeId, reason }: { changeId: string; reason: string }) => {
-      const { error } = await supabase
-        .from('pending_changes' as any)
-        .update({ 
-          status: 'rejected',
-          rejected_by: (await supabase.auth.getUser()).data.user?.id,
-          rejected_at: new Date().toISOString(),
-          rejection_reason: reason
-        })
-        .eq('id', changeId);
+      const { error } = await supabase.rpc('reject_pending_change', {
+        change_id: changeId,
+        reason: reason
+      });
       
       if (error) throw error;
     },
@@ -133,7 +117,7 @@ export const PendingChanges = () => {
         </Card>
       ) : (
         <div className="space-y-4">
-          {pendingChanges.map((change: any) => (
+          {pendingChanges.map((change) => (
             <Card key={change.id}>
               <CardHeader>
                 <div className="flex justify-between items-start">

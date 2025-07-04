@@ -591,6 +591,35 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      approve_pending_change: {
+        Args: { change_id: string }
+        Returns: undefined
+      }
+      create_pending_change: {
+        Args: {
+          p_table_name: string
+          p_action_type: string
+          p_record_id?: string
+          p_old_data?: Json
+          p_new_data?: Json
+        }
+        Returns: undefined
+      }
+      get_pending_changes: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          table_name: string
+          action_type: string
+          record_id: string
+          old_data: Json
+          new_data: Json
+          created_by: string
+          created_at: string
+          status: string
+          created_by_profile: Json
+        }[]
+      }
       has_permission: {
         Args: { _user_id: string; _permission_type: string; _action: string }
         Returns: boolean
@@ -598,6 +627,10 @@ export type Database = {
       is_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
+      }
+      reject_pending_change: {
+        Args: { change_id: string; reason?: string }
+        Returns: undefined
       }
     }
     Enums: {

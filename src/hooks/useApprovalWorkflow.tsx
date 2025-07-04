@@ -34,17 +34,13 @@ export const useApprovalWorkflow = () => {
       oldData?: any;
       newData?: any;
     }) => {
-      // For now, we'll use a direct insert since the RPC function might not be available yet
-      const { error } = await supabase
-        .from('pending_changes' as any)
-        .insert({
-          table_name: params.tableName,
-          action_type: params.actionType,
-          record_id: params.recordId,
-          old_data: params.oldData,
-          new_data: params.newData,
-          created_by: (await supabase.auth.getUser()).data.user?.id
-        });
+      const { error } = await supabase.rpc('create_pending_change', {
+        p_table_name: params.tableName,
+        p_action_type: params.actionType,
+        p_record_id: params.recordId,
+        p_old_data: params.oldData,
+        p_new_data: params.newData
+      });
       
       if (error) throw error;
     },
