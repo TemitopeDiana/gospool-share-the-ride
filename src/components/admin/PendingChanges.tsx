@@ -34,15 +34,25 @@ export const PendingChanges = () => {
   const { data: pendingChanges = [], isLoading } = useQuery({
     queryKey: ['pending-changes'],
     queryFn: async () => {
-      // For now, we'll use a direct query since the RPC function might not be available yet
-      const { data, error } = await supabase
-        .from('pending_changes' as any)
-        .select('*')
-        .eq('status', 'pending')
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      return (data || []) as PendingChange[];
+      try {
+        // Query the pending_changes table directly without type casting
+        const { data, error } = await supabase
+          .from('pending_changes' as any)
+          .select('*')
+          .eq('status', 'pending')
+          .order('created_at', { ascending: false });
+        
+        if (error) {
+          console.error('Error fetching pending changes:', error);
+          return [];
+        }
+        
+        // Return the data as-is, no type casting needed
+        return data || [];
+      } catch (error) {
+        console.error('Error in pending changes query:', error);
+        return [];
+      }
     }
   });
 
@@ -123,7 +133,7 @@ export const PendingChanges = () => {
         </Card>
       ) : (
         <div className="space-y-4">
-          {pendingChanges.map((change) => (
+          {pendingChanges.map((change: any) => (
             <Card key={change.id}>
               <CardHeader>
                 <div className="flex justify-between items-start">
