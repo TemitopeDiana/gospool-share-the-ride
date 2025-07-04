@@ -58,11 +58,22 @@ export const DonationsPage = () => {
   const columns = [
     {
       key: 'donor_name',
-      label: 'Donor Name',
+      label: 'Donor',
       render: (value: string, row: any) => {
         if (row.is_anonymous && !showAnonymousDetails) {
           return 'Anonymous';
         }
+        
+        if (row.donor_type === 'organization') {
+          return (
+            <div>
+              <div className="font-medium">{row.organization_name || 'N/A'}</div>
+              <div className="text-sm text-gray-500">Contact: {row.contact_person || 'N/A'}</div>
+              <div className="text-xs text-gray-400 capitalize">{row.organization_type || 'N/A'}</div>
+            </div>
+          );
+        }
+        
         return value || 'N/A';
       },
     },
@@ -92,6 +103,15 @@ export const DonationsPage = () => {
       render: (value: number, row: any) => `${row.currency || 'NGN'} ${Number(value).toLocaleString()}`,
     },
     {
+      key: 'donor_type',
+      label: 'Type',
+      render: (value: string) => (
+        <span className="capitalize px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
+          {value || 'Individual'}
+        </span>
+      ),
+    },
+    {
       key: 'created_at',
       label: 'Date',
       render: (value: string) => format(new Date(value), 'MMM dd, yyyy'),
@@ -101,11 +121,6 @@ export const DonationsPage = () => {
       label: 'Anonymous',
       render: (value: boolean) => value ? 'Yes' : 'No',
     },
-    {
-      key: 'message',
-      label: 'Message',
-      render: (value: string) => value ? (value.length > 50 ? `${value.substring(0, 50)}...` : value) : '-',
-    },
   ];
 
   const handleApprove = (donation: any) => {
@@ -114,6 +129,11 @@ export const DonationsPage = () => {
 
   const handleReject = (donation: any) => {
     updateStatusMutation.mutate({ id: donation.id, status: 'failed' as DonationStatus });
+  };
+
+  // Only show approve/reject buttons for truly pending donations
+  const shouldShowActions = (donation: any) => {
+    return donation.status === 'pending';
   };
 
   if (isLoading) {
@@ -145,14 +165,36 @@ export const DonationsPage = () => {
           </Button>
         </div>
 
-        <AdminDataTable
-          data={donations}
-          columns={columns}
-          searchKey="donor_name"
-          showStatus={true}
-          onApprove={handleApprove}
-          onReject={handleReject}
-        />
+        <div className="bg-white rounded-lg border">
+          <div className="p-4 bg-green-50 border-b">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-medium text-green-800">Auto-Confirmation Active</h3>
+                <p className="text-sm text-green-600">
+                  Successful payments are automatically confirmed and donors receive email notifications
+                </p>
+              </div>
+              <div className="text-right">
+                <div className="text-sm text-green-600">
+                  Total Donations: {donations.length}
+                </div>
+                <div className="text-sm text-green-600">
+                  Completed: {donations.filter(d => d.status === 'completed').length}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <AdminDataTable
+            data={donations}
+            columns={columns}
+            searchKey="donor_name"
+            showStatus={true}
+            onApprove={handleApprove}
+            onReject={handleReject}
+            showActions={shouldShowActions}
+          />
+        </div>
       </div>
     </AdminLayout>
   );

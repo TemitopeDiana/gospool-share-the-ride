@@ -59,19 +59,45 @@ serve(async (req) => {
       throw transactionError
     }
 
-    // Update donation status
+    // Update donation status and get donation details
+    let donation = null
     if (transaction.donation_id) {
-      const { error: donationError } = await supabaseClient
+      const { data: donationData, error: donationError } = await supabaseClient
         .from('donations')
         .update({
           status: transactionStatus,
           updated_at: new Date().toISOString(),
         })
         .eq('id', transaction.donation_id)
+        .select()
+        .single()
 
       if (donationError) {
         console.error('Donation update error:', donationError)
         throw donationError
+      }
+
+      donation = donationData
+    }
+
+    // Send success email if payment was successful and we have donation details
+    if (transactionStatus === 'completed' && donation) {
+      try {
+        await supabaseClient.functions.invoke('send-donation-success-email', {
+          body: {
+            donorEmail: donation.donor_email,
+            donorName: donation.donor_name || donation.contact_person,
+            amount: donation.amount,
+            currency: donation.currency || 'NGN',
+            reference: reference,
+            donorType: donation.donor_type || 'individual',
+            organizationName: donation.organization_name,
+          },
+        })
+        console.log('Success email sent for donation:', donation.id)
+      } catch (emailError) {
+        console.error('Failed to send success email:', emailError)
+        // Don't fail the transaction if email fails
       }
     }
 
