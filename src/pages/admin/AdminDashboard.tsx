@@ -9,8 +9,9 @@ export const AdminDashboard = () => {
   const { data: stats, isLoading } = useQuery({
     queryKey: ['admin-stats'],
     queryFn: async () => {
-      const [donations, sponsorships, reports, projects, news, applications] = await Promise.all([
-        supabase.from('donations').select('amount', { count: 'exact' }),
+      const [donations, allDonations, sponsorships, reports, projects, news, applications] = await Promise.all([
+        supabase.from('donations').select('amount').eq('status', 'completed'),
+        supabase.from('donations').select('status', { count: 'exact' }),
         supabase.from('sponsorship_applications').select('id', { count: 'exact' }),
         supabase.from('impact_reports_requests').select('id', { count: 'exact' }),
         supabase.from('projects').select('id', { count: 'exact' }),
@@ -19,10 +20,12 @@ export const AdminDashboard = () => {
       ]);
 
       const totalDonations = donations.data?.reduce((sum, d) => sum + Number(d.amount || 0), 0) || 0;
+      const completedDonationsCount = donations.data?.length || 0;
 
       return {
         totalDonations,
-        donationCount: donations.count || 0,
+        completedDonationsCount,
+        totalDonationCount: allDonations.count || 0,
         sponsorshipCount: sponsorships.count || 0,
         reportCount: reports.count || 0,
         projectCount: projects.count || 0,
@@ -34,9 +37,9 @@ export const AdminDashboard = () => {
 
   const statCards = [
     {
-      title: 'Total Donations',
+      title: 'Total Donations (Completed)',
       value: `₦${(stats?.totalDonations || 0).toLocaleString()}`,
-      description: `${stats?.donationCount || 0} donations received`,
+      description: `${stats?.completedDonationsCount || 0} successful donations of ${stats?.totalDonationCount || 0} total`,
       icon: DollarSign,
       color: 'text-green-600',
     },
