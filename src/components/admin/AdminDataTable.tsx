@@ -11,12 +11,18 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Check, X, Search } from 'lucide-react';
+import { Check, X, Search, Edit, Trash2 } from 'lucide-react';
 
 interface Column {
   key: string;
   label: string;
   render?: (value: any, row: any) => React.ReactNode;
+}
+
+interface CustomAction {
+  label: string;
+  onClick: () => void;
+  variant?: 'default' | 'outline' | 'destructive';
 }
 
 interface AdminDataTableProps {
@@ -26,7 +32,11 @@ interface AdminDataTableProps {
   showStatus?: boolean;
   onApprove?: (item: any) => void;
   onReject?: (item: any) => void;
+  onEdit?: (item: any) => void;
+  onDelete?: (item: any) => void;
   showActions?: (item: any) => boolean;
+  customActions?: (item: any) => CustomAction[];
+  showAnonymousDetails?: boolean;
 }
 
 export const AdminDataTable = ({
@@ -36,7 +46,11 @@ export const AdminDataTable = ({
   showStatus = false,
   onApprove,
   onReject,
+  onEdit,
+  onDelete,
   showActions,
+  customActions,
+  showAnonymousDetails = false,
 }: AdminDataTableProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -61,6 +75,8 @@ export const AdminDataTable = ({
     }
   };
 
+  const hasActionButtons = onApprove || onReject || onEdit || onDelete || customActions;
+
   return (
     <div className="space-y-4">
       <div className="flex items-center space-x-2">
@@ -73,6 +89,11 @@ export const AdminDataTable = ({
             className="pl-10"
           />
         </div>
+        {showAnonymousDetails && (
+          <div className="text-sm text-gray-500">
+            * Anonymous donations show limited details for privacy
+          </div>
+        )}
       </div>
 
       <div className="rounded-md border">
@@ -83,14 +104,14 @@ export const AdminDataTable = ({
                 <TableHead key={column.key}>{column.label}</TableHead>
               ))}
               {showStatus && <TableHead>Status</TableHead>}
-              {(onApprove || onReject) && <TableHead>Actions</TableHead>}
+              {hasActionButtons && <TableHead>Actions</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredData.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length + (showStatus ? 1 : 0) + (onApprove || onReject ? 1 : 0)}
+                  colSpan={columns.length + (showStatus ? 1 : 0) + (hasActionButtons ? 1 : 0)}
                   className="text-center py-8 text-gray-500"
                 >
                   No data found
@@ -113,10 +134,11 @@ export const AdminDataTable = ({
                       </Badge>
                     </TableCell>
                   )}
-                  {(onApprove || onReject) && (
+                  {hasActionButtons && (
                     <TableCell>
                       <div className="flex space-x-2">
-                        {(!showActions || showActions(item)) && (
+                        {/* Approve/Reject buttons */}
+                        {(!showActions || showActions(item)) && (onApprove || onReject) && (
                           <>
                             {onApprove && (
                               <Button
@@ -138,7 +160,41 @@ export const AdminDataTable = ({
                             )}
                           </>
                         )}
-                        {showActions && !showActions(item) && (
+                        
+                        {/* Edit/Delete buttons */}
+                        {onEdit && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => onEdit(item)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        )}
+                        
+                        {onDelete && (
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => onDelete(item)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+
+                        {/* Custom actions */}
+                        {customActions && customActions(item).map((action, actionIndex) => (
+                          <Button
+                            key={actionIndex}
+                            size="sm"
+                            variant={action.variant || 'default'}
+                            onClick={action.onClick}
+                          >
+                            {action.label}
+                          </Button>
+                        ))}
+
+                        {showActions && !showActions(item) && !onEdit && !onDelete && !customActions && (
                           <span className="text-sm text-gray-500">Auto-confirmed</span>
                         )}
                       </div>
