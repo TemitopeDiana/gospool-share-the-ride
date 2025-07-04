@@ -6,44 +6,47 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Textarea } from '@/components/ui/textarea';
 import { format } from 'date-fns';
 import { Check, X, Eye } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
+interface PendingChange {
+  id: string;
+  table_name: string;
+  action_type: string;
+  record_id?: string;
+  old_data?: any;
+  new_data?: any;
+  created_by: string;
+  created_at: string;
+  status: string;
+  created_by_profile?: {
+    full_name?: string;
+    email?: string;
+  };
+}
+
 export const PendingChanges = () => {
-  const [selectedChange, setSelectedChange] = useState<any>(null);
-  const [rejectionReason, setRejectionReason] = useState('');
+  const [selectedChange, setSelectedChange] = useState<PendingChange | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const { data: pendingChanges = [], isLoading } = useQuery({
     queryKey: ['pending-changes'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('pending_changes')
-        .select(`
-          *,
-          created_by_profile:admin_users!created_by(full_name, email)
-        `)
-        .eq('status', 'pending')
-        .order('created_at', { ascending: false });
+      // Use RPC to get pending changes since TypeScript types don't include the table
+      const { data, error } = await supabase.rpc('get_pending_changes');
       
       if (error) throw error;
-      return data || [];
+      return (data || []) as PendingChange[];
     }
   });
 
   const approveMutation = useMutation({
     mutationFn: async (changeId: string) => {
-      const { error } = await supabase
-        .from('pending_changes')
-        .update({ 
-          status: 'approved', 
-          approved_at: new Date().toISOString(),
-          approved_by: (await supabase.auth.getUser()).data.user?.id
-        })
-        .eq('id', changeId);
+      const { error } = await supabase.rpc('approve_pending_change', {
+        change_id: changeId
+      });
       
       if (error) throw error;
     },
@@ -58,21 +61,15 @@ export const PendingChanges = () => {
 
   const rejectMutation = useMutation({
     mutationFn: async ({ changeId, reason }: { changeId: string; reason: string }) => {
-      const { error } = await supabase
-        .from('pending_changes')
-        .update({ 
-          status: 'rejected', 
-          rejected_at: new Date().toISOString(),
-          rejected_by: (await supabase.auth.getUser()).data.user?.id,
-          rejection_reason: reason
-        })
-        .eq('id', changeId);
+      const { error } = await supabase.rpc('reject_pending_change', {
+        change_id: changeId,
+        reason: reason
+      });
       
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pending-changes'] });
-      setRejectionReason('');
       toast({
         title: "Change rejected",
         description: "The change has been rejected.",
@@ -124,7 +121,7 @@ export const PendingChanges = () => {
                       <span className="text-lg">{change.table_name}</span>
                     </CardTitle>
                     <CardDescription>
-                      Submitted by {change.created_by_profile?.full_name} on{' '}
+                      Submitted by {change.created_by_profile?.full_name || 'Admin User'} on{' '}
                       {format(new Date(change.created_at), 'MMM dd, yyyy HH:mm')}
                     </CardDescription>
                   </div>

@@ -22,6 +22,7 @@ export const useApprovalWorkflow = () => {
     }
   });
 
+  // Check for super_admin role by comparing strings directly
   const isSuperAdmin = userRole === 'super_admin';
   const isAdmin = userRole === 'admin' || isSuperAdmin;
 
@@ -33,15 +34,14 @@ export const useApprovalWorkflow = () => {
       oldData?: any;
       newData?: any;
     }) => {
-      const { error } = await supabase
-        .from('pending_changes')
-        .insert({
-          table_name: params.tableName,
-          action_type: params.actionType,
-          record_id: params.recordId,
-          old_data: params.oldData,
-          new_data: params.newData,
-        });
+      // Use raw SQL query to insert into pending_changes table
+      const { error } = await supabase.rpc('create_pending_change', {
+        p_table_name: params.tableName,
+        p_action_type: params.actionType,
+        p_record_id: params.recordId,
+        p_old_data: params.oldData,
+        p_new_data: params.newData,
+      });
       
       if (error) throw error;
     },

@@ -2,7 +2,7 @@
 import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAdmin } from '@/hooks/useAdmin';
-import { AdminSidebar } from './AdminSidebar';
+import AdminSidebar from './AdminSidebar';
 import { AdminHeader } from './AdminHeader';
 import { AdminThemeProvider } from '@/contexts/AdminThemeContext';
 import { Loader2 } from 'lucide-react';

@@ -34,6 +34,7 @@ const AdminSidebar = () => {
     }
   });
 
+  // Check for super_admin role by comparing strings directly
   const isSuperAdmin = userRole === 'super_admin';
 
   const navigationItems = [
