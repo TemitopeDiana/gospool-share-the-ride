@@ -22,8 +22,8 @@ export const useApprovalWorkflow = () => {
     }
   });
 
-  // Check for super_admin role by comparing strings directly
-  const isSuperAdmin = userRole === 'super_admin';
+  // Check for super_admin role by comparing strings directly - cast to string to handle type comparison
+  const isSuperAdmin = (userRole as string) === 'super_admin';
   const isAdmin = userRole === 'admin' || isSuperAdmin;
 
   const createPendingChange = useMutation({
@@ -34,14 +34,17 @@ export const useApprovalWorkflow = () => {
       oldData?: any;
       newData?: any;
     }) => {
-      // Use raw SQL query to insert into pending_changes table
-      const { error } = await supabase.rpc('create_pending_change', {
-        p_table_name: params.tableName,
-        p_action_type: params.actionType,
-        p_record_id: params.recordId,
-        p_old_data: params.oldData,
-        p_new_data: params.newData,
-      });
+      // For now, we'll use a direct insert since the RPC function might not be available yet
+      const { error } = await supabase
+        .from('pending_changes' as any)
+        .insert({
+          table_name: params.tableName,
+          action_type: params.actionType,
+          record_id: params.recordId,
+          old_data: params.oldData,
+          new_data: params.newData,
+          created_by: (await supabase.auth.getUser()).data.user?.id
+        });
       
       if (error) throw error;
     },

@@ -34,8 +34,12 @@ export const PendingChanges = () => {
   const { data: pendingChanges = [], isLoading } = useQuery({
     queryKey: ['pending-changes'],
     queryFn: async () => {
-      // Use RPC to get pending changes since TypeScript types don't include the table
-      const { data, error } = await supabase.rpc('get_pending_changes');
+      // For now, we'll use a direct query since the RPC function might not be available yet
+      const { data, error } = await supabase
+        .from('pending_changes' as any)
+        .select('*')
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false });
       
       if (error) throw error;
       return (data || []) as PendingChange[];
@@ -44,9 +48,14 @@ export const PendingChanges = () => {
 
   const approveMutation = useMutation({
     mutationFn: async (changeId: string) => {
-      const { error } = await supabase.rpc('approve_pending_change', {
-        change_id: changeId
-      });
+      const { error } = await supabase
+        .from('pending_changes' as any)
+        .update({ 
+          status: 'approved',
+          approved_by: (await supabase.auth.getUser()).data.user?.id,
+          approved_at: new Date().toISOString()
+        })
+        .eq('id', changeId);
       
       if (error) throw error;
     },
@@ -61,10 +70,15 @@ export const PendingChanges = () => {
 
   const rejectMutation = useMutation({
     mutationFn: async ({ changeId, reason }: { changeId: string; reason: string }) => {
-      const { error } = await supabase.rpc('reject_pending_change', {
-        change_id: changeId,
-        reason: reason
-      });
+      const { error } = await supabase
+        .from('pending_changes' as any)
+        .update({ 
+          status: 'rejected',
+          rejected_by: (await supabase.auth.getUser()).data.user?.id,
+          rejected_at: new Date().toISOString(),
+          rejection_reason: reason
+        })
+        .eq('id', changeId);
       
       if (error) throw error;
     },
