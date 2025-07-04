@@ -123,14 +123,18 @@ export type Database = {
       donations: {
         Row: {
           amount: number
+          contact_person: string | null
           created_at: string | null
           currency: string | null
           donor_email: string | null
           donor_name: string | null
           donor_phone: string | null
+          donor_type: string | null
           id: string
           is_anonymous: boolean | null
           message: string | null
+          organization_name: string | null
+          organization_type: string | null
           status: Database["public"]["Enums"]["donation_status"] | null
           stripe_payment_intent_id: string | null
           updated_at: string | null
@@ -138,14 +142,18 @@ export type Database = {
         }
         Insert: {
           amount: number
+          contact_person?: string | null
           created_at?: string | null
           currency?: string | null
           donor_email?: string | null
           donor_name?: string | null
           donor_phone?: string | null
+          donor_type?: string | null
           id?: string
           is_anonymous?: boolean | null
           message?: string | null
+          organization_name?: string | null
+          organization_type?: string | null
           status?: Database["public"]["Enums"]["donation_status"] | null
           stripe_payment_intent_id?: string | null
           updated_at?: string | null
@@ -153,14 +161,18 @@ export type Database = {
         }
         Update: {
           amount?: number
+          contact_person?: string | null
           created_at?: string | null
           currency?: string | null
           donor_email?: string | null
           donor_name?: string | null
           donor_phone?: string | null
+          donor_type?: string | null
           id?: string
           is_anonymous?: boolean | null
           message?: string | null
+          organization_name?: string | null
+          organization_type?: string | null
           status?: Database["public"]["Enums"]["donation_status"] | null
           stripe_payment_intent_id?: string | null
           updated_at?: string | null

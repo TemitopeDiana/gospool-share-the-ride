@@ -12,6 +12,10 @@ interface PaymentData {
   isAnonymous?: boolean;
   church?: string;
   isChristian?: string;
+  donorType?: string;
+  organizationName?: string;
+  organizationType?: string;
+  contactPerson?: string;
 }
 
 export const usePaystackPayment = () => {
@@ -22,7 +26,6 @@ export const usePaystackPayment = () => {
     setIsLoading(true);
     
     try {
-      // Remove authentication requirement for donations
       const { data, error } = await supabase.functions.invoke('paystack-initialize', {
         body: paymentData,
       });

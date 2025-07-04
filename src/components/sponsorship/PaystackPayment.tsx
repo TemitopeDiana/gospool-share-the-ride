@@ -12,6 +12,10 @@ interface PaystackPaymentProps {
   isAnonymous: boolean;
   church: string;
   isChristian: string;
+  donorType?: string;
+  organizationName?: string;
+  organizationType?: string;
+  contactPerson?: string;
   onSuccess: () => void;
   onError: (error: string) => void;
 }
@@ -35,6 +39,10 @@ const PaystackPayment = ({
   isAnonymous,
   church,
   isChristian,
+  donorType = 'individual',
+  organizationName,
+  organizationType,
+  contactPerson,
   onSuccess,
   onError,
 }: PaystackPaymentProps) => {
@@ -79,6 +87,10 @@ const PaystackPayment = ({
         isAnonymous,
         church,
         isChristian,
+        donorType,
+        organizationName,
+        organizationType,
+        contactPerson,
       });
 
       const handler = window.PaystackPop.setup({
@@ -93,6 +105,10 @@ const PaystackPayment = ({
           is_anonymous: isAnonymous,
           church,
           is_christian: isChristian,
+          donor_type: donorType,
+          organization_name: organizationName,
+          organization_type: organizationType,
+          contact_person: contactPerson,
         },
         callback: handlePaymentSuccess,
         onClose: handlePaymentClose,
@@ -113,6 +129,10 @@ const PaystackPayment = ({
     isAnonymous,
     church,
     isChristian,
+    donorType,
+    organizationName,
+    organizationType,
+    contactPerson,
     initializePayment,
     handlePaymentSuccess,
     handlePaymentClose,
@@ -124,7 +144,6 @@ const PaystackPayment = ({
     script.src = 'https://js.paystack.co/v1/inline.js';
     script.async = true;
     script.onload = () => {
-      // Wait a bit for Paystack to be fully initialized
       setTimeout(() => {
         if (window.PaystackPop && !paymentInitialized.current) {
           handlePayment();

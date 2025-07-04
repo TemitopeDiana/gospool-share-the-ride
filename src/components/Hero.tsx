@@ -32,17 +32,17 @@ const Hero = () => {
               </span>
             </h1>
             <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 dark:text-gray-300 mb-8 sm:mb-12 leading-relaxed font-ibm-plex text-center lg:text-left">
-              Join a community-driven carpool network that connects church members for safe, 
-              free transportation. Never miss services again while building stronger bonds 
+              Join a faith-driven carpool network that connects church members for safe, 
+              free and reliable transportation. Never miss services again while building stronger bonds 
               with your church family and helping the environment.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-8 sm:mb-16 justify-center lg:justify-start">
               <Button 
                 size="lg" 
-                className="bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-primary text-white px-8 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl font-poppins font-semibold shadow-2xl transform hover:scale-105 transition-all duration-300 rounded-2xl w-full sm:w-auto touch-manipulation"
+                className="bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-primary text-white px-8 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl font-poppins font-bold shadow-2xl transform hover:scale-105 transition-all duration-300 rounded-2xl w-full sm:w-auto touch-manipulation"
                 onClick={handleComingSoon}
               >
-                Find a Ride
+                Register Your Church
               </Button>
               <Button 
                 size="lg" 
@@ -50,7 +50,7 @@ const Hero = () => {
                 className="border-3 border-brand-mint text-brand-mint hover:bg-brand-mint hover:text-white dark:border-brand-light-mint dark:text-brand-light-mint dark:hover:bg-brand-light-mint dark:hover:text-brand-dark-teal px-8 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl font-poppins font-semibold shadow-2xl transform hover:scale-105 transition-all duration-300 rounded-2xl w-full sm:w-auto touch-manipulation"
                 onClick={handleComingSoon}
               >
-                Register Your Church
+                Find a Ride
               </Button>
             </div>
 
