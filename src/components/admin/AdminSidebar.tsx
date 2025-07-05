@@ -1,7 +1,6 @@
 
 import { Link, useLocation } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { useAdmin } from '@/hooks/useAdmin';
 import { 
   LayoutDashboard, 
   Users, 
@@ -21,23 +20,7 @@ import { cn } from '@/lib/utils';
 
 const AdminSidebar = () => {
   const location = useLocation();
-
-  const { data: userRole } = useQuery({
-    queryKey: ['user-role'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
-        .single();
-      
-      if (error && error.code !== 'PGRST116') throw error;
-      return data?.role || 'user';
-    }
-  });
-
-  // Check for super_admin role - cast to string to handle the type comparison
-  const isSuperAdmin = (userRole as string) === 'super_admin';
+  const { isSuperAdmin } = useAdmin();
 
   const navigationItems = [
     {

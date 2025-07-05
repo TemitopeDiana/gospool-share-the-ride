@@ -10,27 +10,25 @@ export const useAdmin = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  const { data: isAdmin, isLoading: adminCheckLoading } = useQuery({
-    queryKey: ['admin-check', session?.user?.id],
+  const { data: userRoles, isLoading: rolesLoading } = useQuery({
+    queryKey: ['user-roles', session?.user?.id],
     queryFn: async () => {
-      if (!session?.user?.id) return false;
+      if (!session?.user?.id) return [];
       
-      console.log('Checking admin status for user:', session.user.id);
+      console.log('Checking user roles for user:', session.user.id);
       
       const { data, error } = await supabase
         .from('user_roles')
         .select('role')
-        .eq('user_id', session.user.id)
-        .eq('role', 'admin')
-        .single();
+        .eq('user_id', session.user.id);
       
-      if (error && error.code !== 'PGRST116') {
-        console.error('Admin check error:', error);
-        return false;
+      if (error) {
+        console.error('User roles check error:', error);
+        return [];
       }
       
-      console.log('Admin check result:', !!data);
-      return !!data;
+      console.log('User roles result:', data);
+      return data || [];
     },
     enabled: !!session?.user?.id,
   });
@@ -69,10 +67,17 @@ export const useAdmin = () => {
     }
   };
 
+  // Check if user has admin or super_admin role
+  const isAdmin = userRoles?.some(role => role.role === 'admin' || role.role === 'super_admin') || false;
+  
+  // Check if user has super_admin role specifically
+  const isSuperAdmin = userRoles?.some(role => role.role === 'super_admin') || false;
+
   return {
     session,
-    isAdmin: !!isAdmin,
-    isLoading: isLoading || adminCheckLoading,
+    isAdmin,
+    isSuperAdmin,
+    isLoading: isLoading || rolesLoading,
     signOut,
   };
 };
