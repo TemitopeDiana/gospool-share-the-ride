@@ -18,11 +18,9 @@ const volunteerSchema = z.object({
   full_name: z.string().min(2, 'Full name is required'),
   email: z.string().email('Valid email is required'),
   phone: z.string().optional(),
-  skills: z.string().min(10, 'Please describe your skills'),
   experience: z.string().optional(),
   motivation: z.string().min(20, 'Please tell us why you want to volunteer'),
-  availability: z.string().min(5, 'Please describe your availability'),
-  preferred_areas: z.array(z.string()).min(1, 'Please select at least one area'),
+  portfolio_url: z.string().url().optional().or(z.literal('')),
   resume_url: z.string().url().optional().or(z.literal('')),
 });
 
@@ -61,12 +59,21 @@ export const VolunteerForm = ({ open, onClose }: VolunteerFormProps) => {
 
   const submitApplication = useMutation({
     mutationFn: async (data: VolunteerFormData) => {
+      // Use team_applications table for now with position_applied as "Volunteer"
+      const applicationData = {
+        full_name: data.full_name,
+        email: data.email,
+        phone: data.phone || '',
+        experience: `${data.experience || ''}\n\nPreferred Areas: ${preferredAreas.join(', ')}`,
+        motivation: data.motivation,
+        position_applied: 'Volunteer',
+        portfolio_url: data.portfolio_url || null,
+        resume_url: data.resume_url || null,
+      };
+
       const { error } = await supabase
-        .from('volunteer_applications')
-        .insert([{
-          ...data,
-          preferred_areas: preferredAreas,
-        }]);
+        .from('team_applications')
+        .insert([applicationData]);
 
       if (error) throw error;
     },
@@ -90,10 +97,15 @@ export const VolunteerForm = ({ open, onClose }: VolunteerFormProps) => {
   });
 
   const onSubmit = (data: VolunteerFormData) => {
-    submitApplication.mutate({
-      ...data,
-      preferred_areas: preferredAreas,
-    });
+    if (preferredAreas.length === 0) {
+      toast({
+        title: "Error",
+        description: "Please select at least one volunteer area.",
+        variant: "destructive",
+      });
+      return;
+    }
+    submitApplication.mutate(data);
   };
 
   const handleAreaChange = (area: string, checked: boolean) => {
@@ -168,19 +180,6 @@ export const VolunteerForm = ({ open, onClose }: VolunteerFormProps) => {
               </div>
 
               <div>
-                <Label htmlFor="skills">Skills & Expertise *</Label>
-                <Textarea
-                  id="skills"
-                  {...register('skills')}
-                  placeholder="Describe your skills and areas of expertise..."
-                  rows={3}
-                />
-                {errors.skills && (
-                  <p className="text-sm text-red-600 mt-1">{errors.skills.message}</p>
-                )}
-              </div>
-
-              <div>
                 <Label htmlFor="experience">Previous Volunteer Experience</Label>
                 <Textarea
                   id="experience"
@@ -204,16 +203,12 @@ export const VolunteerForm = ({ open, onClose }: VolunteerFormProps) => {
               </div>
 
               <div>
-                <Label htmlFor="availability">Availability *</Label>
-                <Textarea
-                  id="availability"
-                  {...register('availability')}
-                  placeholder="When are you available to volunteer? (days, times, frequency)"
-                  rows={2}
+                <Label htmlFor="portfolio_url">Portfolio/Website URL</Label>
+                <Input
+                  id="portfolio_url"
+                  {...register('portfolio_url')}
+                  placeholder="Link to your portfolio or website (optional)"
                 />
-                {errors.availability && (
-                  <p className="text-sm text-red-600 mt-1">{errors.availability.message}</p>
-                )}
               </div>
 
               <div>

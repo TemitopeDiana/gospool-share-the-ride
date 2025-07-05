@@ -19,11 +19,10 @@ interface VolunteerApplication {
   full_name: string;
   email: string;
   phone?: string;
-  skills: string;
   experience?: string;
-  motivation: string;
-  availability: string;
-  preferred_areas: string[];
+  motivation?: string;
+  position_applied: string;
+  portfolio_url?: string;
   resume_url?: string;
   created_at: string;
   status: ApplicationStatus;
@@ -38,8 +37,9 @@ export const VolunteerApplicationsPage = () => {
     queryKey: ['admin-volunteer-applications'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('volunteer_applications')
+        .from('team_applications')
         .select('*')
+        .eq('position_applied', 'Volunteer')
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -50,7 +50,7 @@ export const VolunteerApplicationsPage = () => {
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: ApplicationStatus }) => {
       const { error } = await supabase
-        .from('volunteer_applications')
+        .from('team_applications')
         .update({ status })
         .eq('id', id);
       
@@ -72,6 +72,15 @@ export const VolunteerApplicationsPage = () => {
     },
   });
 
+  const extractPreferredAreas = (experience: string) => {
+    if (!experience) return [];
+    const match = experience.match(/Preferred Areas: (.+)/);
+    if (match) {
+      return match[1].split(', ').filter(area => area.trim());
+    }
+    return [];
+  };
+
   const columns = [
     {
       key: 'full_name',
@@ -91,22 +100,25 @@ export const VolunteerApplicationsPage = () => {
       render: (value: string) => value || 'N/A',
     },
     {
-      key: 'preferred_areas',
+      key: 'experience',
       label: 'Preferred Areas',
-      render: (value: string[]) => (
-        <div className="flex flex-wrap gap-1">
-          {value?.slice(0, 2).map((area, index) => (
-            <Badge key={index} variant="secondary" className="text-xs">
-              {area}
-            </Badge>
-          ))}
-          {value?.length > 2 && (
-            <Badge variant="outline" className="text-xs">
-              +{value.length - 2} more
-            </Badge>
-          )}
-        </div>
-      ),
+      render: (value: string) => {
+        const areas = extractPreferredAreas(value);
+        return (
+          <div className="flex flex-wrap gap-1">
+            {areas?.slice(0, 2).map((area, index) => (
+              <Badge key={index} variant="secondary" className="text-xs">
+                {area}
+              </Badge>
+            ))}
+            {areas?.length > 2 && (
+              <Badge variant="outline" className="text-xs">
+                +{areas.length - 2} more
+              </Badge>
+            )}
+          </div>
+        );
+      },
     },
     {
       key: 'created_at',
@@ -209,37 +221,30 @@ export const VolunteerApplicationsPage = () => {
                 <div>
                   <h4 className="font-semibold mb-2">Preferred Volunteer Areas</h4>
                   <div className="flex flex-wrap gap-2">
-                    {selectedApplication.preferred_areas?.map((area, index) => (
+                    {extractPreferredAreas(selectedApplication.experience || '').map((area, index) => (
                       <Badge key={index} variant="secondary">{area}</Badge>
                     ))}
                   </div>
                 </div>
 
-                <div>
-                  <h4 className="font-semibold mb-2">Skills & Expertise</h4>
-                  <p className="bg-gray-50 p-3 rounded-lg">{selectedApplication.skills}</p>
-                </div>
-
                 {selectedApplication.experience && (
                   <div>
-                    <h4 className="font-semibold mb-2">Previous Experience</h4>
-                    <p className="bg-gray-50 p-3 rounded-lg">{selectedApplication.experience}</p>
+                    <h4 className="font-semibold mb-2">Experience & Skills</h4>
+                    <p className="bg-gray-50 p-3 rounded-lg">
+                      {selectedApplication.experience.split('\n\nPreferred Areas:')[0] || 'No experience provided'}
+                    </p>
                   </div>
                 )}
 
-                <div>
-                  <h4 className="font-semibold mb-2">Motivation</h4>
-                  <p className="bg-gray-50 p-3 rounded-lg">{selectedApplication.motivation}</p>
-                </div>
-
-                <div>
-                  <h4 className="font-semibold mb-2">Availability</h4>
-                  <p className="bg-gray-50 p-3 rounded-lg">{selectedApplication.availability}</p>
-                </div>
-
-                {selectedApplication.resume_url && (
+                {selectedApplication.motivation && (
                   <div>
-                    <h4 className="font-semibold mb-2">Resume/CV</h4>
+                    <h4 className="font-semibold mb-2">Motivation</h4>
+                    <p className="bg-gray-50 p-3 rounded-lg">{selectedApplication.motivation}</p>
+                  </div>
+                )}
+
+                <div className="flex gap-4">
+                  {selectedApplication.resume_url && (
                     <Button
                       variant="outline"
                       onClick={() => window.open(selectedApplication.resume_url, '_blank')}
@@ -247,8 +252,17 @@ export const VolunteerApplicationsPage = () => {
                       <ExternalLink className="h-4 w-4 mr-2" />
                       View Resume
                     </Button>
-                  </div>
-                )}
+                  )}
+                  {selectedApplication.portfolio_url && (
+                    <Button
+                      variant="outline"
+                      onClick={() => window.open(selectedApplication.portfolio_url, '_blank')}
+                    >
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      View Portfolio
+                    </Button>
+                  )}
+                </div>
               </div>
             </DialogContent>
           </Dialog>
