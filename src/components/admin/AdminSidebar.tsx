@@ -13,7 +13,9 @@ import {
   Settings,
   UserCheck,
   Clock,
-  CreditCard
+  CreditCard,
+  HandHeart,
+  UserPlus
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -49,8 +51,13 @@ const AdminSidebar = () => {
       icon: DollarSign,
     },
     {
-      name: 'Sponsorships',
-      href: '/admin/sponsorships',
+      name: 'Sponsor Requests',
+      href: '/admin/sponsor-requests',
+      icon: HandHeart,
+    },
+    {
+      name: 'Impact Sponsors',
+      href: '/admin/sponsors',
       icon: Award,
     },
     {
@@ -62,6 +69,11 @@ const AdminSidebar = () => {
       name: 'Team Applications',
       href: '/admin/applications',
       icon: Users,
+    },
+    {
+      name: 'Volunteer Applications',
+      href: '/admin/volunteer-applications',
+      icon: UserPlus,
     },
     {
       name: 'Projects',
@@ -82,11 +94,6 @@ const AdminSidebar = () => {
       name: 'Board Advisors',
       href: '/admin/advisors',
       icon: Users,
-    },
-    {
-      name: 'Sponsors',
-      href: '/admin/sponsors',
-      icon: Award,
     },
     {
       name: 'Admin Users',
