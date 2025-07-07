@@ -67,11 +67,17 @@ export const useAdmin = () => {
     }
   };
 
-  // Check if user has admin or super_admin role
-  const isAdmin = userRoles?.some(role => role.role === 'admin' || role.role === 'super_admin') || false;
+  // Check if user has admin or super_admin role using string comparison to avoid type issues
+  const isAdmin = userRoles?.some(role => {
+    const roleString = String(role.role);
+    return roleString === 'admin' || roleString === 'super_admin';
+  }) || false;
   
-  // Check if user has super_admin role specifically
-  const isSuperAdmin = userRoles?.some(role => role.role === 'super_admin') || false;
+  // Check if user has super_admin role specifically using string comparison
+  const isSuperAdmin = userRoles?.some(role => {
+    const roleString = String(role.role);
+    return roleString === 'super_admin';
+  }) || false;
 
   return {
     session,
