@@ -2,9 +2,10 @@
 import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAdmin } from '@/hooks/useAdmin';
-import AdminSidebar from './AdminSidebar';
 import { AdminHeader } from './AdminHeader';
+import { AppSidebar } from './AppSidebar';
 import { AdminThemeProvider } from '@/contexts/AdminThemeContext';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { Loader2 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -17,7 +18,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -29,8 +30,8 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
   if (!isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-2">Access Denied</h1>
+        <div className="text-center space-y-2">
+          <h1 className="text-2xl font-bold text-foreground">Access Denied</h1>
           <p className="text-muted-foreground">You don't have admin privileges.</p>
         </div>
       </div>
@@ -39,17 +40,19 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
 
   return (
     <AdminThemeProvider>
-      <div className="min-h-screen bg-background flex w-full">
-        <AdminSidebar />
-        <div className="flex-1 flex flex-col min-w-0">
-          <AdminHeader />
-          <main className="flex-1 overflow-auto">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-              {children}
-            </div>
-          </main>
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full bg-background">
+          <AppSidebar />
+          <SidebarInset className="flex flex-col min-w-0">
+            <AdminHeader />
+            <main className="flex-1 overflow-auto">
+              <div className="container max-w-screen-2xl mx-auto p-6">
+                {children}
+              </div>
+            </main>
+          </SidebarInset>
         </div>
-      </div>
+      </SidebarProvider>
     </AdminThemeProvider>
   );
 };
