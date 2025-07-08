@@ -8,14 +8,13 @@ export const CallToAction = () => {
   const [showVolunteerForm, setShowVolunteerForm] = useState(false);
 
   return (
-    <section className="py-20 bg-gradient-to-br from-primary via-primary/80 to-primary/90 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-background/5 to-background/10"></div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+    <section className="py-20 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary-foreground mb-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
             Ready to Make a Difference?
           </h2>
-          <p className="text-xl text-primary-foreground/80 mb-8">
+          <p className="text-xl text-blue-100 mb-8">
             Join our community of changemakers and help us create lasting impact in lives around the world.
           </p>
           
@@ -23,7 +22,7 @@ export const CallToAction = () => {
             <Button 
               asChild
               size="lg" 
-              className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+              className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 text-lg font-semibold"
             >
               <a href="/sponsorship">
                 <Heart className="mr-2 h-5 w-5" />
@@ -36,14 +35,14 @@ export const CallToAction = () => {
               size="lg"
               variant="outline"
               onClick={() => setShowVolunteerForm(true)}
-              className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+              className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg font-semibold"
             >
               <Users className="mr-2 h-5 w-5" />
               Volunteer With Us
             </Button>
           </div>
           
-          <p className="text-primary-foreground/70 mt-6 text-sm">
+          <p className="text-blue-200 mt-6 text-sm">
             Every contribution, big or small, creates ripples of positive change.
           </p>
         </div>
