@@ -8,13 +8,13 @@ export const CallToAction = () => {
   const [showVolunteerForm, setShowVolunteerForm] = useState(false);
 
   return (
-    <section className="py-20 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700">
+    <section className="py-20 bg-gradient-to-br from-brand-dark-teal via-brand-teal to-brand-primary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
             Ready to Make a Difference?
           </h2>
-          <p className="text-xl text-blue-100 mb-8">
+          <p className="text-xl text-brand-light-mint mb-8">
             Join our community of changemakers and help us create lasting impact in lives around the world.
           </p>
           
@@ -22,7 +22,7 @@ export const CallToAction = () => {
             <Button 
               asChild
               size="lg" 
-              className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 text-lg font-semibold"
+              className="bg-white text-brand-dark-teal hover:bg-brand-light-mint hover:text-brand-primary px-8 py-4 text-lg font-semibold border-2 border-white shadow-xl rounded-xl transform hover:scale-105 transition-all duration-300"
             >
               <a href="/sponsorship">
                 <Heart className="mr-2 h-5 w-5" />
@@ -35,14 +35,14 @@ export const CallToAction = () => {
               size="lg"
               variant="outline"
               onClick={() => setShowVolunteerForm(true)}
-              className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg font-semibold"
+              className="border-2 border-white text-white hover:bg-white hover:text-brand-dark-teal px-8 py-4 text-lg font-semibold bg-white/10 backdrop-blur-sm rounded-xl transform hover:scale-105 transition-all duration-300 shadow-xl"
             >
               <Users className="mr-2 h-5 w-5" />
               Volunteer With Us
             </Button>
           </div>
           
-          <p className="text-blue-200 mt-6 text-sm">
+          <p className="text-brand-light-mint/80 mt-6 text-sm">
             Every contribution, big or small, creates ripples of positive change.
           </p>
         </div>
