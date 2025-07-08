@@ -94,7 +94,7 @@ const DonationSection = ({ shouldAutoOpen }: DonationSectionProps) => {
           <h2 className="font-playfair text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-brand-primary to-brand-mint dark:from-brand-mint dark:to-brand-light-mint bg-clip-text text-transparent mb-3 sm:mb-4 px-2">
             Make a Donation
           </h2>
-          <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto font-ibm-plex leading-relaxed px-4">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-800 dark:text-gray-200 max-w-3xl mx-auto font-ibm-plex leading-relaxed px-4">
             Every contribution, no matter the size, helps us provide free transportation and build stronger church communities.
           </p>
         </div>

@@ -31,7 +31,7 @@ const Hero = () => {
                 Church & Fellowship
               </span>
             </h1>
-            <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 dark:text-gray-300 mb-8 sm:mb-12 leading-relaxed font-ibm-plex text-center lg:text-left">
+            <p className="text-lg sm:text-xl lg:text-2xl text-gray-800 dark:text-gray-200 mb-8 sm:mb-12 leading-relaxed font-ibm-plex text-center lg:text-left">
               Join a faith-driven carpool network that connects church members for safe, 
               free and reliable transportation. Never miss services again while building stronger bonds 
               with your church family and helping the environment.
@@ -96,15 +96,15 @@ const Hero = () => {
               <div className="space-y-3 sm:space-y-4">
                 <div className="flex items-center space-x-3 sm:space-x-4">
                   <div className="w-3 h-3 sm:w-4 sm:h-4 bg-gradient-to-r from-brand-primary to-brand-dark-teal rounded-full shadow-lg flex-shrink-0"></div>
-                  <span className="text-base sm:text-lg text-gray-600 dark:text-gray-300 font-ibm-plex">Free rides to all church events</span>
+                  <span className="text-base sm:text-lg text-gray-800 dark:text-gray-200 font-ibm-plex">Free rides to all church events</span>
                 </div>
                 <div className="flex items-center space-x-3 sm:space-x-4">
                   <div className="w-3 h-3 sm:w-4 sm:h-4 bg-gradient-to-r from-brand-mint to-brand-light-mint rounded-full shadow-lg flex-shrink-0"></div>
-                  <span className="text-base sm:text-lg text-gray-600 dark:text-gray-300 font-ibm-plex">Safe travel with church family</span>
+                  <span className="text-base sm:text-lg text-gray-800 dark:text-gray-200 font-ibm-plex">Safe travel with church family</span>
                 </div>
                 <div className="flex items-center space-x-3 sm:space-x-4">
                   <div className="w-3 h-3 sm:w-4 sm:h-4 bg-gradient-to-r from-brand-dark-teal to-brand-mint rounded-full shadow-lg flex-shrink-0"></div>
-                  <span className="text-base sm:text-lg text-gray-600 dark:text-gray-300 font-ibm-plex">Never miss a service again</span>
+                  <span className="text-base sm:text-lg text-gray-800 dark:text-gray-200 font-ibm-plex">Never miss a service again</span>
                 </div>
               </div>
             </div>

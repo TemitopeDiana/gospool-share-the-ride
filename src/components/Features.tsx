@@ -48,7 +48,7 @@ const Features = () => {
           <h2 className="font-playfair text-3xl sm:text-4xl font-bold bg-gradient-to-r from-brand-primary to-brand-dark-teal dark:from-brand-mint dark:to-brand-light-mint bg-clip-text text-transparent mb-4">
             Bringing the Church Family Together
           </h2>
-          <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl text-gray-800 dark:text-gray-200 max-w-3xl mx-auto leading-relaxed">
             Gospool removes transportation barriers and creates opportunities for fellowship, 
             ensuring every member can participate fully in church life while building stronger community bonds.
           </p>
@@ -67,7 +67,7 @@ const Features = () => {
               <h3 className="font-semibold text-lg sm:text-xl text-gray-900 dark:text-white mb-3 font-poppins text-center sm:text-left">
                 {feature.title}
               </h3>
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed font-ibm-plex text-sm sm:text-base text-center sm:text-left">
+              <p className="text-gray-800 dark:text-gray-200 leading-relaxed font-ibm-plex text-sm sm:text-base text-center sm:text-left">
                 {feature.description}
               </p>
             </div>

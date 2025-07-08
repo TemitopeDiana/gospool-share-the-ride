@@ -55,7 +55,7 @@ const ImpactTeamSection = () => {
       </CardHeader>
       <CardContent className="text-center space-y-3">
         {member.bio && (
-          <p className="text-sm text-gray-600 dark:text-gray-400 font-ibm-plex">
+          <p className="text-sm text-gray-800 dark:text-gray-200 font-ibm-plex">
             {member.bio}
           </p>
         )}
@@ -94,12 +94,12 @@ const ImpactTeamSection = () => {
       </CardHeader>
       <CardContent className="text-center space-y-3">
         {advisor.company && (
-          <p className="text-sm text-gray-600 dark:text-gray-400 font-ibm-plex">
+          <p className="text-sm text-gray-800 dark:text-gray-200 font-ibm-plex">
             <span className="font-medium">Company:</span> {advisor.company}
           </p>
         )}
         {advisor.bio && (
-          <p className="text-sm text-gray-600 dark:text-gray-400 font-ibm-plex">
+          <p className="text-sm text-gray-800 dark:text-gray-200 font-ibm-plex">
             {advisor.bio}
           </p>
         )}
@@ -137,7 +137,7 @@ const ImpactTeamSection = () => {
           <h2 className="font-playfair text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-brand-primary to-brand-mint dark:from-brand-mint dark:to-brand-light-mint bg-clip-text text-transparent mb-3 sm:mb-4">
             Impact Team
           </h2>
-          <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto font-ibm-plex leading-relaxed">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-800 dark:text-gray-200 max-w-3xl mx-auto font-ibm-plex leading-relaxed">
             Meet our passionate community of volunteers who are building the future of church transportation across Nigeria. Together, we're creating lasting impact through service and dedication.
           </p>
         </div>
@@ -159,19 +159,19 @@ const ImpactTeamSection = () => {
           </div>
         )}
 
-        <div className="text-center mt-8 sm:mt-12">
-          <div className="bg-gradient-to-r from-blue-50 to-brand-light-mint/20 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6 max-w-2xl mx-auto">
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2 font-poppins">
-              Join Our Volunteer Community
-            </h3>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex mb-4">
-              Be part of something meaningful! We're looking for passionate volunteers who want to make a difference in church communities across Nigeria. Whether you have technical skills, organizational abilities, or simply a heart to serve, there's a place for you in our mission.
-            </p>
-            <Button className="bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white font-poppins">
-              Volunteer With Us
-            </Button>
+          <div className="text-center mt-8 sm:mt-12">
+            <div className="bg-gradient-to-r from-brand-light-mint/30 to-brand-mint/20 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6 max-w-2xl mx-auto">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2 font-poppins">
+                Join Our Volunteer Community
+              </h3>
+              <p className="text-sm sm:text-base text-gray-800 dark:text-gray-200 font-ibm-plex mb-4">
+                Be part of something meaningful! We're looking for passionate volunteers who want to make a difference in church communities across Nigeria. Whether you have technical skills, organizational abilities, or simply a heart to serve, there's a place for you in our mission.
+              </p>
+              <Button className="bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white font-poppins">
+                Volunteer With Us
+              </Button>
+            </div>
           </div>
-        </div>
       </div>
     </section>
   );

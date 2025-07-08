@@ -53,17 +53,17 @@ const ImpactSection = () => {
   }
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Impact Partners</h2>
-          <p className="text-lg text-gray-600">Organizations helping us create lasting change in communities</p>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Our Impact Partners</h2>
+          <p className="text-lg text-gray-800 dark:text-gray-200">Organizations helping us create lasting change in communities</p>
         </div>
         
         {sponsors.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
             {sponsors.map((sponsor) => (
-              <div key={sponsor.id} className="flex items-center justify-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+              <div key={sponsor.id} className="flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
                 {sponsor.logo_url ? (
                   <img 
                     src={sponsor.logo_url} 
@@ -71,7 +71,7 @@ const ImpactSection = () => {
                     className="max-h-12 max-w-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300"
                   />
                 ) : (
-                  <span className="text-gray-700 font-medium text-sm text-center">
+                  <span className="text-gray-900 dark:text-white font-medium text-sm text-center">
                     {sponsor.sponsor_name}
                   </span>
                 )}
@@ -80,25 +80,25 @@ const ImpactSection = () => {
           </div>
         ) : (
           <div className="text-center">
-            <p className="text-gray-500">Our impact partners will be showcased here soon.</p>
+            <p className="text-gray-700 dark:text-gray-300">Our impact partners will be showcased here soon.</p>
           </div>
         )}
 
         {/* Impact Statistics */}
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="text-center">
-            <div className="text-4xl font-bold text-blue-600 mb-2">{sponsors.length}+</div>
-            <div className="text-gray-600">Impact Partners</div>
+            <div className="text-4xl font-bold text-brand-primary dark:text-brand-mint mb-2">{sponsors.length}+</div>
+            <div className="text-gray-800 dark:text-gray-200">Impact Partners</div>
           </div>
           <div className="text-center">
-            <div className="text-4xl font-bold text-green-600 mb-2">{projects.length}+</div>
-            <div className="text-gray-600">Active Projects</div>
+            <div className="text-4xl font-bold text-brand-dark-teal dark:text-brand-light-mint mb-2">{projects.length}+</div>
+            <div className="text-gray-800 dark:text-gray-200">Active Projects</div>
           </div>
           <div className="text-center">
-            <div className="text-4xl font-bold text-purple-600 mb-2">
+            <div className="text-4xl font-bold text-brand-mint dark:text-brand-light-mint mb-2">
               ₦{sponsors.reduce((total, sponsor) => total + (sponsor.contribution_amount || 0), 0).toLocaleString()}
             </div>
-            <div className="text-gray-600">Total Contributions</div>
+            <div className="text-gray-800 dark:text-gray-200">Total Contributions</div>
           </div>
         </div>
       </div>

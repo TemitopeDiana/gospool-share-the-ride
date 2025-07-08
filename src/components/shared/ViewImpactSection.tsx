@@ -22,7 +22,7 @@ const ViewImpactSection = () => {
           <h2 className="font-playfair text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-brand-primary to-brand-mint dark:from-brand-mint dark:to-brand-light-mint bg-clip-text text-transparent mb-4 sm:mb-6">
             See Our Impact in Action
           </h2>
-          <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 font-ibm-plex leading-relaxed">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-800 dark:text-gray-200 mb-6 sm:mb-8 font-ibm-plex leading-relaxed">
             Discover the stories, projects, and initiatives that showcase how your support is transforming communities and strengthening faith.
           </p>
           
