@@ -97,24 +97,32 @@ export const AdminDashboard = () => {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground mt-2">Welcome to the Gospool admin dashboard</p>
+      <div className="space-y-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+            <p className="text-muted-foreground mt-2">Welcome to the Gospool admin dashboard</p>
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="h-2 w-2 bg-green-500 rounded-full"></div>
+            <span className="text-sm text-muted-foreground">System Online</span>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {statCards.map((stat, index) => (
-            <Card key={index} className="hover:shadow-lg transition-all duration-200 border-border">
+            <Card key={index} className="hover:shadow-lg transition-all duration-200 border-border bg-card">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   {stat.title}
                 </CardTitle>
-                <stat.icon className={`h-5 w-5 ${stat.color}`} />
+                <div className={`p-2 rounded-lg bg-opacity-10 ${stat.color.replace('text-', 'bg-').replace('-600', '-100')}`}>
+                  <stat.icon className={`h-5 w-5 ${stat.color}`} />
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-foreground">{stat.value}</div>
-                <CardDescription className="text-xs text-muted-foreground mt-1">
+                <div className="text-2xl font-bold text-foreground mb-1">{stat.value}</div>
+                <CardDescription className="text-xs text-muted-foreground">
                   {stat.description}
                 </CardDescription>
               </CardContent>

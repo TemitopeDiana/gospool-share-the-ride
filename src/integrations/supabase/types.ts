@@ -372,6 +372,57 @@ export type Database = {
           },
         ]
       }
+      pending_changes: {
+        Row: {
+          action_type: string
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string | null
+          created_by: string
+          id: string
+          new_data: Json | null
+          old_data: Json | null
+          record_id: string | null
+          rejected_at: string | null
+          rejected_by: string | null
+          rejection_reason: string | null
+          status: string | null
+          table_name: string
+        }
+        Insert: {
+          action_type: string
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string | null
+          created_by: string
+          id?: string
+          new_data?: Json | null
+          old_data?: Json | null
+          record_id?: string | null
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_reason?: string | null
+          status?: string | null
+          table_name: string
+        }
+        Update: {
+          action_type?: string
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string | null
+          created_by?: string
+          id?: string
+          new_data?: Json | null
+          old_data?: Json | null
+          record_id?: string | null
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_reason?: string | null
+          status?: string | null
+          table_name?: string
+        }
+        Relationships: []
+      }
       projects: {
         Row: {
           budget: number | null
@@ -600,6 +651,10 @@ export type Database = {
         Args: { change_id: string }
         Returns: undefined
       }
+      assign_super_admin: {
+        Args: { user_email: string }
+        Returns: string
+      }
       create_pending_change: {
         Args: {
           p_table_name: string
@@ -630,6 +685,10 @@ export type Database = {
         Returns: boolean
       }
       is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_super_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
