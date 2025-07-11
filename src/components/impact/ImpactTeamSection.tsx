@@ -140,6 +140,18 @@ const ImpactTeamSection = () => {
           <p className="text-base sm:text-lg lg:text-xl text-gray-800 dark:text-gray-200 max-w-3xl mx-auto font-ibm-plex leading-relaxed">
             Meet our passionate community of volunteers who are building the future of church transportation across Nigeria. Together, we're creating lasting impact through service and dedication.
           </p>
+          
+          {/* Bible Verse */}
+          <div className="mt-8 sm:mt-10 mb-8 sm:mb-10 max-w-4xl mx-auto">
+            <div className="bg-gradient-to-r from-brand-light-mint/20 to-brand-mint/20 dark:from-brand-dark-teal/20 dark:to-brand-mint/20 rounded-2xl p-6 sm:p-8 border border-brand-mint/30 dark:border-brand-mint/20">
+              <blockquote className="text-lg sm:text-xl lg:text-2xl font-medium text-gray-900 dark:text-white font-playfair italic leading-relaxed mb-3">
+                "Therefore, my dear brothers and sisters, stand firm. Let nothing move you. Always give yourselves fully to the work of the Lord, because you know that your labor in the Lord is not in vain."
+              </blockquote>
+              <cite className="text-sm sm:text-base text-brand-primary dark:text-brand-mint font-poppins font-semibold">
+                — 1 Corinthians 15:58 NLT
+              </cite>
+            </div>
+          </div>
         </div>
         
         {teamMembers.length > 0 && (
