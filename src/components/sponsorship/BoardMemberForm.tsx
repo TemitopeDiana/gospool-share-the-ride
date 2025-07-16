@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface BoardMemberFormProps {
   onClose: () => void;
@@ -52,6 +54,44 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
     return numericAmount >= minimumAmounts[currency];
   };
 
+  const submitApplication = useMutation({
+    mutationFn: async (data: any) => {
+      const { error } = await supabase
+        .from('sponsorship_applications')
+        .insert([data]);
+
+      if (error) throw error;
+      
+      // Send admin notification
+      try {
+        await supabase.functions.invoke('send-admin-notifications', {
+          body: {
+            type: 'sponsorship_application',
+            data: data
+          }
+        });
+      } catch (emailError) {
+        console.warn('Email notification failed:', emailError);
+        // Don't fail the form submission if email fails
+      }
+    },
+    onSuccess: () => {
+      toast({
+        title: "Application Submitted",
+        description: "Thank you for your impact sponsorship application! We'll contact you soon.",
+      });
+      onClose();
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to submit application. Please try again.",
+        variant: "destructive",
+      });
+      console.error('Sponsorship application error:', error);
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -74,12 +114,21 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
       return;
     }
 
-    toast({
-      title: "Application Submitted",
-      description: "Thank you for your impact sponsorship application! We'll contact you soon.",
-    });
-    
-    onClose();
+    const applicationData = {
+      sponsor_type: memberType,
+      organization_name: memberType === "organization" ? organizationName : null,
+      contact_person: fullName,
+      email: email,
+      phone: phone,
+      sponsor_amount: parseFloat(amount.replace(/,/g, '')),
+      sponsor_duration: currency, // Using currency as placeholder for duration
+      motivation: `Church: ${churchDenomination || 'Not specified'}, Contact: ${preferredContact}`,
+      address: null,
+      profile_picture_url: null,
+      status: 'pending'
+    };
+
+    submitApplication.mutate(applicationData);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -263,9 +312,10 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
           <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
             <Button
               type="submit"
+              disabled={submitApplication.isPending}
               className="w-full bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white px-8 py-4 text-base sm:text-lg font-poppins font-semibold rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 touch-manipulation"
             >
-              Submit Application
+              {submitApplication.isPending ? 'Submitting...' : 'Submit Application'}
             </Button>
             <Button
               type="button"

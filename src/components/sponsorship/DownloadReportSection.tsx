@@ -6,9 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Download } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const DownloadReportSection = () => {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [organization, setOrganization] = useState("");
+  const [purpose, setPurpose] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -26,15 +30,53 @@ const DownloadReportSection = () => {
 
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const requestData = {
+        requester_email: email,
+        requester_name: name || null,
+        organization: organization || null,
+        report_type: 'impact_report',
+        purpose: purpose || 'Impact report download request',
+        status: 'pending' as const
+      };
+
+      const { error } = await supabase
+        .from('impact_reports_requests')
+        .insert([requestData]);
+
+      if (error) throw error;
+      
+      // Send admin notification
+      try {
+        await supabase.functions.invoke('send-admin-notifications', {
+          body: {
+            type: 'impact_report_request',
+            data: requestData
+          }
+        });
+      } catch (emailError) {
+        console.warn('Email notification failed:', emailError);
+        // Don't fail the form submission if email fails
+      }
+      
       toast({
         title: "Report Request Submitted",
         description: "If your email is verified as a donor/sponsor, you'll receive the impact report within 24 hours.",
       });
+      
       setEmail("");
+      setName("");
+      setOrganization("");
+      setPurpose("");
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to submit request. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 2000);
+    }
   };
 
   return (
@@ -63,6 +105,19 @@ const DownloadReportSection = () => {
             <CardContent>
               <form onSubmit={handleDownloadRequest} className="space-y-4">
                 <div>
+                  <Label htmlFor="reportName" className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 font-poppins">
+                    Name (Optional)
+                  </Label>
+                  <Input
+                    id="reportName"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="mt-2 h-10 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-lg text-sm sm:text-base touch-manipulation"
+                    placeholder="Enter your name"
+                  />
+                </div>
+                
+                <div>
                   <Label htmlFor="reportEmail" className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 font-poppins">
                     Verified Email Address *
                   </Label>
@@ -74,6 +129,32 @@ const DownloadReportSection = () => {
                     className="mt-2 h-10 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-lg text-sm sm:text-base touch-manipulation"
                     placeholder="Enter your email address"
                     required
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="reportOrganization" className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 font-poppins">
+                    Organization (Optional)
+                  </Label>
+                  <Input
+                    id="reportOrganization"
+                    value={organization}
+                    onChange={(e) => setOrganization(e.target.value)}
+                    className="mt-2 h-10 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-lg text-sm sm:text-base touch-manipulation"
+                    placeholder="Enter your organization name"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="reportPurpose" className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 font-poppins">
+                    Purpose (Optional)
+                  </Label>
+                  <Input
+                    id="reportPurpose"
+                    value={purpose}
+                    onChange={(e) => setPurpose(e.target.value)}
+                    className="mt-2 h-10 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-lg text-sm sm:text-base touch-manipulation"
+                    placeholder="Brief description of intended use"
                   />
                 </div>
                 

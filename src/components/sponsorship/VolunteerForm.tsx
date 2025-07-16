@@ -76,6 +76,19 @@ export const VolunteerForm = ({ open, onClose }: VolunteerFormProps) => {
         .insert([applicationData]);
 
       if (error) throw error;
+      
+      // Send admin notification
+      try {
+        await supabase.functions.invoke('send-admin-notifications', {
+          body: {
+            type: 'volunteer_application',
+            data: applicationData
+          }
+        });
+      } catch (emailError) {
+        console.warn('Email notification failed:', emailError);
+        // Don't fail the form submission if email fails
+      }
     },
     onSuccess: () => {
       toast({

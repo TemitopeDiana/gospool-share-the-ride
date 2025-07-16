@@ -99,6 +99,20 @@ serve(async (req) => {
         console.error('Failed to send success email:', emailError)
         // Don't fail the transaction if email fails
       }
+      
+      // Send admin notification for completed donations
+      try {
+        await supabaseClient.functions.invoke('send-admin-notifications', {
+          body: {
+            type: 'donation',
+            data: donation
+          }
+        })
+        console.log('Admin notification sent for donation:', donation.id)
+      } catch (adminEmailError) {
+        console.error('Failed to send admin notification:', adminEmailError)
+        // Don't fail the transaction if admin email fails
+      }
     }
 
     return new Response(
