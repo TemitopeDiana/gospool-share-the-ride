@@ -86,6 +86,7 @@ export type Database = {
       board_advisors: {
         Row: {
           bio: string | null
+          church_denomination: string | null
           company: string | null
           created_at: string | null
           id: string
@@ -99,6 +100,7 @@ export type Database = {
         }
         Insert: {
           bio?: string | null
+          church_denomination?: string | null
           company?: string | null
           created_at?: string | null
           id?: string
@@ -112,6 +114,7 @@ export type Database = {
         }
         Update: {
           bio?: string | null
+          church_denomination?: string | null
           company?: string | null
           created_at?: string | null
           id?: string
@@ -579,6 +582,7 @@ export type Database = {
       team_members: {
         Row: {
           bio: string | null
+          church_denomination: string | null
           created_at: string | null
           email: string | null
           id: string
@@ -593,6 +597,7 @@ export type Database = {
         }
         Insert: {
           bio?: string | null
+          church_denomination?: string | null
           created_at?: string | null
           email?: string | null
           id?: string
@@ -607,6 +612,7 @@ export type Database = {
         }
         Update: {
           bio?: string | null
+          church_denomination?: string | null
           created_at?: string | null
           email?: string | null
           id?: string

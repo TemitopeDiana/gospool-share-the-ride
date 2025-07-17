@@ -104,6 +104,12 @@ export const SponsorRequestsPage = () => {
     },
   });
 
+  const extractChurchDenomination = (motivation: string) => {
+    if (!motivation) return null;
+    const match = motivation.match(/Church Denomination:\s*([^\n]+)/i);
+    return match ? match[1].trim() : null;
+  };
+
   const columns = [
     {
       key: 'organization_name',
@@ -131,6 +137,16 @@ export const SponsorRequestsPage = () => {
     {
       key: 'sponsor_duration',
       label: 'Duration',
+      render: (value: string) => value || 'N/A',
+    },
+    {
+      key: 'motivation',
+      label: 'Church Denomination',
+      render: (value: string) => extractChurchDenomination(value) || 'N/A',
+    },
+    {
+      key: 'phone',
+      label: 'Phone',
       render: (value: string) => value || 'N/A',
     },
     {

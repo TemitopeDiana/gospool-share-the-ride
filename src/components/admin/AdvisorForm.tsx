@@ -23,6 +23,7 @@ export const AdvisorForm = ({ advisor, onClose, onSuccess }: AdvisorFormProps) =
     bio: '',
     linkedin_url: '',
     image_url: '',
+    church_denomination: '',
     order_index: 0,
     is_active: true,
   });
@@ -38,6 +39,7 @@ export const AdvisorForm = ({ advisor, onClose, onSuccess }: AdvisorFormProps) =
         bio: advisor.bio || '',
         linkedin_url: advisor.linkedin_url || '',
         image_url: advisor.image_url || '',
+        church_denomination: advisor.church_denomination || '',
         order_index: advisor.order_index || 0,
         is_active: advisor.is_active !== false,
       });
@@ -165,6 +167,16 @@ export const AdvisorForm = ({ advisor, onClose, onSuccess }: AdvisorFormProps) =
                 placeholder="https://example.com/profile.jpg"
               />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="church_denomination">Church Denomination</Label>
+            <Input
+              id="church_denomination"
+              value={formData.church_denomination}
+              onChange={(e) => setFormData({ ...formData, church_denomination: e.target.value })}
+              placeholder="e.g., Baptist, Methodist, Presbyterian, etc."
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

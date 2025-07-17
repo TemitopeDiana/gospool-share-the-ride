@@ -24,6 +24,7 @@ export const TeamMemberForm = ({ member, onClose, onSuccess }: TeamMemberFormPro
     email: '',
     linkedin_url: '',
     image_url: '',
+    church_denomination: '',
     order_index: 0,
     is_active: true,
   });
@@ -40,6 +41,7 @@ export const TeamMemberForm = ({ member, onClose, onSuccess }: TeamMemberFormPro
         email: member.email || '',
         linkedin_url: member.linkedin_url || '',
         image_url: member.image_url || '',
+        church_denomination: member.church_denomination || '',
         order_index: member.order_index || 0,
         is_active: member.is_active !== false,
       });
@@ -179,6 +181,16 @@ export const TeamMemberForm = ({ member, onClose, onSuccess }: TeamMemberFormPro
                 placeholder="https://example.com/profile.jpg"
               />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="church_denomination">Church Denomination</Label>
+            <Input
+              id="church_denomination"
+              value={formData.church_denomination}
+              onChange={(e) => setFormData({ ...formData, church_denomination: e.target.value })}
+              placeholder="e.g., Baptist, Methodist, Presbyterian, etc."
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
