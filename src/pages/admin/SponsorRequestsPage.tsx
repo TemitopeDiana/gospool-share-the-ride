@@ -21,7 +21,6 @@ export const SponsorRequestsPage = () => {
       const { data, error } = await supabase
         .from('sponsorship_applications')
         .select('*')
-        .eq('status', 'pending')
         .order('created_at', { ascending: false });
       
       if (error) throw error;
