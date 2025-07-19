@@ -56,6 +56,21 @@ const PaystackPayment = ({
   useEffect(() => {
     const initPaymentData = async () => {
       try {
+        console.log('Initializing payment with data:', {
+          amount,
+          email,
+          donorName,
+          phone,
+          currency,
+          isAnonymous,
+          church,
+          isChristian,
+          donorType,
+          organizationName,
+          organizationType,
+          contactPerson,
+        });
+        
         const data = await initializePayment({
           amount,
           email,
@@ -70,6 +85,8 @@ const PaystackPayment = ({
           organizationType,
           contactPerson,
         });
+        
+        console.log('Payment initialization successful:', data);
         setPaymentData(data);
       } catch (error) {
         console.error('Payment initialization error:', error);

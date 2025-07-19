@@ -26,11 +26,18 @@ export const usePaystackPayment = () => {
     setIsLoading(true);
     
     try {
+      console.log('Calling paystack-initialize edge function with data:', paymentData);
+      
       const { data, error } = await supabase.functions.invoke('paystack-initialize', {
         body: paymentData,
       });
 
-      if (error) throw error;
+      console.log('Edge function response:', { data, error });
+
+      if (error) {
+        console.error('Supabase function invoke error:', error);
+        throw error;
+      }
 
       if (!data.success) {
         throw new Error(data.error || 'Failed to initialize payment');
