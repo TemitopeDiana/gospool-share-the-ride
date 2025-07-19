@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Impact from "./pages/Impact";
 import Sponsorship from "./pages/Sponsorship";
 import NotFound from "./pages/NotFound";
+import { AdminLoginPage } from "./pages/admin/AdminLoginPage";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import { AdminUsersPage } from "./pages/admin/AdminUsersPage";
 import { AdvisorsPage } from "./pages/admin/AdvisorsPage";
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/impact" element={<Impact />} />
             <Route path="/sponsorship" element={<Sponsorship />} />
+            <Route path="/admin/login" element={<AdminLoginPage />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/users" element={<AdminUsersPage />} />
             <Route path="/admin/advisors" element={<AdvisorsPage />} />
