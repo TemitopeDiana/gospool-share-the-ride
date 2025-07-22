@@ -22,7 +22,17 @@ export const DonationsPage = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('donations')
-        .select('*')
+        .select(`
+          *,
+          paystack_transactions (
+            reference,
+            status,
+            verification_attempts,
+            last_verification_at,
+            webhook_received_at,
+            created_at
+          )
+        `)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -117,9 +127,52 @@ export const DonationsPage = () => {
       render: (value: string) => format(new Date(value), 'MMM dd, yyyy'),
     },
     {
-      key: 'is_anonymous',
-      label: 'Anonymous',
-      render: (value: boolean) => value ? 'Yes' : 'No',
+      key: 'status',
+      label: 'Payment Status',
+      render: (value: string, row: any) => {
+        const transaction = row.paystack_transactions?.[0];
+        const hasWebhook = transaction?.webhook_received_at;
+        const verificationAttempts = transaction?.verification_attempts || 0;
+        const lastVerification = transaction?.last_verification_at;
+        
+        let statusBadge;
+        let statusColor;
+        
+        if (value === 'completed') {
+          statusColor = 'bg-green-100 text-green-800';
+          statusBadge = hasWebhook ? 'Completed (Webhook)' : 'Completed';
+        } else if (value === 'failed') {
+          statusColor = 'bg-red-100 text-red-800';
+          statusBadge = 'Failed';
+        } else {
+          // For pending status, show more details
+          if (verificationAttempts > 0) {
+            statusColor = 'bg-yellow-100 text-yellow-800';
+            statusBadge = `Pending (${verificationAttempts} attempts)`;
+          } else {
+            statusColor = 'bg-gray-100 text-gray-800';
+            statusBadge = 'Pending';
+          }
+        }
+        
+        return (
+          <div>
+            <span className={`px-2 py-1 rounded text-xs font-medium ${statusColor}`}>
+              {statusBadge}
+            </span>
+            {transaction?.reference && (
+              <div className="text-xs text-gray-500 mt-1">
+                Ref: {transaction.reference}
+              </div>
+            )}
+            {lastVerification && (
+              <div className="text-xs text-gray-400 mt-1">
+                Last checked: {format(new Date(lastVerification), 'MMM dd, HH:mm')}
+              </div>
+            )}
+          </div>
+        );
+      },
     },
   ];
 
@@ -169,17 +222,42 @@ export const DonationsPage = () => {
           <div className="p-4 bg-green-50 border-b">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-medium text-green-800">Auto-Confirmation Active</h3>
+                <h3 className="text-lg font-medium text-green-800">Payment Processing Status</h3>
                 <p className="text-sm text-green-600">
-                  Successful payments are automatically confirmed and donors receive email notifications
+                  Webhooks and automatic verification ensure payments are processed reliably
                 </p>
               </div>
-              <div className="text-right">
-                <div className="text-sm text-green-600">
-                  Total Donations: {donations.length}
-                </div>
-                <div className="text-sm text-green-600">
-                  Completed: {donations.filter(d => d.status === 'completed').length}
+              <div className="flex items-center gap-4">
+                <Button
+                  onClick={async () => {
+                    try {
+                      const { data, error } = await supabase.functions.invoke('verify-pending-payments');
+                      if (error) throw error;
+                      toast({
+                        title: "Verification Complete",
+                        description: `Processed pending payments. Verified: ${data.verified || 0}`,
+                      });
+                      queryClient.invalidateQueries({ queryKey: ['admin-donations'] });
+                    } catch (error) {
+                      toast({
+                        title: "Error",
+                        description: "Failed to verify pending payments",
+                        variant: "destructive",
+                      });
+                    }
+                  }}
+                  variant="outline"
+                  size="sm"
+                >
+                  Verify Pending Payments
+                </Button>
+                <div className="text-right text-sm">
+                  <div className="text-green-600">
+                    Total: {donations.length} | Completed: {donations.filter(d => d.status === 'completed').length}
+                  </div>
+                  <div className="text-yellow-600">
+                    Pending: {donations.filter(d => d.status === 'pending').length}
+                  </div>
                 </div>
               </div>
             </div>

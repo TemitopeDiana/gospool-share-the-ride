@@ -338,10 +338,14 @@ export type Database = {
           currency: string
           donation_id: string | null
           id: string
+          last_verification_at: string | null
           paystack_response: Json | null
           reference: string
           status: string
           updated_at: string
+          verification_attempts: number | null
+          webhook_payload: Json | null
+          webhook_received_at: string | null
         }
         Insert: {
           amount: number
@@ -349,10 +353,14 @@ export type Database = {
           currency?: string
           donation_id?: string | null
           id?: string
+          last_verification_at?: string | null
           paystack_response?: Json | null
           reference: string
           status?: string
           updated_at?: string
+          verification_attempts?: number | null
+          webhook_payload?: Json | null
+          webhook_received_at?: string | null
         }
         Update: {
           amount?: number
@@ -360,10 +368,14 @@ export type Database = {
           currency?: string
           donation_id?: string | null
           id?: string
+          last_verification_at?: string | null
           paystack_response?: Json | null
           reference?: string
           status?: string
           updated_at?: string
+          verification_attempts?: number | null
+          webhook_payload?: Json | null
+          webhook_received_at?: string | null
         }
         Relationships: [
           {
