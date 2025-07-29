@@ -56,41 +56,62 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
 
   const submitApplication = useMutation({
     mutationFn: async (data: any) => {
-      console.log('Submitting sponsorship application:', data);
+      console.log('=== SPONSORSHIP APPLICATION SUBMISSION START ===');
+      console.log('Application data:', JSON.stringify(data, null, 2));
       
-      const { data: result, error } = await supabase
-        .from('sponsorship_applications')
-        .insert([data])
-        .select();
+      // Check auth state
+      const { data: authData, error: authError } = await supabase.auth.getUser();
+      console.log('Auth state:', { user: authData?.user?.id || 'anonymous', error: authError });
+      
+      try {
+        console.log('Attempting database insert into sponsorship_applications...');
+        const { data: result, error } = await supabase
+          .from('sponsorship_applications')
+          .insert([data])
+          .select();
 
-      if (error) {
-        console.error('Database insertion error:', error);
+        if (error) {
+          console.error('❌ Database insertion error:', {
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code,
+            data: data
+          });
+          throw new Error(`Database error: ${error.message} - ${error.details || error.hint || ''}`);
+        }
+        
+        console.log('✅ Application inserted successfully:', result);
+        
+        // Send admin notification
+        try {
+          console.log('Sending admin notification...');
+          const { data: notificationResult, error: notificationError } = await supabase.functions.invoke('send-admin-notifications', {
+            body: {
+              type: 'new_sponsorship_application',
+              applicationData: result[0]
+            }
+          });
+          
+          if (notificationError) {
+            console.warn('⚠️ Notification error (non-critical):', notificationError);
+          } else {
+            console.log('✅ Notification sent successfully:', notificationResult);
+          }
+        } catch (emailError) {
+          console.warn('⚠️ Email notification failed (non-critical):', emailError);
+        }
+        
+        console.log('=== SPONSORSHIP APPLICATION SUBMISSION END ===');
+        return result;
+      } catch (error: any) {
+        console.error('💥 Submission failed:', {
+          name: error.name,
+          message: error.message,
+          stack: error.stack
+        });
         throw error;
       }
-      
-      console.log('Application inserted successfully:', result);
-      
-      // Send admin notification
-      try {
-        console.log('Sending admin notification...');
-        const { data: notificationResult, error: notificationError } = await supabase.functions.invoke('send-admin-notifications', {
-          body: {
-            type: 'sponsorship_application',
-            data: data
-          }
-        });
-        
-        if (notificationError) {
-          console.error('Notification error:', notificationError);
-        } else {
-          console.log('Notification sent successfully:', notificationResult);
-        }
-      } catch (emailError) {
-        console.error('Email notification failed:', emailError);
-        // Don't fail the form submission if email fails
-      }
-      
-      return result;
     },
     onSuccess: (data) => {
       console.log('Form submission successful:', data);
