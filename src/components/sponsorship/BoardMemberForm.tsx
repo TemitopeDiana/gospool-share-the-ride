@@ -56,26 +56,44 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
 
   const submitApplication = useMutation({
     mutationFn: async (data: any) => {
-      const { error } = await supabase
+      console.log('Submitting sponsorship application:', data);
+      
+      const { data: result, error } = await supabase
         .from('sponsorship_applications')
-        .insert([data]);
+        .insert([data])
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database insertion error:', error);
+        throw error;
+      }
+      
+      console.log('Application inserted successfully:', result);
       
       // Send admin notification
       try {
-        await supabase.functions.invoke('send-admin-notifications', {
+        console.log('Sending admin notification...');
+        const { data: notificationResult, error: notificationError } = await supabase.functions.invoke('send-admin-notifications', {
           body: {
             type: 'sponsorship_application',
             data: data
           }
         });
+        
+        if (notificationError) {
+          console.error('Notification error:', notificationError);
+        } else {
+          console.log('Notification sent successfully:', notificationResult);
+        }
       } catch (emailError) {
-        console.warn('Email notification failed:', emailError);
+        console.error('Email notification failed:', emailError);
         // Don't fail the form submission if email fails
       }
+      
+      return result;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log('Form submission successful:', data);
       toast({
         title: "Application Submitted",
         description: "Thank you for your impact sponsorship application! We'll contact you soon.",
@@ -83,12 +101,12 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
       onClose();
     },
     onError: (error) => {
+      console.error('Form submission error:', error);
       toast({
         title: "Error",
-        description: "Failed to submit application. Please try again.",
+        description: error?.message || "Failed to submit application. Please try again.",
         variant: "destructive",
       });
-      console.error('Sponsorship application error:', error);
     },
   });
 

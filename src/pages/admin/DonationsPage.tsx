@@ -184,9 +184,9 @@ export const DonationsPage = () => {
     updateStatusMutation.mutate({ id: donation.id, status: 'failed' as DonationStatus });
   };
 
-  // Only show approve/reject buttons for truly pending donations
+  // Don't show manual actions - webhooks handle automatic confirmation
   const shouldShowActions = (donation: any) => {
-    return donation.status === 'pending';
+    return false; // Disable manual actions since webhooks handle this automatically
   };
 
   if (isLoading) {
