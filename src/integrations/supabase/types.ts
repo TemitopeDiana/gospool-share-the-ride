@@ -683,6 +683,19 @@ export type Database = {
         }
         Returns: undefined
       }
+      get_cron_jobs: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          jobid: number
+          schedule: string
+          command: string
+          nodename: string
+          nodeport: number
+          database: string
+          username: string
+          active: boolean
+        }[]
+      }
       get_pending_changes: {
         Args: Record<PropertyKey, never>
         Returns: {
