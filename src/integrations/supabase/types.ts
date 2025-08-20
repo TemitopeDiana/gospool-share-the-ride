@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -675,44 +675,63 @@ export type Database = {
       }
       create_pending_change: {
         Args: {
-          p_table_name: string
           p_action_type: string
-          p_record_id?: string
-          p_old_data?: Json
           p_new_data?: Json
+          p_old_data?: Json
+          p_record_id?: string
+          p_table_name: string
         }
         Returns: undefined
       }
       get_cron_jobs: {
         Args: Record<PropertyKey, never>
         Returns: {
-          jobid: number
-          schedule: string
+          active: boolean
           command: string
+          database: string
+          jobid: number
           nodename: string
           nodeport: number
-          database: string
+          schedule: string
           username: string
-          active: boolean
+        }[]
+      }
+      get_donation_statistics: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          avg_amount: number
+          currency: string
+          total_amount: number
+          total_count: number
         }[]
       }
       get_pending_changes: {
         Args: Record<PropertyKey, never>
         Returns: {
-          id: string
-          table_name: string
           action_type: string
-          record_id: string
-          old_data: Json
-          new_data: Json
-          created_by: string
           created_at: string
-          status: string
+          created_by: string
           created_by_profile: Json
+          id: string
+          new_data: Json
+          old_data: Json
+          record_id: string
+          status: string
+          table_name: string
+        }[]
+      }
+      get_recent_donations_public: {
+        Args: { limit_count?: number }
+        Returns: {
+          amount: number
+          created_at: string
+          currency: string
+          donor_type: string
+          is_anonymous: boolean
         }[]
       }
       has_permission: {
-        Args: { _user_id: string; _permission_type: string; _action: string }
+        Args: { _action: string; _permission_type: string; _user_id: string }
         Returns: boolean
       }
       is_admin: {
