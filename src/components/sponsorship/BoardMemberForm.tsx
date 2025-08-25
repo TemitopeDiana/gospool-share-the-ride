@@ -4,8 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface BoardMemberFormProps {
   onClose: () => void;
@@ -22,6 +24,9 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
   const [preferredContact, setPreferredContact] = useState("");
   const [memberType, setMemberType] = useState("individual");
   const [organizationName, setOrganizationName] = useState("");
+  const [address, setAddress] = useState("");
+  const [motivation, setMotivation] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   const currencies = [
@@ -52,7 +57,7 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
     return numericAmount >= minimumAmounts[currency];
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!fullName || !email || !phone || !amount || !currency || !preferredContact || (memberType === "organization" && !organizationName)) {
@@ -74,12 +79,53 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
       return;
     }
 
-    toast({
-      title: "Application Submitted",
-      description: "Thank you for your impact sponsorship application! We'll contact you soon.",
-    });
-    
-    onClose();
+    setIsSubmitting(true);
+
+    try {
+      // Convert amount to number (remove commas)
+      const numericAmount = parseFloat(amount.replace(/,/g, ''));
+      
+      // Insert sponsorship application into database
+      const { data, error } = await supabase
+        .from('sponsorship_applications')
+        .insert({
+          sponsor_type: memberType,
+          organization_name: memberType === "organization" ? organizationName : null,
+          contact_person: fullName,
+          email: email,
+          phone: phone,
+          address: address || null,
+          sponsor_amount: numericAmount,
+          sponsor_duration: preferredContact, // Using this field to store preferred contact method
+          motivation: motivation || null,
+          profile_picture_url: null, // Will be implemented later if needed
+          status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error submitting sponsorship application:', error);
+        throw error;
+      }
+
+      toast({
+        title: "Application Submitted Successfully!",
+        description: "Thank you for your impact sponsorship application! We'll review it and contact you soon.",
+      });
+      
+      onClose();
+
+    } catch (error) {
+      console.error('Sponsorship application error:', error);
+      toast({
+        title: "Submission Failed",
+        description: "There was an error submitting your application. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -210,6 +256,19 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
             />
           </div>
 
+          <div>
+            <Label htmlFor="address" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+              Address (Optional)
+            </Label>
+            <Input
+              id="address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="mt-2 h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
+              placeholder="Enter your address"
+            />
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <Label className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
@@ -260,12 +319,26 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
             </Select>
           </div>
 
+          <div>
+            <Label htmlFor="motivation" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+              Motivation for Sponsorship (Optional)
+            </Label>
+            <Textarea
+              id="motivation"
+              value={motivation}
+              onChange={(e) => setMotivation(e.target.value)}
+              className="mt-2 min-h-[100px] dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation resize-y"
+              placeholder="Tell us why you want to support Gospool's mission..."
+            />
+          </div>
+
           <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white px-8 py-4 text-base sm:text-lg font-poppins font-semibold rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 touch-manipulation"
+              disabled={isSubmitting}
+              className="w-full bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white px-8 py-4 text-base sm:text-lg font-poppins font-semibold rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              Submit Application
+              {isSubmitting ? "Submitting..." : "Submit Application"}
             </Button>
             <Button
               type="button"
