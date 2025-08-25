@@ -62,7 +62,7 @@ export const AdminSidebar = () => {
         <div className="flex items-center gap-3">
           <img
             className="h-8 w-auto"
-            src="/lovable-uploads/52524576-df42-4ff1-ae6b-916c64b5f607.png"
+            src="/images/Logo mark v2 dark.png"
             alt="Gospool"
           />
           {!collapsed && (
