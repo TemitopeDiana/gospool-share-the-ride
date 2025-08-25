@@ -70,6 +70,38 @@ export const AdminLogin = () => {
     }
   };
 
+  const handlePasswordReset = async (resetEmail: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/admin/login`,
+      });
+
+      if (error) {
+        toast({
+          title: "Password reset failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Password reset sent",
+          description: `A password reset link has been sent to ${resetEmail}`,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Password reset failed",
+        description: "An unexpected error occurred.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Trigger password reset for temitopediana1@gmail.com
+  const triggerPasswordReset = () => {
+    handlePasswordReset('temitopediana1@gmail.com');
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
@@ -135,6 +167,16 @@ export const AdminLogin = () => {
               )}
             </Button>
           </form>
+          <div className="mt-4 pt-4 border-t border-border">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={triggerPasswordReset}
+            >
+              Reset Password for temitopediana1@gmail.com
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
