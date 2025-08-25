@@ -72,8 +72,13 @@ export const AdminLogin = () => {
 
   const handlePasswordReset = async (resetEmail: string) => {
     try {
+      // Use the current production URL instead of localhost
+      const productionUrl = window.location.hostname.includes('localhost') 
+        ? 'https://6e7f9caf-84a7-4cd3-a8b1-7bb52d23a5db.sandbox.lovable.dev'
+        : window.location.origin;
+      
       const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-        redirectTo: `${window.location.origin}/admin/login`,
+        redirectTo: `${productionUrl}/admin/login`,
       });
 
       if (error) {
@@ -85,7 +90,7 @@ export const AdminLogin = () => {
       } else {
         toast({
           title: "Password reset sent",
-          description: `A password reset link has been sent to ${resetEmail}`,
+          description: `A password reset link has been sent to ${resetEmail}. Check your email and click the link to reset your password.`,
         });
       }
     } catch (error) {
