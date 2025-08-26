@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useEffect, useCallback, useRef, useState } from 'react';
 import { usePaystackPayment } from '@/hooks/usePaystackPayment';
