@@ -38,46 +38,23 @@ const RecentDonors = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {/* First column - 10 donors */}
-              <div className="space-y-2">
-                {recentDonors.slice(0, 10).map((donor, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 bg-gradient-to-r from-gray-50 to-brand-light-mint/10 dark:from-gray-700 dark:to-gray-600 rounded-lg">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-dark-teal rounded-full flex items-center justify-center text-white font-bold text-xs font-poppins shadow-lg flex-shrink-0">
-                        {donor.name.charAt(0)}
-                      </div>
-                      <div className="min-w-0">
-                        <h4 className="font-semibold text-sm text-gray-900 dark:text-white font-poppins truncate">{donor.name}</h4>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 font-ibm-plex">{donor.date}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-sm text-brand-primary dark:text-brand-mint font-poppins">{donor.amount}</p>
-                    </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {recentDonors.map((donor, index) => (
+                <div key={index} className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-brand-light-mint/10 dark:from-gray-700 dark:to-gray-600 rounded-lg border border-brand-light-mint/20 dark:border-gray-600">
+                  <div className="flex flex-col">
+                    <p className="text-sm text-gray-600 dark:text-gray-300 font-ibm-plex">
+                      {new Date(donor.date).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </p>
                   </div>
-                ))}
-              </div>
-              
-              {/* Second column - 10 donors */}
-              <div className="space-y-2">
-                {recentDonors.slice(10, 20).map((donor, index) => (
-                  <div key={index + 10} className="flex items-center justify-between p-2 bg-gradient-to-r from-gray-50 to-brand-light-mint/10 dark:from-gray-700 dark:to-gray-600 rounded-lg">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-dark-teal rounded-full flex items-center justify-center text-white font-bold text-xs font-poppins shadow-lg flex-shrink-0">
-                        {donor.name.charAt(0)}
-                      </div>
-                      <div className="min-w-0">
-                        <h4 className="font-semibold text-sm text-gray-900 dark:text-white font-poppins truncate">{donor.name}</h4>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 font-ibm-plex">{donor.date}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-sm text-brand-primary dark:text-brand-mint font-poppins">{donor.amount}</p>
-                    </div>
+                  <div className="text-right">
+                    <p className="font-bold text-sm text-brand-primary dark:text-brand-mint font-poppins">{donor.amount}</p>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>

@@ -79,12 +79,12 @@ const Hero = () => {
               <div className="flex items-center justify-center mb-6 sm:mb-8">
                 <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center bg-gradient-to-br from-brand-mint to-brand-light-mint rounded-2xl sm:rounded-3xl p-2 sm:p-3 shadow-xl">
                   <img 
-                    src="/lovable-uploads/52524576-df42-4ff1-ae6b-916c64b5f607.png" 
+                    src="/images/Logo mark v2 dark.png" 
                     alt="Gospool Logo" 
                     className="w-10 h-10 sm:w-14 sm:h-14 dark:hidden"
                   />
                   <img 
-                    src="/lovable-uploads/2ddb1688-61b9-4b51-b259-c1f342934418.png" 
+                    src="/images/Logomark v1 white.png" 
                     alt="Gospool Logo" 
                     className="w-10 h-10 sm:w-14 sm:h-14 hidden dark:block"
                   />

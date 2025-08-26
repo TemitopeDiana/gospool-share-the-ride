@@ -6,21 +6,21 @@ const ProjectsSection = () => {
     {
       title: "Free Church Transportation Network",
       description: "Connecting church members with reliable, free transportation to worship services across major cities.",
-      image: "/lovable-uploads/bb40c7c8-e5f2-456f-93e1-67a40d9ff480.png",
+      image: "/images/Logo mark v2 dark.png",
       stats: "500+ rides provided",
       status: "Active"
     },
     {
       title: "Community Outreach Programs",
       description: "Supporting local churches in their community service initiatives and outreach programs.",
-      image: "/lovable-uploads/7eae2d36-486c-4f8e-aa01-ca9414ab4528.png",
+      image: "/images/Logo mark v2 dark.png",
       stats: "12 communities served",
       status: "Expanding"
     },
     {
       title: "Digital Faith Platform",
       description: "Building technology solutions that strengthen faith communities and improve accessibility.",
-      image: "/lovable-uploads/52524576-df42-4ff1-ae6b-916c64b5f607.png",
+      image: "/images/Logo mark v2 dark.png",
       stats: "In Development",
       status: "Coming Soon"
     }

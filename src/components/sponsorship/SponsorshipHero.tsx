@@ -19,12 +19,12 @@ const SponsorshipHero = ({ onDonateClick, onJoinSponsorClick }: SponsorshipHeroP
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mx-auto mb-6 sm:mb-8 bg-gradient-to-br from-brand-mint via-brand-light-mint to-white rounded-xl sm:rounded-2xl p-2 sm:p-3 shadow-2xl border border-brand-light-mint/30">
           <img 
-            src="/lovable-uploads/52524576-df42-4ff1-ae6b-916c64b5f607.png" 
+            src="/images/Logo mark v2 dark.png" 
             alt="Gospool Logo" 
             className="w-10 h-10 sm:w-14 sm:h-14 dark:hidden"
           />
           <img 
-            src="/lovable-uploads/2ddb1688-61b9-4b51-b259-c1f342934418.png" 
+            src="/images/Logomark v1 white.png" 
             alt="Gospool Logo" 
             className="w-10 h-10 sm:w-14 sm:h-14 hidden dark:block"
           />

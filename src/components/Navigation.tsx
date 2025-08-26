@@ -54,12 +54,12 @@ const Navigation = () => {
           <Link to="/" className="flex items-center space-x-2 sm:space-x-3" onClick={closeMenu}>
             <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
               <img 
-                src="/lovable-uploads/52524576-df42-4ff1-ae6b-916c64b5f607.png" 
+                src="/images/Logo mark v2 dark.png" 
                 alt="Gospool Logo" 
                 className="w-8 h-8 sm:w-10 sm:h-10 dark:hidden"
               />
               <img 
-                src="/lovable-uploads/2ddb1688-61b9-4b51-b259-c1f342934418.png" 
+                src="/images/Logomark v1 white.png" 
                 alt="Gospool Logo" 
                 className="w-8 h-8 sm:w-10 sm:h-10 hidden dark:block"
               />
