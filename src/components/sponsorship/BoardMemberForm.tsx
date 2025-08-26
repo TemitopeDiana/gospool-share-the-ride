@@ -7,10 +7,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-<<<<<<< HEAD
-=======
-import { useMutation } from "@tanstack/react-query";
->>>>>>> f7c615f064649e29b77c6c9994d748d7c7742fab
 import { supabase } from "@/integrations/supabase/client";
 
 interface BoardMemberFormProps {
@@ -61,88 +57,7 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
     return numericAmount >= minimumAmounts[currency];
   };
 
-<<<<<<< HEAD
   const handleSubmit = async (e: React.FormEvent) => {
-=======
-  const submitApplication = useMutation({
-    mutationFn: async (data: any) => {
-      console.log('=== SPONSORSHIP APPLICATION SUBMISSION START ===');
-      console.log('Application data:', JSON.stringify(data, null, 2));
-      
-      // Check auth state
-      const { data: authData, error: authError } = await supabase.auth.getUser();
-      console.log('Auth state:', { user: authData?.user?.id || 'anonymous', error: authError });
-      
-      try {
-        console.log('Attempting database insert into sponsorship_applications...');
-        const { data: result, error } = await supabase
-          .from('sponsorship_applications')
-          .insert([data])
-          .select();
-
-        if (error) {
-          console.error('❌ Database insertion error:', {
-            message: error.message,
-            details: error.details,
-            hint: error.hint,
-            code: error.code,
-            data: data
-          });
-          throw new Error(`Database error: ${error.message} - ${error.details || error.hint || ''}`);
-        }
-        
-        console.log('✅ Application inserted successfully:', result);
-        
-        // Send admin notification
-        try {
-          console.log('Sending admin notification...');
-          const { data: notificationResult, error: notificationError } = await supabase.functions.invoke('send-admin-notifications', {
-            body: {
-              type: 'new_sponsorship_application',
-              applicationData: result[0]
-            }
-          });
-          
-          if (notificationError) {
-            console.warn('⚠️ Notification error (non-critical):', notificationError);
-          } else {
-            console.log('✅ Notification sent successfully:', notificationResult);
-          }
-        } catch (emailError) {
-          console.warn('⚠️ Email notification failed (non-critical):', emailError);
-        }
-        
-        console.log('=== SPONSORSHIP APPLICATION SUBMISSION END ===');
-        return result;
-      } catch (error: any) {
-        console.error('💥 Submission failed:', {
-          name: error.name,
-          message: error.message,
-          stack: error.stack
-        });
-        throw error;
-      }
-    },
-    onSuccess: (data) => {
-      console.log('Form submission successful:', data);
-      toast({
-        title: "Application Submitted",
-        description: "Thank you for your impact sponsorship application! We'll contact you soon.",
-      });
-      onClose();
-    },
-    onError: (error) => {
-      console.error('Form submission error:', error);
-      toast({
-        title: "Error",
-        description: error?.message || "Failed to submit application. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
->>>>>>> f7c615f064649e29b77c6c9994d748d7c7742fab
     e.preventDefault();
     
     if (!fullName || !email || !phone || !amount || !currency || !preferredContact || (memberType === "organization" && !organizationName)) {
@@ -164,7 +79,6 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
       return;
     }
 
-<<<<<<< HEAD
     setIsSubmitting(true);
 
     try {
@@ -212,23 +126,6 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
     } finally {
       setIsSubmitting(false);
     }
-=======
-    const applicationData = {
-      sponsor_type: memberType,
-      organization_name: memberType === "organization" ? organizationName : null,
-      contact_person: fullName,
-      email: email,
-      phone: phone,
-      sponsor_amount: parseFloat(amount.replace(/,/g, '')),
-      sponsor_duration: currency, // Using currency as placeholder for duration
-      motivation: `Church: ${churchDenomination || 'Not specified'}, Contact: ${preferredContact}`,
-      address: null,
-      profile_picture_url: null,
-      status: 'pending'
-    };
-
-    submitApplication.mutate(applicationData);
->>>>>>> f7c615f064649e29b77c6c9994d748d7c7742fab
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -438,17 +335,10 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
           <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
             <Button
               type="submit"
-<<<<<<< HEAD
               disabled={isSubmitting}
               className="w-full bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white px-8 py-4 text-base sm:text-lg font-poppins font-semibold rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {isSubmitting ? "Submitting..." : "Submit Application"}
-=======
-              disabled={submitApplication.isPending}
-              className="w-full bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white px-8 py-4 text-base sm:text-lg font-poppins font-semibold rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 touch-manipulation"
-            >
-              {submitApplication.isPending ? 'Submitting...' : 'Submit Application'}
->>>>>>> f7c615f064649e29b77c6c9994d748d7c7742fab
             </Button>
             <Button
               type="button"
