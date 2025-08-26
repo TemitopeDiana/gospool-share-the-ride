@@ -2,9 +2,16 @@
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Search, Edit, Trash2, Check, X } from 'lucide-react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Check, X, Search, Edit, Trash2 } from 'lucide-react';
 
 interface Column {
   key: string;
@@ -15,7 +22,7 @@ interface Column {
 interface CustomAction {
   label: string;
   onClick: () => void;
-  variant?: 'default' | 'outline' | 'destructive' | 'secondary' | 'ghost' | 'link';
+  variant?: 'default' | 'outline' | 'destructive';
 }
 
 interface AdminDataTableProps {
@@ -23,11 +30,13 @@ interface AdminDataTableProps {
   columns: Column[];
   searchKey: string;
   showStatus?: boolean;
-  onEdit?: (item: any) => void;
-  onDelete?: (item: any) => void;
   onApprove?: (item: any) => void;
   onReject?: (item: any) => void;
+  onEdit?: (item: any) => void;
+  onDelete?: (item: any) => void;
+  showActions?: (item: any) => boolean;
   customActions?: (item: any) => CustomAction[];
+  showAnonymousDetails?: boolean;
 }
 
 export const AdminDataTable = ({
@@ -35,34 +44,38 @@ export const AdminDataTable = ({
   columns,
   searchKey,
   showStatus = false,
-  onEdit,
-  onDelete,
   onApprove,
   onReject,
+  onEdit,
+  onDelete,
+  showActions,
   customActions,
+  showAnonymousDetails = false,
 }: AdminDataTableProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredData = data.filter((item) => {
-    if (!item || !item[searchKey]) return false;
-    return item[searchKey]?.toString().toLowerCase().includes(searchTerm.toLowerCase());
-  });
+  const filteredData = data.filter((item) =>
+    item[searchKey]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (item.organization_name?.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (item.contact_person?.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   const getStatusColor = (status: string) => {
-    switch (status?.toLowerCase()) {
-      case 'approved':
+    switch (status) {
       case 'completed':
-      case 'active':
         return 'bg-green-100 text-green-800';
       case 'pending':
         return 'bg-yellow-100 text-yellow-800';
-      case 'rejected':
       case 'failed':
         return 'bg-red-100 text-red-800';
+      case 'refunded':
+        return 'bg-gray-100 text-gray-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
   };
+
+  const hasActionButtons = onApprove || onReject || onEdit || onDelete || customActions;
 
   return (
     <div className="space-y-4">
@@ -76,103 +89,117 @@ export const AdminDataTable = ({
             className="pl-10"
           />
         </div>
+        {showAnonymousDetails && (
+          <div className="text-sm text-gray-500">
+            * Anonymous donations show limited details for privacy
+          </div>
+        )}
       </div>
 
-      <div className="rounded-md border bg-white">
+      <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
               {columns.map((column) => (
-                <TableHead key={column.key} className="font-semibold">
-                  {column.label}
-                </TableHead>
+                <TableHead key={column.key}>{column.label}</TableHead>
               ))}
-              {showStatus && <TableHead className="font-semibold">Status</TableHead>}
-              <TableHead className="text-right font-semibold">Actions</TableHead>
+              {showStatus && <TableHead>Status</TableHead>}
+              {hasActionButtons && <TableHead>Actions</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredData.length === 0 ? (
               <TableRow>
-                <TableCell 
-                  colSpan={columns.length + (showStatus ? 1 : 0) + 1} 
+                <TableCell
+                  colSpan={columns.length + (showStatus ? 1 : 0) + (hasActionButtons ? 1 : 0)}
                   className="text-center py-8 text-gray-500"
                 >
-                  {data.length === 0 ? 'No data available' : 'No matching results found'}
+                  No data found
                 </TableCell>
               </TableRow>
             ) : (
               filteredData.map((item, index) => (
-                <TableRow key={item.id || index} className="hover:bg-gray-50">
+                <TableRow key={item.id || index}>
                   {columns.map((column) => (
-                    <TableCell key={column.key} className="py-3">
-                      {column.render 
-                        ? column.render(item[column.key], item) 
-                        : (item[column.key] || '-')
-                      }
+                    <TableCell key={column.key}>
+                      {column.render
+                        ? column.render(item[column.key], item)
+                        : item[column.key] || '-'}
                     </TableCell>
                   ))}
                   {showStatus && (
-                    <TableCell className="py-3">
-                      <Badge className={getStatusColor(item.status)}>
+                    <TableCell>
+                      <Badge className={getStatusColor(item.status)} variant="secondary">
                         {item.status || 'pending'}
                       </Badge>
                     </TableCell>
                   )}
-                  <TableCell className="text-right py-3">
-                    <div className="flex items-center justify-end space-x-2">
-                      {customActions && customActions(item).map((action, actionIndex) => (
-                        <Button
-                          key={actionIndex}
-                          variant={action.variant || 'outline'}
-                          size="sm"
-                          onClick={action.onClick}
-                        >
-                          {action.label}
-                        </Button>
-                      ))}
-                      {onApprove && item.status === 'pending' && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => onApprove(item)}
-                          className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                        >
-                          <Check className="h-4 w-4" />
-                        </Button>
-                      )}
-                      {onReject && item.status === 'pending' && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => onReject(item)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      )}
-                      {onEdit && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => onEdit(item)}
-                          className="hover:bg-blue-50"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      )}
-                      {onDelete && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => onDelete(item)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-                  </TableCell>
+                  {hasActionButtons && (
+                    <TableCell>
+                      <div className="flex space-x-2">
+                        {/* Approve/Reject buttons */}
+                        {(!showActions || showActions(item)) && (onApprove || onReject) && (
+                          <>
+                            {onApprove && (
+                              <Button
+                                size="sm"
+                                onClick={() => onApprove(item)}
+                                className="bg-green-600 hover:bg-green-700"
+                              >
+                                <Check className="h-4 w-4" />
+                              </Button>
+                            )}
+                            {onReject && (
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => onReject(item)}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </>
+                        )}
+                        
+                        {/* Edit/Delete buttons */}
+                        {onEdit && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => onEdit(item)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        )}
+                        
+                        {onDelete && (
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => onDelete(item)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+
+                        {/* Custom actions */}
+                        {customActions && customActions(item).map((action, actionIndex) => (
+                          <Button
+                            key={actionIndex}
+                            size="sm"
+                            variant={action.variant || 'default'}
+                            onClick={action.onClick}
+                          >
+                            {action.label}
+                          </Button>
+                        ))}
+
+                        {showActions && !showActions(item) && !onEdit && !onDelete && !customActions && (
+                          <span className="text-sm text-gray-500">Auto-confirmed</span>
+                        )}
+                      </div>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))
             )}

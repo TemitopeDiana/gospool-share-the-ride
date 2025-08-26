@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useEffect, useCallback, useRef } from "react";
-import { usePaystackPayment } from "@/hooks/usePaystackPayment";
-import { useToast } from "@/hooks/use-toast";
+import { useEffect, useCallback, useRef, useState } from 'react';
+import { usePaystackPayment } from '@/hooks/usePaystackPayment';
+import { useToast } from '@/hooks/use-toast';
 
 interface PaystackPaymentProps {
   amount: number;
@@ -13,6 +12,10 @@ interface PaystackPaymentProps {
   isAnonymous: boolean;
   church: string;
   isChristian: string;
+  donorType?: string;
+  organizationName?: string;
+  organizationType?: string;
+  contactPerson?: string;
   onSuccess: () => void;
   onError: (error: string) => void;
 }
@@ -36,59 +39,123 @@ const PaystackPayment = ({
   isAnonymous,
   church,
   isChristian,
+  donorType = 'individual',
+  organizationName,
+  organizationType,
+  contactPerson,
   onSuccess,
   onError,
 }: PaystackPaymentProps) => {
   const { initializePayment, verifyPayment, isLoading } = usePaystackPayment();
   const { toast } = useToast();
-  const paymentInitialized = useRef(false);
+  const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [paymentData, setPaymentData] = useState<any>(null);
+  const [processingPayment, setProcessingPayment] = useState(false);
 
-  const handlePaymentSuccess = useCallback(
-    (response: any) => {
-      verifyPayment(response.reference)
-        .then(() => {
-          toast({
-            title: "Payment Successful!",
-            description:
-              "Thank you for your donation. Your payment has been processed successfully.",
-          });
-          onSuccess();
-        })
-        .catch((error) => {
-          console.error("Payment verification failed:", error);
-          onError("Payment verification failed");
+  // Initialize payment data when component mounts
+  useEffect(() => {
+    const initPaymentData = async () => {
+      try {
+        console.log('Initializing payment with data:', {
+          amount,
+          email,
+          donorName,
+          phone,
+          currency,
+          isAnonymous,
+          church,
+          isChristian,
+          donorType,
+          organizationName,
+          organizationType,
+          contactPerson,
         });
-    },
-    [verifyPayment, toast, onSuccess, onError]
-  );
+        
+        const data = await initializePayment({
+          amount,
+          email,
+          donorName,
+          phone,
+          currency,
+          isAnonymous,
+          church,
+          isChristian,
+          donorType,
+          organizationName,
+          organizationType,
+          contactPerson,
+        });
+        
+        console.log('Payment initialization successful:', data);
+        setPaymentData(data);
+      } catch (error) {
+        console.error('Payment initialization error:', error);
+        onError(error.message || 'Failed to initialize payment');
+      }
+    };
 
-  const handlePaymentClose = useCallback(() => {
+    initPaymentData();
+  }, []);
+
+  // Load Paystack script
+  useEffect(() => {
+    if (document.querySelector('script[src="https://js.paystack.co/v1/inline.js"]')) {
+      setScriptLoaded(true);
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://js.paystack.co/v1/inline.js';
+    script.async = true;
+    script.onload = () => setScriptLoaded(true);
+    script.onerror = () => onError('Failed to load payment processor');
+    
+    document.body.appendChild(script);
+
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, [onError]);
+
+  const handlePaymentSuccess = async (response: any) => {
+    try {
+      setProcessingPayment(true);
+      await verifyPayment(response.reference);
+      toast({
+        title: "Payment Successful!",
+        description: "Thank you for your donation. Your payment has been processed successfully.",
+      });
+      onSuccess();
+    } catch (error: any) {
+      console.error('Payment verification failed:', error);
+      onError('Payment verification failed');
+    } finally {
+      setProcessingPayment(false);
+    }
+  };
+
+  const handlePaymentClose = () => {
     toast({
       title: "Payment Cancelled",
       description: "You have cancelled the payment process.",
       variant: "destructive",
     });
-  }, [toast]);
+    setProcessingPayment(false);
+  };
 
-  const handlePayment = useCallback(async () => {
-    if (paymentInitialized.current) return;
+  const openPaymentWindow = () => {
+    if (!scriptLoaded || !paymentData || !window.PaystackPop) {
+      onError('Payment system not ready. Please try again.');
+      return;
+    }
 
     try {
-      paymentInitialized.current = true;
-
-      const paymentData = await initializePayment({
-        amount,
-        email,
-        donorName,
-        phone,
-        currency,
-        isAnonymous,
-        church,
-        isChristian,
-      });
-
+      setProcessingPayment(true);
+      
       const handler = window.PaystackPop.setup({
-        key: "pk_test_950d1bc6b3ca24f9416ed0cd32db7b5cc45d5947",
+        key: 'pk_live_1030aa73b63d2d22a4d02071a506a328de4ab853',
         email,
         amount: Math.round(amount * 100),
         currency,
@@ -99,58 +166,28 @@ const PaystackPayment = ({
           is_anonymous: isAnonymous,
           church,
           is_christian: isChristian,
+          donor_type: donorType,
+          organization_name: organizationName,
+          organization_type: organizationType,
+          contact_person: contactPerson,
         },
-        callback: handlePaymentSuccess,
-        onClose: handlePaymentClose,
+        callback: function(response: any) {
+          handlePaymentSuccess(response);
+        },
+        onClose: function() {
+          handlePaymentClose();
+        },
       });
 
       handler.openIframe();
-    } catch (error) {
-      console.error("Payment error:", error);
-      paymentInitialized.current = false;
-      onError(error.message || "Payment failed");
+    } catch (error: any) {
+      console.error('Payment error:', error);
+      setProcessingPayment(false);
+      onError(error.message || 'Payment failed');
     }
-  }, [
-    amount,
-    email,
-    donorName,
-    phone,
-    currency,
-    isAnonymous,
-    church,
-    isChristian,
-    initializePayment,
-    handlePaymentSuccess,
-    handlePaymentClose,
-    onError,
-  ]);
+  };
 
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://js.paystack.co/v1/inline.js";
-    script.async = true;
-    script.onload = () => {
-      // Wait a bit for Paystack to be fully initialized
-      setTimeout(() => {
-        if (window.PaystackPop && !paymentInitialized.current) {
-          handlePayment();
-        }
-      }, 100);
-    };
-    script.onerror = () => {
-      onError("Failed to load payment processor");
-    };
-
-    document.body.appendChild(script);
-
-    return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-    };
-  }, [handlePayment, onError]);
-
-  if (isLoading) {
+  if (isLoading || !paymentData) {
     return (
       <div className="flex items-center justify-center p-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary"></div>
@@ -160,11 +197,32 @@ const PaystackPayment = ({
   }
 
   return (
-    <div className="flex items-center justify-center p-8">
+    <div className="flex flex-col items-center justify-center p-8 space-y-4">
       <div className="text-center">
-        <p className="text-lg mb-4">Redirecting to payment...</p>
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary mx-auto"></div>
+        <p className="text-lg mb-4">Ready to process your donation of {currency} {amount}</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+          Click the button below to open the secure Paystack payment window
+        </p>
       </div>
+      
+      <button
+        onClick={openPaymentWindow}
+        disabled={!scriptLoaded || processingPayment}
+        className="w-full max-w-sm bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white py-4 px-8 text-lg font-poppins font-semibold shadow-2xl rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+      >
+        {processingPayment ? (
+          <div className="flex items-center justify-center">
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+            Processing...
+          </div>
+        ) : (
+          'Make Payment'
+        )}
+      </button>
+      
+      {!scriptLoaded && (
+        <p className="text-sm text-gray-500">Loading payment system...</p>
+      )}
     </div>
   );
 };

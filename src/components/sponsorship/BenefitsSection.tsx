@@ -43,7 +43,7 @@ const BenefitsSection = () => {
             <h2 className="font-playfair text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
               Your Impact & How We Use Funds
             </h2>
-            <p className="text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto font-ibm-plex leading-relaxed">
+            <p className="text-2xl text-gray-800 dark:text-gray-200 max-w-4xl mx-auto font-ibm-plex leading-relaxed">
               Transparency is core to our mission. See how your contribution will create lasting change in Christian communities.
             </p>
           </div>
@@ -59,7 +59,7 @@ const BenefitsSection = () => {
                     <h3 className="font-semibold text-2xl text-gray-900 dark:text-white mb-4 font-poppins">
                       {benefit.title}
                     </h3>
-                    <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed font-ibm-plex">
+                    <p className="text-lg text-gray-800 dark:text-gray-200 leading-relaxed font-ibm-plex">
                       {benefit.description}
                     </p>
                   </div>
@@ -69,31 +69,31 @@ const BenefitsSection = () => {
           </div>
 
           {/* Fund Allocation */}
-          <Card className="p-12 bg-gradient-to-br from-blue-50 via-green-50 to-brand-light-mint/20 dark:from-gray-800 dark:via-gray-700 dark:to-brand-dark-teal/20 border-2 border-brand-light-mint/30 dark:border-brand-mint/30 rounded-3xl shadow-2xl">
+          <Card className="p-12 bg-gradient-to-br from-brand-light-mint/30 via-white to-brand-mint/20 dark:from-gray-800 dark:via-gray-700 dark:to-brand-dark-teal/20 border-2 border-brand-light-mint/30 dark:border-brand-mint/30 rounded-3xl shadow-2xl">
             <CardHeader className="text-center pb-12">
               <CardTitle className="text-4xl lg:text-5xl text-gray-900 dark:text-white mb-6 font-playfair">
                 Fund Allocation Breakdown
               </CardTitle>
-              <CardDescription className="text-xl text-gray-600 dark:text-gray-300 font-ibm-plex">
+              <CardDescription className="text-xl text-gray-800 dark:text-gray-200 font-ibm-plex">
                 Every amount received is invested strategically for maximum impact
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-3 gap-8 text-center mb-8">
                 <div className="space-y-4 p-6 bg-white/60 dark:bg-gray-800/60 rounded-2xl">
-                  <div className="text-5xl font-bold text-brand-blue font-poppins">30%</div>
+                  <div className="text-5xl font-bold text-brand-primary dark:text-brand-mint font-poppins">30%</div>
                   <h4 className="font-semibold text-xl text-gray-900 dark:text-white font-poppins">Platform Development & Maintenance</h4>
-                  <p className="text-lg text-gray-600 dark:text-gray-300 font-ibm-plex">Continuous improvement, new features, security updates, platform sustenance and technical infrastructure</p>
+                  <p className="text-lg text-gray-800 dark:text-gray-200 font-ibm-plex">Continuous improvement, new features, security updates, platform sustenance and technical infrastructure</p>
                 </div>
                 <div className="space-y-4 p-6 bg-white/60 dark:bg-gray-800/60 rounded-2xl">
-                  <div className="text-5xl font-bold text-brand-green font-poppins">40%</div>
+                  <div className="text-5xl font-bold text-brand-dark-teal dark:text-brand-light-mint font-poppins">40%</div>
                   <h4 className="font-semibold text-xl text-gray-900 dark:text-white font-poppins">Transportation Fleet & Services</h4>
-                  <p className="text-lg text-gray-600 dark:text-gray-300 font-ibm-plex">Providing buses for church services, events, conferences, and possible fuel allowances and car servicing to encourage ride sharing</p>
+                  <p className="text-lg text-gray-800 dark:text-gray-200 font-ibm-plex">Providing buses for church services, events, conferences, and possible fuel allowances and car servicing to encourage ride sharing</p>
                 </div>
                 <div className="space-y-4 p-6 bg-white/60 dark:bg-gray-800/60 rounded-2xl">
-                  <div className="text-5xl font-bold text-brand-purple font-poppins">30%</div>
+                  <div className="text-5xl font-bold text-brand-mint dark:text-brand-light-mint font-poppins">30%</div>
                   <h4 className="font-semibold text-xl text-gray-900 dark:text-white font-poppins">Marketing & Expansion</h4>
-                  <p className="text-lg text-gray-600 dark:text-gray-300 font-ibm-plex">Promoting the platform and its benefits to churches across Nigeria and expanding to other countries</p>
+                  <p className="text-lg text-gray-800 dark:text-gray-200 font-ibm-plex">Promoting the platform and its benefits to churches across Nigeria and expanding to other countries</p>
                 </div>
               </div>
               

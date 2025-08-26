@@ -28,7 +28,7 @@ const ImpactHero = () => {
           Our Impact Story
         </h1>
         
-        <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto mb-8 sm:mb-12 font-ibm-plex leading-relaxed px-4">
+        <p className="text-lg sm:text-xl lg:text-2xl text-gray-800 dark:text-gray-200 max-w-4xl mx-auto mb-8 sm:mb-12 font-ibm-plex leading-relaxed px-4">
           Discover how Gospool is transforming communities, connecting hearts, and strengthening faith through innovative transportation solutions and community initiatives.
         </p>
 

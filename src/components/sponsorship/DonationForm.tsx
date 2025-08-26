@@ -1,9 +1,11 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import PaystackPayment from "./PaystackPayment";
@@ -15,12 +17,16 @@ interface DonationFormProps {
 }
 
 const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFormProps) => {
+  const [donorType, setDonorType] = useState("individual");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [amount, setAmount] = useState("");
-  const [isChristian, setIsChristian] = useState("");
+  const [belongsToChurch, setBelongsToChurch] = useState("");
   const [church, setChurch] = useState("");
+  const [organizationName, setOrganizationName] = useState("");
+  const [organizationType, setOrganizationType] = useState("");
+  const [contactPerson, setContactPerson] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
   const { toast } = useToast();
@@ -37,7 +43,8 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
       return;
     }
     
-    if (!fullName || !email || !phone || !amount || !isChristian) {
+    // Validation for both donor types
+    if (!email || !phone || !amount) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields.",
@@ -46,13 +53,37 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
       return;
     }
 
-    if (isChristian === "yes" && !church) {
-      toast({
-        title: "Missing Information",
-        description: "Please specify your church.",
-        variant: "destructive",
-      });
-      return;
+    // Individual-specific validation
+    if (donorType === "individual") {
+      if (!fullName || !belongsToChurch) {
+        toast({
+          title: "Missing Information",
+          description: "Please fill in all required fields.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (belongsToChurch === "yes" && !church) {
+        toast({
+          title: "Missing Information",
+          description: "Please specify your church.",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
+    // Organization-specific validation
+    if (donorType === "organization") {
+      if (!organizationName || !contactPerson || !organizationType) {
+        toast({
+          title: "Missing Information",
+          description: "Please fill in all required organization fields.",
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     setShowPayment(true);
@@ -88,12 +119,16 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
           <PaystackPayment
             amount={parseFloat(amount)}
             email={email}
-            donorName={fullName}
+            donorName={donorType === "individual" ? fullName : contactPerson}
             phone={phone}
-            currency={selectedCurrency.split(' ')[0]} // Extract currency code (NGN from "NGN (₦)")
+            currency={selectedCurrency.split(' ')[0]}
             isAnonymous={isAnonymous}
             church={church}
-            isChristian={isChristian}
+            isChristian={belongsToChurch}
+            donorType={donorType}
+            organizationName={organizationName}
+            organizationType={organizationType}
+            contactPerson={contactPerson}
             onSuccess={handlePaymentSuccess}
             onError={handlePaymentError}
           />
@@ -117,24 +152,92 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
       <CardHeader className="text-center pb-4 sm:pb-6">
         <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-white font-playfair">Complete Your Donation</CardTitle>
         <CardDescription className="text-base sm:text-lg text-gray-600 dark:text-gray-400 font-ibm-plex">
-          Donating from {selectedCountry} in {selectedCurrency}
+          Individuals and organizations can contribute from {selectedCountry} in {selectedCurrency}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <div>
-            <Label htmlFor="fullName" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
-              Full Name *
+            <Label className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+              Donor Type *
             </Label>
-            <Input
-              id="fullName"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
-              placeholder="Enter your full name"
-              required
-            />
+            <RadioGroup value={donorType} onValueChange={setDonorType} className="mt-2">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="individual" id="individual" />
+                <Label htmlFor="individual" className="text-base text-gray-700 dark:text-gray-300 font-poppins">Individual</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="organization" id="organization" />
+                <Label htmlFor="organization" className="text-base text-gray-700 dark:text-gray-300 font-poppins">Organization</Label>
+              </div>
+            </RadioGroup>
           </div>
+
+          {donorType === "individual" ? (
+            <>
+              <div>
+                <Label htmlFor="fullName" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+                  Full Name *
+                </Label>
+                <Input
+                  id="fullName"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div>
+                <Label htmlFor="organizationName" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+                  Organization Name *
+                </Label>
+                <Input
+                  id="organizationName"
+                  value={organizationName}
+                  onChange={(e) => setOrganizationName(e.target.value)}
+                  className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
+                  placeholder="Enter organization name"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="contactPerson" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+                  Contact Person *
+                </Label>
+                <Input
+                  id="contactPerson"
+                  value={contactPerson}
+                  onChange={(e) => setContactPerson(e.target.value)}
+                  className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
+                  placeholder="Enter contact person name"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+                  Organization Type *
+                </Label>
+                <Select onValueChange={setOrganizationType} required>
+                  <SelectTrigger className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation">
+                    <SelectValue placeholder="Select organization type" />
+                  </SelectTrigger>
+                  <SelectContent className="dark:bg-gray-700 dark:border-gray-600">
+                    <SelectItem value="corporate" className="dark:text-white text-base sm:text-lg py-3 touch-manipulation">Corporate</SelectItem>
+                    <SelectItem value="ngo" className="dark:text-white text-base sm:text-lg py-3 touch-manipulation">NGO/Non-Profit</SelectItem>
+                    <SelectItem value="church" className="dark:text-white text-base sm:text-lg py-3 touch-manipulation">Church</SelectItem>
+                    <SelectItem value="foundation" className="dark:text-white text-base sm:text-lg py-3 touch-manipulation">Foundation</SelectItem>
+                    <SelectItem value="other" className="dark:text-white text-base sm:text-lg py-3 touch-manipulation">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </>
+          )}
 
           <div>
             <Label htmlFor="email" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
@@ -146,7 +249,7 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
-              placeholder="Enter your email address"
+              placeholder="Enter email address"
               required
             />
           </div>
@@ -161,7 +264,7 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
-              placeholder="Enter your phone number"
+              placeholder="Enter phone number"
               required
             />
           </div>
@@ -181,56 +284,59 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
             />
           </div>
 
-          <div>
-            <Label className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
-              Are you a Christian? *
-            </Label>
-            <Select onValueChange={setIsChristian} required>
-              <SelectTrigger className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation">
-                <SelectValue placeholder="Select an option" />
-              </SelectTrigger>
-              <SelectContent className="dark:bg-gray-700 dark:border-gray-600">
-                <SelectItem value="yes" className="dark:text-white text-base sm:text-lg py-3 touch-manipulation">Yes</SelectItem>
-                <SelectItem value="no" className="dark:text-white text-base sm:text-lg py-3 touch-manipulation">No</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {donorType === "individual" && (
+            <>
+              <div>
+                <Label className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+                  Do you belong to a Church? *
+                </Label>
+                <Select onValueChange={setBelongsToChurch} required>
+                  <SelectTrigger className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation">
+                    <SelectValue placeholder="Select an option" />
+                  </SelectTrigger>
+                  <SelectContent className="dark:bg-gray-700 dark:border-gray-600">
+                    <SelectItem value="yes" className="dark:text-white text-base sm:text-lg py-3 touch-manipulation">Yes</SelectItem>
+                    <SelectItem value="no" className="dark:text-white text-base sm:text-lg py-3 touch-manipulation">No</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-          {isChristian === "yes" && (
-            <div>
-              <Label htmlFor="church" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
-                What Church? *
-              </Label>
-              <Input
-                id="church"
-                value={church}
-                onChange={(e) => setChurch(e.target.value)}
-                className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
-                placeholder="Enter your church name"
-                required={isChristian === "yes"}
-              />
-            </div>
+              {belongsToChurch === "yes" && (
+                <div>
+                  <Label htmlFor="church" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+                    What Church? *
+                  </Label>
+                  <Input
+                    id="church"
+                    value={church}
+                    onChange={(e) => setChurch(e.target.value)}
+                    className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
+                    placeholder="Enter your church name"
+                    required={belongsToChurch === "yes"}
+                  />
+                </div>
+              )}
+            </>
           )}
 
-          <div className="flex items-center space-x-3">
-            <Checkbox
-              id="anonymous"
-              checked={isAnonymous}
-              onCheckedChange={(checked) => setIsAnonymous(checked as boolean)}
-              className="border-2 border-brand-light-mint/50 data-[state=checked]:bg-brand-mint"
-            />
-            <Label htmlFor="anonymous" className="text-base sm:text-lg text-gray-700 dark:text-gray-300 font-poppins">
-              Display my donation anonymously on the website
-            </Label>
+          <div className="space-y-2">
+            <div className="flex items-center space-x-3">
+              <Checkbox
+                id="anonymous"
+                checked={isAnonymous}
+                onCheckedChange={(checked) => setIsAnonymous(checked as boolean)}
+                className="border-2 border-brand-light-mint/50 data-[state=checked]:bg-brand-mint"
+              />
+              <Label htmlFor="anonymous" className="text-base sm:text-lg text-gray-700 dark:text-gray-300 font-poppins">
+                Display my donation anonymously on the website
+              </Label>
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 ml-7 font-ibm-plex">
+              If you don't check this box, your name will be displayed on our website as a contributor
+            </p>
           </div>
 
           <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
-            <Button
-              type="submit"
-              className="w-full bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white py-3 sm:py-4 text-lg sm:text-xl font-poppins font-semibold shadow-2xl rounded-xl sm:rounded-2xl touch-manipulation"
-            >
-              Continue to Payment
-            </Button>
             <Button
               type="button"
               variant="outline"
@@ -238,6 +344,12 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
               className="w-full border-2 border-gray-300 text-gray-700 dark:text-gray-300 py-3 sm:py-4 text-lg sm:text-xl font-poppins font-semibold rounded-xl sm:rounded-2xl touch-manipulation"
             >
               Cancel
+            </Button>
+            <Button
+              type="submit"
+              className="w-full bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white py-3 sm:py-4 text-lg sm:text-xl font-poppins font-semibold shadow-2xl rounded-xl sm:rounded-2xl touch-manipulation"
+            >
+              Continue to Payment
             </Button>
           </div>
         </form>

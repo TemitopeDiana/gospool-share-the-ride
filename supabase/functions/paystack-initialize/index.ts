@@ -18,10 +18,23 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
     )
 
-    const { amount, email, donorName, phone, currency = 'NGN', isAnonymous = false, church = '', isChristian = '' } = await req.json()
+    const { 
+      amount, 
+      email, 
+      donorName, 
+      phone, 
+      currency = 'NGN', 
+      isAnonymous = false, 
+      church = '', 
+      isChristian = '',
+      donorType = 'individual',
+      organizationName = '',
+      organizationType = '',
+      contactPerson = ''
+    } = await req.json()
 
     if (!amount || !email) {
-      throw new Error('Missing required fields: amount and email ')
+      throw new Error('Missing required fields: amount and email')
     }
 
     // Generate unique reference
@@ -46,6 +59,10 @@ serve(async (req) => {
           is_anonymous: isAnonymous,
           church,
           is_christian: isChristian,
+          donor_type: donorType,
+          organization_name: organizationName,
+          organization_type: organizationType,
+          contact_person: contactPerson,
         }
       }),
     })
@@ -63,11 +80,15 @@ serve(async (req) => {
         user_id: null, // Allow anonymous donations
         amount,
         currency,
-        donor_name: isAnonymous ? null : donorName,
+        donor_name: isAnonymous ? null : (donorType === 'individual' ? donorName : organizationName),
         donor_email: email,
         donor_phone: phone,
         is_anonymous: isAnonymous,
         status: 'pending',
+        donor_type: donorType,
+        organization_name: donorType === 'organization' ? organizationName : null,
+        contact_person: donorType === 'organization' ? contactPerson : null,
+        organization_type: donorType === 'organization' ? organizationType : null,
       })
       .select()
       .single()

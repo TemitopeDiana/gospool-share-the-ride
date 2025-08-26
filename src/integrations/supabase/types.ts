@@ -7,6 +7,11 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "12.2.3 (519615d)"
+  }
   public: {
     Tables: {
       admin_permissions: {
@@ -81,6 +86,7 @@ export type Database = {
       board_advisors: {
         Row: {
           bio: string | null
+          church_denomination: string | null
           company: string | null
           created_at: string | null
           id: string
@@ -94,6 +100,7 @@ export type Database = {
         }
         Insert: {
           bio?: string | null
+          church_denomination?: string | null
           company?: string | null
           created_at?: string | null
           id?: string
@@ -107,6 +114,7 @@ export type Database = {
         }
         Update: {
           bio?: string | null
+          church_denomination?: string | null
           company?: string | null
           created_at?: string | null
           id?: string
@@ -123,14 +131,18 @@ export type Database = {
       donations: {
         Row: {
           amount: number
+          contact_person: string | null
           created_at: string | null
           currency: string | null
           donor_email: string | null
           donor_name: string | null
           donor_phone: string | null
+          donor_type: string | null
           id: string
           is_anonymous: boolean | null
           message: string | null
+          organization_name: string | null
+          organization_type: string | null
           status: Database["public"]["Enums"]["donation_status"] | null
           stripe_payment_intent_id: string | null
           updated_at: string | null
@@ -138,14 +150,18 @@ export type Database = {
         }
         Insert: {
           amount: number
+          contact_person?: string | null
           created_at?: string | null
           currency?: string | null
           donor_email?: string | null
           donor_name?: string | null
           donor_phone?: string | null
+          donor_type?: string | null
           id?: string
           is_anonymous?: boolean | null
           message?: string | null
+          organization_name?: string | null
+          organization_type?: string | null
           status?: Database["public"]["Enums"]["donation_status"] | null
           stripe_payment_intent_id?: string | null
           updated_at?: string | null
@@ -153,14 +169,18 @@ export type Database = {
         }
         Update: {
           amount?: number
+          contact_person?: string | null
           created_at?: string | null
           currency?: string | null
           donor_email?: string | null
           donor_name?: string | null
           donor_phone?: string | null
+          donor_type?: string | null
           id?: string
           is_anonymous?: boolean | null
           message?: string | null
+          organization_name?: string | null
+          organization_type?: string | null
           status?: Database["public"]["Enums"]["donation_status"] | null
           stripe_payment_intent_id?: string | null
           updated_at?: string | null
@@ -318,10 +338,14 @@ export type Database = {
           currency: string
           donation_id: string | null
           id: string
+          last_verification_at: string | null
           paystack_response: Json | null
           reference: string
           status: string
           updated_at: string
+          verification_attempts: number | null
+          webhook_payload: Json | null
+          webhook_received_at: string | null
         }
         Insert: {
           amount: number
@@ -329,10 +353,14 @@ export type Database = {
           currency?: string
           donation_id?: string | null
           id?: string
+          last_verification_at?: string | null
           paystack_response?: Json | null
           reference: string
           status?: string
           updated_at?: string
+          verification_attempts?: number | null
+          webhook_payload?: Json | null
+          webhook_received_at?: string | null
         }
         Update: {
           amount?: number
@@ -340,10 +368,14 @@ export type Database = {
           currency?: string
           donation_id?: string | null
           id?: string
+          last_verification_at?: string | null
           paystack_response?: Json | null
           reference?: string
           status?: string
           updated_at?: string
+          verification_attempts?: number | null
+          webhook_payload?: Json | null
+          webhook_received_at?: string | null
         }
         Relationships: [
           {
@@ -354,6 +386,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      pending_changes: {
+        Row: {
+          action_type: string
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string | null
+          created_by: string
+          id: string
+          new_data: Json | null
+          old_data: Json | null
+          record_id: string | null
+          rejected_at: string | null
+          rejected_by: string | null
+          rejection_reason: string | null
+          status: string | null
+          table_name: string
+        }
+        Insert: {
+          action_type: string
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string | null
+          created_by: string
+          id?: string
+          new_data?: Json | null
+          old_data?: Json | null
+          record_id?: string | null
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_reason?: string | null
+          status?: string | null
+          table_name: string
+        }
+        Update: {
+          action_type?: string
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string | null
+          created_by?: string
+          id?: string
+          new_data?: Json | null
+          old_data?: Json | null
+          record_id?: string | null
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_reason?: string | null
+          status?: string | null
+          table_name?: string
+        }
+        Relationships: []
       }
       projects: {
         Row: {
@@ -511,6 +594,7 @@ export type Database = {
       team_members: {
         Row: {
           bio: string | null
+          church_denomination: string | null
           created_at: string | null
           email: string | null
           id: string
@@ -525,6 +609,7 @@ export type Database = {
         }
         Insert: {
           bio?: string | null
+          church_denomination?: string | null
           created_at?: string | null
           email?: string | null
           id?: string
@@ -539,6 +624,7 @@ export type Database = {
         }
         Update: {
           bio?: string | null
+          church_denomination?: string | null
           created_at?: string | null
           email?: string | null
           id?: string
@@ -579,19 +665,92 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      approve_pending_change: {
+        Args: { change_id: string }
+        Returns: undefined
+      }
+      assign_super_admin: {
+        Args: { user_email: string }
+        Returns: string
+      }
+      create_pending_change: {
+        Args: {
+          p_action_type: string
+          p_new_data?: Json
+          p_old_data?: Json
+          p_record_id?: string
+          p_table_name: string
+        }
+        Returns: undefined
+      }
+      get_cron_jobs: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          active: boolean
+          command: string
+          database: string
+          jobid: number
+          nodename: string
+          nodeport: number
+          schedule: string
+          username: string
+        }[]
+      }
+      get_donation_statistics: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          avg_amount: number
+          currency: string
+          total_amount: number
+          total_count: number
+        }[]
+      }
+      get_pending_changes: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          action_type: string
+          created_at: string
+          created_by: string
+          created_by_profile: Json
+          id: string
+          new_data: Json
+          old_data: Json
+          record_id: string
+          status: string
+          table_name: string
+        }[]
+      }
+      get_recent_donations_public: {
+        Args: { limit_count?: number }
+        Returns: {
+          amount: number
+          created_at: string
+          currency: string
+          donor_type: string
+          is_anonymous: boolean
+        }[]
+      }
       has_permission: {
-        Args: { _user_id: string; _permission_type: string; _action: string }
+        Args: { _action: string; _permission_type: string; _user_id: string }
         Returns: boolean
       }
       is_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      is_super_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      reject_pending_change: {
+        Args: { change_id: string; reason?: string }
+        Returns: undefined
+      }
     }
     Enums: {
       application_status: "pending" | "approved" | "rejected"
       donation_status: "pending" | "completed" | "failed" | "refunded"
-      user_role: "admin" | "user"
+      user_role: "admin" | "user" | "super_admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -599,21 +758,25 @@ export type Database = {
   }
 }
 
-type DefaultSchema = Database[Extract<keyof Database, "public">]
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
@@ -631,14 +794,16 @@ export type Tables<
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
@@ -654,14 +819,16 @@ export type TablesInsert<
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
@@ -677,14 +844,16 @@ export type TablesUpdate<
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
@@ -692,14 +861,16 @@ export type Enums<
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
-> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
@@ -709,7 +880,7 @@ export const Constants = {
     Enums: {
       application_status: ["pending", "approved", "rejected"],
       donation_status: ["pending", "completed", "failed", "refunded"],
-      user_role: ["admin", "user"],
+      user_role: ["admin", "user", "super_admin"],
     },
   },
 } as const

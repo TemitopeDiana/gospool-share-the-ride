@@ -6,14 +6,17 @@ import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { format } from 'date-fns';
 import { SponsorForm } from '@/components/admin/SponsorForm';
 import { AdminDataTable } from '@/components/admin/AdminDataTable';
+import { useApprovalWorkflow } from '@/hooks/useApprovalWorkflow';
 
 export const SponsorsPage = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingSponsor, setEditingSponsor] = useState<any>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { handleChange, isSuperAdmin } = useApprovalWorkflow();
 
   const { data: sponsors = [], isLoading } = useQuery({
     queryKey: ['admin-impact-sponsors'],
@@ -21,7 +24,7 @@ export const SponsorsPage = () => {
       const { data, error } = await supabase
         .from('impact_sponsors')
         .select('*')
-        .order('order_index', { ascending: true });
+        .order('created_at', { ascending: false });
       
       if (error) throw error;
       return data;
@@ -30,24 +33,35 @@ export const SponsorsPage = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from('impact_sponsors')
-        .delete()
-        .eq('id', id);
-      
-      if (error) throw error;
+      const directAction = async () => {
+        const { error } = await supabase
+          .from('impact_sponsors')
+          .delete()
+          .eq('id', id);
+        
+        if (error) throw error;
+      };
+
+      await handleChange(
+        'impact_sponsors',
+        'DELETE',
+        directAction,
+        id
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-impact-sponsors'] });
       toast({
-        title: "Impact sponsor deleted",
-        description: "Impact sponsor has been deleted successfully.",
+        title: "Sponsor deleted",
+        description: isSuperAdmin ? 
+          "Impact sponsor has been deleted successfully." :
+          "Your deletion request has been submitted for approval.",
       });
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to delete impact sponsor.",
+        description: "Failed to delete sponsor.",
         variant: "destructive",
       });
     },
@@ -55,24 +69,37 @@ export const SponsorsPage = () => {
 
   const toggleActiveMutation = useMutation({
     mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
-      const { error } = await supabase
-        .from('impact_sponsors')
-        .update({ is_active })
-        .eq('id', id);
-      
-      if (error) throw error;
+      const directAction = async () => {
+        const { error } = await supabase
+          .from('impact_sponsors')
+          .update({ is_active })
+          .eq('id', id);
+        
+        if (error) throw error;
+      };
+
+      await handleChange(
+        'impact_sponsors',
+        'UPDATE',
+        directAction,
+        id,
+        { is_active: !is_active },
+        { is_active }
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-impact-sponsors'] });
       toast({
         title: "Status updated",
-        description: "Impact sponsor status has been updated successfully.",
+        description: isSuperAdmin ? 
+          "Sponsor status has been updated successfully." :
+          "Your change has been submitted for approval.",
       });
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to update impact sponsor status.",
+        description: "Failed to update sponsor status.",
         variant: "destructive",
       });
     },
@@ -89,26 +116,24 @@ export const SponsorsPage = () => {
     {
       key: 'sponsor_type',
       label: 'Type',
-      render: (value: string) => value,
     },
     {
       key: 'tier',
       label: 'Tier',
       render: (value: string) => (
         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-          value === 'platinum' ? 'bg-gray-100 text-gray-800' :
           value === 'gold' ? 'bg-yellow-100 text-yellow-800' :
-          value === 'silver' ? 'bg-gray-100 text-gray-600' :
+          value === 'silver' ? 'bg-gray-100 text-gray-800' :
           'bg-orange-100 text-orange-800'
         }`}>
-          {value || 'Bronze'}
+          {value?.toUpperCase()}
         </span>
       ),
     },
     {
       key: 'contribution_amount',
-      label: 'Contribution',
-      render: (value: number) => value ? `₦${Number(value).toLocaleString()}` : 'N/A',
+      label: 'Amount',
+      render: (value: number) => value ? `₦${Number(value).toLocaleString()}` : '-',
     },
     {
       key: 'is_active',
@@ -122,9 +147,9 @@ export const SponsorsPage = () => {
       ),
     },
     {
-      key: 'order_index',
-      label: 'Order',
-      render: (value: number) => value || 0,
+      key: 'created_at',
+      label: 'Added',
+      render: (value: string) => format(new Date(value), 'MMM dd, yyyy'),
     },
   ];
 
@@ -134,7 +159,7 @@ export const SponsorsPage = () => {
   };
 
   const handleDelete = (sponsor: any) => {
-    if (window.confirm('Are you sure you want to delete this impact sponsor?')) {
+    if (confirm('Are you sure you want to delete this sponsor?')) {
       deleteMutation.mutate(sponsor.id);
     }
   };
@@ -168,7 +193,7 @@ export const SponsorsPage = () => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Impact Sponsors</h1>
-            <p className="text-gray-600">Manage impact sponsors and partnerships</p>
+            <p className="text-gray-600">Manage active sponsors displayed on the website</p>
           </div>
           <Button onClick={() => setIsFormOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
