@@ -62,8 +62,11 @@ export const AdminSidebar = () => {
         <div className="flex items-center gap-3">
           <img
             className="h-8 w-auto"
-            src="/images/Logo mark v2 dark.png"
+            src="public/images/Logo mark v2 dark.png"
             alt="Gospool"
+            onError={e => {
+              (e.currentTarget as HTMLImageElement).src = '/images/Logomark v1 white.png';
+            }}
           />
           {!collapsed && (
             <div className="hidden lg:block">

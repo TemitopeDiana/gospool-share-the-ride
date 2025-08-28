@@ -12,21 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 
-type ApplicationStatus = Database['public']['Enums']['application_status'];
 
-interface VolunteerApplication {
-  id: string;
-  full_name: string;
-  email: string;
-  phone?: string;
-  experience?: string;
-  motivation?: string;
-  position_applied: string;
-  portfolio_url?: string;
-  resume_url?: string;
-  created_at: string;
-  status: ApplicationStatus;
-}
+type VolunteerApplication = Database["public"]["Tables"]["volunteer_applications"]["Row"];
 
 export const VolunteerApplicationsPage = () => {
   const [selectedApplication, setSelectedApplication] = useState<VolunteerApplication | null>(null);
@@ -37,23 +24,20 @@ export const VolunteerApplicationsPage = () => {
     queryKey: ['admin-volunteer-applications'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('team_applications')
+        .from('volunteer_applications')
         .select('*')
-        .eq('position_applied', 'Volunteer')
-        .order('created_at', { ascending: false });
-      
+        .order('applied_date', { ascending: false });
       if (error) throw error;
       return data as VolunteerApplication[];
     },
   });
 
   const updateStatusMutation = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: ApplicationStatus }) => {
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
       const { error } = await supabase
-        .from('team_applications')
+        .from('volunteer_applications')
         .update({ status })
         .eq('id', id);
-      
       if (error) throw error;
     },
     onSuccess: () => {
@@ -73,7 +57,6 @@ export const VolunteerApplicationsPage = () => {
   });
 
   const extractPreferredAreas = (experience: string) => {
-    if (!experience) return [];
     const match = experience.match(/Preferred Areas: (.+)/);
     if (match) {
       return match[1].split(', ').filter(area => area.trim());
@@ -83,7 +66,7 @@ export const VolunteerApplicationsPage = () => {
 
   const columns = [
     {
-      key: 'full_name',
+      key: 'applicant_name',
       label: 'Applicant Name',
       render: (value: string) => (
         <div className="font-medium text-gray-900">{value}</div>
@@ -100,10 +83,10 @@ export const VolunteerApplicationsPage = () => {
       render: (value: string) => value || 'N/A',
     },
     {
-      key: 'experience',
+      key: 'preferred_areas',
       label: 'Preferred Areas',
       render: (value: string) => {
-        const areas = extractPreferredAreas(value);
+        const areas = value ? value.split(',').map(a => a.trim()).filter(Boolean) : [];
         return (
           <div className="flex flex-wrap gap-1">
             {areas?.slice(0, 2).map((area, index) => (
@@ -121,7 +104,7 @@ export const VolunteerApplicationsPage = () => {
       },
     },
     {
-      key: 'created_at',
+      key: 'applied_date',
       label: 'Applied Date',
       render: (value: string) => format(new Date(value), 'MMM dd, yyyy'),
     },
@@ -154,11 +137,11 @@ export const VolunteerApplicationsPage = () => {
   ];
 
   const handleApprove = (application: VolunteerApplication) => {
-    updateStatusMutation.mutate({ id: application.id, status: 'approved' as ApplicationStatus });
+  updateStatusMutation.mutate({ id: application.id, status: 'approved' });
   };
 
   const handleReject = (application: VolunteerApplication) => {
-    updateStatusMutation.mutate({ id: application.id, status: 'rejected' as ApplicationStatus });
+  updateStatusMutation.mutate({ id: application.id, status: 'rejected' });
   };
 
   if (isLoading) {
@@ -183,7 +166,7 @@ export const VolunteerApplicationsPage = () => {
         <AdminDataTable
           data={applications}
           columns={columns}
-          searchKey="full_name"
+          searchKey="applicant_name"
           showStatus={true}
           onApprove={handleApprove}
           onReject={handleReject}
@@ -193,19 +176,19 @@ export const VolunteerApplicationsPage = () => {
           <Dialog open={!!selectedApplication} onOpenChange={() => setSelectedApplication(null)}>
             <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Volunteer Application Details - {selectedApplication.full_name}</DialogTitle>
+                <DialogTitle>Volunteer Application Details - {selectedApplication.applicant_name}</DialogTitle>
               </DialogHeader>
               <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <h4 className="font-semibold mb-2">Contact Information</h4>
-                    <p><strong>Name:</strong> {selectedApplication.full_name}</p>
+                    <p><strong>Name:</strong> {selectedApplication.applicant_name}</p>
                     <p><strong>Email:</strong> {selectedApplication.email}</p>
                     <p><strong>Phone:</strong> {selectedApplication.phone || 'N/A'}</p>
                   </div>
                   <div>
                     <h4 className="font-semibold mb-2">Application Details</h4>
-                    <p><strong>Applied:</strong> {format(new Date(selectedApplication.created_at), 'MMM dd, yyyy')}</p>
+                    <p><strong>Applied:</strong> {format(new Date(selectedApplication.applied_date), 'MMM dd, yyyy')}</p>
                     <p><strong>Status:</strong> 
                       <Badge className="ml-2" variant={
                         selectedApplication.status === 'approved' ? 'default' : 
@@ -221,27 +204,11 @@ export const VolunteerApplicationsPage = () => {
                 <div>
                   <h4 className="font-semibold mb-2">Preferred Volunteer Areas</h4>
                   <div className="flex flex-wrap gap-2">
-                    {extractPreferredAreas(selectedApplication.experience || '').map((area, index) => (
+                    {(selectedApplication.preferred_areas ? selectedApplication.preferred_areas.split(',').map(a => a.trim()).filter(Boolean) : []).map((area, index) => (
                       <Badge key={index} variant="secondary">{area}</Badge>
                     ))}
                   </div>
                 </div>
-
-                {selectedApplication.experience && (
-                  <div>
-                    <h4 className="font-semibold mb-2">Experience & Skills</h4>
-                    <p className="bg-gray-50 p-3 rounded-lg">
-                      {selectedApplication.experience.split('\n\nPreferred Areas:')[0] || 'No experience provided'}
-                    </p>
-                  </div>
-                )}
-
-                {selectedApplication.motivation && (
-                  <div>
-                    <h4 className="font-semibold mb-2">Motivation</h4>
-                    <p className="bg-gray-50 p-3 rounded-lg">{selectedApplication.motivation}</p>
-                  </div>
-                )}
 
                 <div className="flex gap-4">
                   {selectedApplication.resume_url && (
@@ -251,15 +218,6 @@ export const VolunteerApplicationsPage = () => {
                     >
                       <ExternalLink className="h-4 w-4 mr-2" />
                       View Resume
-                    </Button>
-                  )}
-                  {selectedApplication.portfolio_url && (
-                    <Button
-                      variant="outline"
-                      onClick={() => window.open(selectedApplication.portfolio_url, '_blank')}
-                    >
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      View Portfolio
                     </Button>
                   )}
                 </div>

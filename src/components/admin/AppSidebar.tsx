@@ -14,7 +14,8 @@ import {
   CreditCard,
   HandHeart,
   UserPlus,
-  Menu
+  Menu,
+  BarChart3
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -44,9 +45,19 @@ export function AppSidebar() {
       icon: LayoutDashboard,
     },
     {
+      name: 'Analytics',
+      href: '/admin/analytics',
+      icon: BarChart3,
+    },
+    {
       name: 'Donations',
       href: '/admin/donations',
       icon: DollarSign,
+    },
+    {
+      name: 'Recent Donors',
+      href: '/admin/recent-donors',
+      icon: Users,
     },
     {
       name: 'Sponsor Requests',

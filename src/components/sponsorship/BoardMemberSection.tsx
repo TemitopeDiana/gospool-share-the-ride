@@ -1,7 +1,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import BoardMemberForm from "./BoardMemberForm";
 
 interface BoardMemberSectionProps {
@@ -12,8 +15,41 @@ const BoardMemberSection = ({ shouldAutoOpen }: BoardMemberSectionProps) => {
   const [showSponsorAmount, setShowSponsorAmount] = useState(false);
   const [showSponsorForm, setShowSponsorForm] = useState(false);
 
-  const impactSponsors = [
-    { name: "Coming Soon", role: "Be the first impact sponsor", amount: "Founding Sponsor" },
+  // Fetch impact sponsors from database
+  const { data: impactSponsorsData = [], isLoading } = useQuery({
+    queryKey: ['impact-sponsors'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('impact_sponsors')
+        .select('*')
+        .eq('is_active', true)
+        .order('order_index', { ascending: true });
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Separate sponsors from partners
+  const impactSponsors = impactSponsorsData.filter(item => 
+    item.sponsor_type === 'individual' || 
+    item.sponsor_type === 'church' || 
+    item.sponsor_type === 'organization'
+  );
+  
+  const impactPartners = impactSponsorsData.filter(item => 
+    item.sponsor_type === 'partner'
+  );
+
+  // Calculate partner metrics
+  const partnerMetrics = {
+    totalPartners: impactPartners.length,
+    activeProjects: impactPartners.reduce((sum, partner) => sum + (partner.contribution_amount ? 1 : 0), 0),
+  };
+
+  // If no sponsors from database, show placeholder
+  const displaySponsors = impactSponsors.length > 0 ? impactSponsors : [
+    { id: 'placeholder', sponsor_name: "Coming Soon", tier: "Founding Sponsor", sponsor_type: "organization" },
   ];
 
   useEffect(() => {
@@ -120,7 +156,7 @@ const BoardMemberSection = ({ shouldAutoOpen }: BoardMemberSectionProps) => {
         </div>
 
         {/* Current Impact Sponsors */}
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto mb-8 sm:mb-12 lg:mb-16">
           <Card className="dark:bg-gray-800/80 dark:border-gray-700 rounded-xl sm:rounded-2xl shadow-2xl border border-brand-light-mint/30 mx-4 sm:mx-0">
             <CardHeader className="text-center pb-4 sm:pb-6">
               <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-white mb-2 sm:mb-3 font-playfair px-2">
@@ -131,26 +167,104 @@ const BoardMemberSection = ({ shouldAutoOpen }: BoardMemberSectionProps) => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3 sm:space-y-4">
-                {impactSponsors.map((sponsor, index) => (
-                  <div key={index} className="flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-brand-light-mint/10 dark:from-gray-700 dark:to-gray-600 rounded-xl">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-brand-blue to-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-base sm:text-lg font-poppins shadow-lg flex-shrink-0">
-                      {sponsor.name.charAt(0)}
+              {isLoading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary mx-auto mb-4"></div>
+                  <p className="text-gray-600 dark:text-gray-300">Loading sponsors...</p>
+                </div>
+              ) : (
+                <div className="space-y-3 sm:space-y-4">
+                  {displaySponsors.map((sponsor, index) => (
+                    <div key={sponsor.id || index} className="flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-brand-light-mint/10 dark:from-gray-700 dark:to-gray-600 rounded-xl">
+                      <div className="flex-shrink-0">
+                        {sponsor.logo_url ? (
+                          <img 
+                            src={sponsor.logo_url} 
+                            alt={`${sponsor.sponsor_name} logo`}
+                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover shadow-lg"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-brand-blue to-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-base sm:text-lg font-poppins shadow-lg">
+                            {sponsor.sponsor_name.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center space-x-2">
+                          <h4 className="font-semibold text-base sm:text-lg text-gray-900 dark:text-white font-poppins truncate">
+                            {sponsor.sponsor_name}
+                          </h4>
+                          {sponsor.tier && (
+                            <Badge variant="secondary" className="text-xs">
+                              {sponsor.tier}
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex capitalize">
+                          {sponsor.sponsor_type} sponsor
+                        </p>
+                        {sponsor.website_url && (
+                          <a 
+                            href={sponsor.website_url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-xs sm:text-sm text-brand-blue dark:text-brand-mint font-ibm-plex hover:underline"
+                          >
+                            Visit Website
+                          </a>
+                        )}
+                      </div>
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="font-semibold text-base sm:text-lg text-gray-900 dark:text-white font-poppins truncate">{sponsor.name}</h4>
-                      <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex">{sponsor.role}</p>
-                      <p className="text-xs sm:text-sm text-brand-blue dark:text-brand-mint font-ibm-plex font-medium">{sponsor.amount}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="text-center mt-4 sm:mt-6 p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-brand-light-mint/20 dark:from-gray-700 dark:to-gray-600 rounded-xl">
-                <p className="text-brand-blue dark:text-brand-mint font-medium text-base sm:text-lg font-poppins">Be among the first to become an impact sponsor!</p>
-              </div>
+                  ))}
+                </div>
+              )}
+              
+              {impactSponsors.length === 0 && !isLoading && (
+                <div className="text-center mt-4 sm:mt-6 p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-brand-light-mint/20 dark:from-gray-700 dark:to-gray-600 rounded-xl">
+                  <p className="text-brand-blue dark:text-brand-mint font-medium text-base sm:text-lg font-poppins">
+                    Be among the first to become an impact sponsor!
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
+
+        {/* Impact Partners Metrics */}
+        {impactPartners.length > 0 && (
+          <div className="max-w-4xl mx-auto">
+            <Card className="dark:bg-gray-800/80 dark:border-gray-700 rounded-xl sm:rounded-2xl shadow-2xl border border-brand-mint/30 mx-4 sm:mx-0">
+              <CardHeader className="text-center pb-4 sm:pb-6">
+                <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-white mb-2 sm:mb-3 font-playfair px-2">
+                  Impact Partners Network
+                </CardTitle>
+                <CardDescription className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex px-2">
+                  Partnership organizations supporting our growth
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                  <div className="text-center p-4 sm:p-6 bg-gradient-to-r from-brand-mint/10 to-brand-light-mint/20 dark:from-brand-dark-teal/20 dark:to-brand-mint/10 rounded-xl">
+                    <div className="text-3xl sm:text-4xl font-bold text-brand-primary dark:text-brand-mint font-poppins mb-2">
+                      {partnerMetrics.totalPartners}
+                    </div>
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex">
+                      Active Partners
+                    </p>
+                  </div>
+                  <div className="text-center p-4 sm:p-6 bg-gradient-to-r from-brand-primary/10 to-brand-dark-teal/20 dark:from-brand-mint/10 dark:to-brand-light-mint/20 rounded-xl">
+                    <div className="text-3xl sm:text-4xl font-bold text-brand-dark-teal dark:text-brand-light-mint font-poppins mb-2">
+                      {partnerMetrics.activeProjects}
+                    </div>
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex">
+                      Joint Projects
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     </section>
   );

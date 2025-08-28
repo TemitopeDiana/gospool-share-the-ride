@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,7 +20,7 @@ const volunteerSchema = z.object({
   experience: z.string().optional(),
   motivation: z.string().min(20, 'Please tell us why you want to volunteer'),
   portfolio_url: z.string().url().optional().or(z.literal('')),
-  resume_url: z.string().url().optional().or(z.literal('')),
+  resume_file: z.any().optional(), // Accept any type for file upload
 });
 
 type VolunteerFormData = z.infer<typeof volunteerSchema>;
@@ -31,21 +30,9 @@ interface VolunteerFormProps {
   onClose: () => void;
 }
 
-const VOLUNTEER_AREAS = [
-  'Education & Tutoring',
-  'Community Outreach',
-  'Event Planning',
-  'Social Media & Marketing',
-  'Fundraising',
-  'Administrative Support',
-  'Technical Support',
-  'Mentorship',
-  'Content Creation',
-  'Photography/Videography',
-];
-
 export const VolunteerForm = ({ open, onClose }: VolunteerFormProps) => {
   const [preferredAreas, setPreferredAreas] = useState<string[]>([]);
+  const [newArea, setNewArea] = useState<string>('');
   const { toast } = useToast();
 
   const {
@@ -59,40 +46,62 @@ export const VolunteerForm = ({ open, onClose }: VolunteerFormProps) => {
 
   const submitApplication = useMutation({
     mutationFn: async (data: VolunteerFormData) => {
-      // Use team_applications table for now with position_applied as "Volunteer"
+      let resume_url = '';
+
+      // Handle resume file upload
+      if (data.resume_file && data.resume_file instanceof File) {
+        const fileExt = data.resume_file.name.split('.').pop();
+        const fileName = `resume-${Date.now()}.${fileExt}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('volunteer-resumes')
+          .upload(fileName, data.resume_file);
+
+        if (uploadError) {
+          throw new Error('Failed to upload resume. Please try again.');
+        }
+
+        const { data: publicUrlData } = supabase.storage
+          .from('volunteer-resumes')
+          .getPublicUrl(fileName);
+
+        resume_url = publicUrlData?.publicUrl || '';
+      }
+
+      // Insert application data into volunteer_applications table
       const applicationData = {
-        full_name: data.full_name,
+        applicant_name: data.full_name,
         email: data.email,
         phone: data.phone || '',
-        experience: `${data.experience || ''}\n\nPreferred Areas: ${preferredAreas.join(', ')}`,
+        preferred_areas: preferredAreas.join(', '),
         motivation: data.motivation,
-        position_applied: 'Volunteer',
-        portfolio_url: data.portfolio_url || null,
-        resume_url: data.resume_url || null,
+        resume_url,
+        applied_date: new Date().toISOString(),
+        status: 'pending',
       };
 
       const { error } = await supabase
-        .from('team_applications')
+        .from('volunteer_applications')
         .insert([applicationData]);
 
-      if (error) throw error;
-      
+      if (error) {
+        throw new Error('Failed to submit application. Please try again.');
+      }
+
       // Send admin notification
       try {
         await supabase.functions.invoke('send-admin-notifications', {
           body: {
             type: 'volunteer_application',
-            data: applicationData
-          }
+            data: applicationData,
+          },
         });
       } catch (emailError) {
         console.warn('Email notification failed:', emailError);
-        // Don't fail the form submission if email fails
       }
     },
     onSuccess: () => {
       toast({
-        title: "Application submitted!",
+        title: 'Application submitted!',
         description: "Thank you for your interest in volunteering. We'll review your application and get back to you soon.",
       });
       reset();
@@ -101,9 +110,9 @@ export const VolunteerForm = ({ open, onClose }: VolunteerFormProps) => {
     },
     onError: (error) => {
       toast({
-        title: "Error",
-        description: "Failed to submit application. Please try again.",
-        variant: "destructive",
+        title: 'Error',
+        description: error.message || 'Failed to submit application. Please try again.',
+        variant: 'destructive',
       });
       console.error('Volunteer application error:', error);
     },
@@ -121,12 +130,15 @@ export const VolunteerForm = ({ open, onClose }: VolunteerFormProps) => {
     submitApplication.mutate(data);
   };
 
-  const handleAreaChange = (area: string, checked: boolean) => {
-    if (checked) {
-      setPreferredAreas([...preferredAreas, area]);
-    } else {
-      setPreferredAreas(preferredAreas.filter(a => a !== area));
+  const handleAddArea = () => {
+    if (newArea.trim() && !preferredAreas.includes(newArea.trim())) {
+      setPreferredAreas([...preferredAreas, newArea.trim()]);
+      setNewArea('');
     }
+  };
+
+  const handleRemoveArea = (area: string) => {
+    setPreferredAreas(preferredAreas.filter(a => a !== area));
   };
 
   return (
@@ -183,11 +195,12 @@ export const VolunteerForm = ({ open, onClose }: VolunteerFormProps) => {
                 </div>
 
                 <div>
-                  <Label htmlFor="resume_url">Resume/CV URL</Label>
+                  <Label htmlFor="resume_file">Resume/CV File</Label>
                   <Input
-                    id="resume_url"
-                    {...register('resume_url')}
-                    placeholder="Link to your resume (optional)"
+                    id="resume_file"
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    {...register('resume_file')}
                   />
                 </div>
               </div>
@@ -226,15 +239,24 @@ export const VolunteerForm = ({ open, onClose }: VolunteerFormProps) => {
 
               <div>
                 <Label>Preferred Volunteer Areas * (Select at least one)</Label>
-                <div className="grid grid-cols-2 gap-2 mt-2">
-                  {VOLUNTEER_AREAS.map((area) => (
-                    <div key={area} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={area}
-                        checked={preferredAreas.includes(area)}
-                        onCheckedChange={(checked) => handleAreaChange(area, checked as boolean)}
-                      />
-                      <Label htmlFor={area} className="text-sm">{area}</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="new_area"
+                    value={newArea}
+                    onChange={(e) => setNewArea(e.target.value)}
+                    placeholder="Enter a volunteer area"
+                  />
+                  <Button type="button" onClick={handleAddArea}>
+                    Add
+                  </Button>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {preferredAreas.map((area, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <span className="bg-gray-200 px-2 py-1 rounded">{area}</span>
+                      <Button type="button" variant="outline" size="sm" onClick={() => handleRemoveArea(area)}>
+                        Remove
+                      </Button>
                     </div>
                   ))}
                 </div>

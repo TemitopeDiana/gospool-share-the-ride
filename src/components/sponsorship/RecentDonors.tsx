@@ -1,29 +1,70 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { format } from 'date-fns';
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const RecentDonors = () => {
-  const recentDonors = [
-    { name: "John Smith", amount: "₦50,000", date: "2024-12-28", isAnonymous: false },
-    { name: "Anonymous", amount: "₦25,000", date: "2024-12-27", isAnonymous: true },
-    { name: "Sarah Johnson", amount: "₦100,000", date: "2024-12-26", isAnonymous: false },
-    { name: "Anonymous", amount: "₦75,000", date: "2024-12-25", isAnonymous: true },
-    { name: "Michael Brown", amount: "₦30,000", date: "2024-12-24", isAnonymous: false },
-    { name: "Grace Chapel", amount: "₦150,000", date: "2024-12-23", isAnonymous: false },
-    { name: "David Wilson", amount: "₦45,000", date: "2024-12-22", isAnonymous: false },
-    { name: "Anonymous", amount: "₦60,000", date: "2024-12-21", isAnonymous: true },
-    { name: "Faith Community", amount: "₦200,000", date: "2024-12-20", isAnonymous: false },
-    { name: "Mary Okafor", amount: "₦35,000", date: "2024-12-19", isAnonymous: false },
-    { name: "Anonymous", amount: "₦80,000", date: "2024-12-18", isAnonymous: true },
-    { name: "Peter Adebayo", amount: "₦40,000", date: "2024-12-17", isAnonymous: false },
-    { name: "Hope Church", amount: "₦120,000", date: "2024-12-16", isAnonymous: false },
-    { name: "Anonymous", amount: "₦55,000", date: "2024-12-15", isAnonymous: true },
-    { name: "Ruth Ogbonna", amount: "₦65,000", date: "2024-12-14", isAnonymous: false },
-    { name: "Samuel Eze", amount: "₦90,000", date: "2024-12-13", isAnonymous: false },
-    { name: "Anonymous", amount: "₦70,000", date: "2024-12-12", isAnonymous: true },
-    { name: "Victory Assembly", amount: "₦180,000", date: "2024-12-11", isAnonymous: false },
-    { name: "James Uche", amount: "₦50,000", date: "2024-12-10", isAnonymous: false },
-    { name: "Anonymous", amount: "₦95,000", date: "2024-12-09", isAnonymous: true },
-  ];
+  const { data: donations = [], isLoading } = useQuery({
+    queryKey: ['public-recent-donations'],
+    queryFn: async () => {
+      // Get only public donations (not anonymous or with explicit consent) for public display
+      const { data, error } = await supabase
+        .from('donations')
+        .select('donor_name, amount, currency, created_at, is_anonymous, donor_type, organization_name, church_name')
+        .eq('status', 'completed')
+        .order('created_at', { ascending: false })
+        .limit(15); // Show more recent donors
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const formatCurrency = (amount: number, currency: string = 'NGN') => {
+    return new Intl.NumberFormat('en-NG', {
+      style: 'currency',
+      currency: currency,
+      minimumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  const formatDonorName = (donation: any) => {
+    if (donation.is_anonymous) {
+      return 'Anonymous';
+    }
+    
+    if (donation.donor_type === 'organization') {
+      return donation.organization_name || 'Anonymous Organization';
+    }
+    
+    return donation.donor_name || 'Anonymous';
+  };
+
+  if (isLoading) {
+    return (
+      <section className="py-16 bg-gradient-to-br from-white via-brand-light-mint/10 to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-brand-dark-teal/10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Card className="dark:bg-gray-800/80 dark:border-gray-700 rounded-3xl shadow-2xl border border-brand-light-mint/30">
+            <CardContent className="p-8">
+              <div className="animate-pulse space-y-4">
+                <div className="h-8 bg-gray-200 rounded w-1/3 mx-auto"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-8">
+                  {[...Array(12)].map((_, i) => (
+                    <div key={i} className="h-16 bg-gray-200 rounded"></div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-16 bg-gradient-to-br from-white via-brand-light-mint/10 to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-brand-dark-teal/10">
@@ -38,24 +79,52 @@ const RecentDonors = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {recentDonors.map((donor, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-brand-light-mint/10 dark:from-gray-700 dark:to-gray-600 rounded-lg border border-brand-light-mint/20 dark:border-gray-600">
-                  <div className="flex flex-col">
-                    <p className="text-sm text-gray-600 dark:text-gray-300 font-ibm-plex">
-                      {new Date(donor.date).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric'
-                      })}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-sm text-brand-primary dark:text-brand-mint font-poppins">{donor.amount}</p>
-                  </div>
+            {donations.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-gray-600 dark:text-gray-300 mb-4">
+                  No donations to display yet. Be the first to contribute!
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {donations.map((donation, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-brand-light-mint/10 dark:from-gray-700 dark:to-gray-600 rounded-lg border border-brand-light-mint/20 dark:border-gray-600">
+                      <div className="flex flex-col">
+                        <p className="text-sm text-gray-600 dark:text-gray-300 font-ibm-plex">
+                          {format(new Date(donation.created_at), 'MMM dd, yyyy')}
+                        </p>
+                        <p className="font-semibold text-gray-900 dark:text-white font-poppins">
+                          {formatDonorName(donation)}
+                        </p>
+                        {donation.church_name && !donation.is_anonymous && (
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            {donation.church_name}
+                          </p>
+                        )}
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-brand-primary dark:text-brand-mint font-poppins">
+                          {formatCurrency(donation.amount, donation.currency)}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+                
+                <div className="text-center mt-8">
+                  <Link to="/admin/recent-donors">
+                    <Button 
+                      variant="outline" 
+                      className="bg-white dark:bg-gray-700 hover:bg-brand-light-mint dark:hover:bg-brand-mint/20 border-brand-light-mint dark:border-brand-mint text-brand-primary dark:text-brand-mint hover:text-brand-dark-teal dark:hover:text-white transition-all duration-300 flex items-center gap-2"
+                    >
+                      View All Donors
+                      <ArrowRight size={16} />
+                    </Button>
+                  </Link>
+                </div>
+              </>
+            )}
           </CardContent>
         </Card>
       </div>

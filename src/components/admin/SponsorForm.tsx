@@ -28,7 +28,9 @@ export const SponsorForm = ({ sponsor, onClose, onSuccess }: SponsorFormProps) =
     order_index: 0,
     is_active: true,
   });
+  const [logoFile, setLogoFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -53,8 +55,53 @@ export const SponsorForm = ({ sponsor, onClose, onSuccess }: SponsorFormProps) =
     setIsLoading(true);
 
     try {
+      let logoUrl = formData.logo_url;
+
+      // Upload logo file if provided
+      if (logoFile) {
+        setIsUploadingLogo(true);
+        const fileExt = logoFile.name.split('.').pop();
+        const fileName = `sponsor-logo-${Date.now()}.${fileExt}`;
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('sponsor-logos')
+          .upload(fileName, logoFile);
+
+        if (uploadError) {
+          // If bucket doesn't exist, create it first
+          if (uploadError.message.includes('not found')) {
+            await supabase.storage.createBucket('sponsor-logos', {
+              public: true,
+              allowedMimeTypes: ['image/*'],
+              fileSizeLimit: 5242880 // 5MB
+            });
+            
+            // Retry upload
+            const { data: retryUploadData, error: retryUploadError } = await supabase.storage
+              .from('sponsor-logos')
+              .upload(fileName, logoFile);
+              
+            if (retryUploadError) throw retryUploadError;
+            
+            const { data: urlData } = supabase.storage
+              .from('sponsor-logos')
+              .getPublicUrl(retryUploadData.path);
+            logoUrl = urlData.publicUrl;
+          } else {
+            throw uploadError;
+          }
+        } else {
+          const { data: urlData } = supabase.storage
+            .from('sponsor-logos')
+            .getPublicUrl(uploadData.path);
+          logoUrl = urlData.publicUrl;
+        }
+        setIsUploadingLogo(false);
+      }
+
       const data = {
         ...formData,
+        logo_url: logoUrl,
         contribution_amount: formData.contribution_amount ? parseFloat(formData.contribution_amount) : null,
         order_index: parseInt(formData.order_index.toString()),
         start_date: formData.start_date || null,
@@ -88,6 +135,7 @@ export const SponsorForm = ({ sponsor, onClose, onSuccess }: SponsorFormProps) =
 
       onSuccess();
     } catch (error) {
+      console.error('Error saving sponsor:', error);
       toast({
         title: "Error",
         description: "Failed to save impact sponsor.",
@@ -95,6 +143,36 @@ export const SponsorForm = ({ sponsor, onClose, onSuccess }: SponsorFormProps) =
       });
     } finally {
       setIsLoading(false);
+      setIsUploadingLogo(false);
+    }
+  };
+
+  const handleLogoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "Invalid file type",
+          description: "Please select an image file (PNG, JPG, SVG, etc.)",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Validate file size (5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please select an image smaller than 5MB",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      setLogoFile(file);
+      // Clear the URL field since we're uploading a file
+      setFormData({ ...formData, logo_url: '' });
     }
   };
 
@@ -119,26 +197,98 @@ export const SponsorForm = ({ sponsor, onClose, onSuccess }: SponsorFormProps) =
             
             <div className="space-y-2">
               <Label htmlFor="sponsor_type">Sponsor Type *</Label>
-              <Input
-                id="sponsor_type"
+              <Select
                 value={formData.sponsor_type}
-                onChange={(e) => setFormData({ ...formData, sponsor_type: e.target.value })}
-                required
-                placeholder="e.g., Corporate, Individual, Foundation"
-              />
+                onValueChange={(value) => setFormData({ ...formData, sponsor_type: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select sponsor type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="individual">Individual</SelectItem>
+                  <SelectItem value="church">Church</SelectItem>
+                  <SelectItem value="organization">Organization</SelectItem>
+                  <SelectItem value="partner">Partner</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="logo_url">Logo URL</Label>
-              <Input
-                id="logo_url"
-                type="url"
-                value={formData.logo_url}
-                onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
-                placeholder="https://example.com/logo.png"
-              />
+              <Label>Logo</Label>
+              <p className="text-sm text-gray-500">Upload a logo file or provide a URL</p>
+              
+              {/* Current Logo Preview */}
+              {sponsor && formData.logo_url && !logoFile && (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-700">Current Logo:</p>
+                  <img 
+                    src={formData.logo_url} 
+                    alt="Current logo" 
+                    className="w-20 h-20 object-contain border border-gray-200 rounded-lg p-2"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
+              
+              <div className="grid grid-cols-1 gap-4">
+                {/* File Upload Option */}
+                <div className="space-y-2">
+                  <Label htmlFor="logo_file">Upload Logo File</Label>
+                  <Input
+                    id="logo_file"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleLogoFileChange}
+                    className="cursor-pointer"
+                  />
+                  {logoFile && (
+                    <div className="space-y-2">
+                      <p className="text-sm text-green-600">
+                        Selected: {logoFile.name}
+                      </p>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setLogoFile(null);
+                          // Reset file input
+                          const fileInput = document.getElementById('logo_file') as HTMLInputElement;
+                          if (fileInput) fileInput.value = '';
+                        }}
+                      >
+                        Remove File
+                      </Button>
+                    </div>
+                  )}
+                </div>
+                
+                {/* URL Option */}
+                <div className="space-y-2">
+                  <Label htmlFor="logo_url">Or Logo URL</Label>
+                  <Input
+                    id="logo_url"
+                    type="url"
+                    value={formData.logo_url}
+                    onChange={(e) => {
+                      setFormData({ ...formData, logo_url: e.target.value });
+                      if (e.target.value) setLogoFile(null); // Clear file if URL is provided
+                    }}
+                    placeholder="https://example.com/logo.png"
+                    disabled={!!logoFile}
+                  />
+                  {logoFile && (
+                    <p className="text-sm text-gray-500">
+                      URL field disabled while file is selected
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
 
             <div className="space-y-2">

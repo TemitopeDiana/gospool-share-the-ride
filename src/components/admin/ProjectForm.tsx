@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -8,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { SupabaseFileUpload } from '@/components/ui/SupabaseFileUpload';
 
 interface ProjectFormProps {
   project?: any;
@@ -97,7 +97,7 @@ export const ProjectForm = ({ project, onClose, onSuccess }: ProjectFormProps) =
   };
 
   return (
-    <Dialog open={true} onOpenChange={onClose}>
+    <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{project ? 'Edit Project' : 'Add New Project'}</DialogTitle>
@@ -205,6 +205,19 @@ export const ProjectForm = ({ project, onClose, onSuccess }: ProjectFormProps) =
               onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
               placeholder="https://example.com/image.jpg"
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Image</Label>
+            <SupabaseFileUpload
+              onUpload={url => setFormData(f => ({ ...f, image_url: url }))}
+              label="Upload Project Image"
+              bucket="images"
+              folder="projects"
+            />
+            {formData.image_url && (
+              <img src={formData.image_url} alt="Preview" className="w-32 h-32 object-cover rounded" />
+            )}
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">

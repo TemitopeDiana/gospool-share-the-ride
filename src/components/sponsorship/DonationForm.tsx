@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import PaystackPayment from "./PaystackPayment";
 
 interface DonationFormProps {
@@ -30,6 +31,27 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
   const { toast } = useToast();
+  const { trackDonationFunnel } = useAnalytics();
+
+  // Track donation funnel initiation
+  useEffect(() => {
+    trackDonationFunnel('initiated', undefined, {
+      country: selectedCountry,
+      currency: selectedCurrency,
+    });
+  }, [selectedCountry, selectedCurrency, trackDonationFunnel]);
+
+  // Track form field completion
+  const handleFieldChange = (field: string, value: string) => {
+    const filledFields = [fullName, email, phone, amount].filter(Boolean).length;
+    if (filledFields >= 2) {
+      trackDonationFunnel('form_filled', undefined, {
+        step: 'contact_details',
+        completion_percentage: Math.round((filledFields / 4) * 100),
+        donor_type: donorType,
+      });
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,10 +108,26 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
       }
     }
 
+    // Track payment initiation
+    trackDonationFunnel('payment_started', parseFloat(amount), {
+      donor_type: donorType,
+      currency: selectedCurrency,
+      country: selectedCountry,
+      is_anonymous: isAnonymous,
+    });
+
     setShowPayment(true);
   };
 
   const handlePaymentSuccess = () => {
+    // Track successful donation
+    trackDonationFunnel('completed', parseFloat(amount), {
+      donor_type: donorType,
+      currency: selectedCurrency,
+      country: selectedCountry,
+      is_anonymous: isAnonymous,
+    });
+
     toast({
       title: "Donation Successful!",
       description: "Thank you for your generous donation. You will receive a confirmation email shortly.",
@@ -98,6 +136,14 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
   };
 
   const handlePaymentError = (error: string) => {
+    // Track failed donation
+    trackDonationFunnel('failed', parseFloat(amount) || 0, {
+      donor_type: donorType,
+      currency: selectedCurrency,
+      country: selectedCountry,
+      error: error,
+    });
+
     toast({
       title: "Payment Failed",
       description: error,
@@ -182,7 +228,10 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
                 <Input
                   id="fullName"
                   value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
+                  onChange={(e) => {
+                    setFullName(e.target.value);
+                    handleFieldChange('fullName', e.target.value);
+                  }}
                   className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
                   placeholder="Enter your full name"
                   required
@@ -247,7 +296,10 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
               id="email"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                handleFieldChange('email', e.target.value);
+              }}
               className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
               placeholder="Enter email address"
               required
@@ -262,7 +314,10 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
               id="phone"
               type="tel"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => {
+                setPhone(e.target.value);
+                handleFieldChange('phone', e.target.value);
+              }}
               className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
               placeholder="Enter phone number"
               required
@@ -277,7 +332,10 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
               id="amount"
               type="number"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e) => {
+                setAmount(e.target.value);
+                handleFieldChange('amount', e.target.value);
+              }}
               className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg touch-manipulation"
               placeholder="Enter amount"
               required
