@@ -1,16 +1,19 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { AdminDataTable } from '@/components/admin/AdminDataTable';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
-import { Database } from '@/integrations/supabase/types';
 import { Button } from '@/components/ui/button';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
+import { Database } from '@/integrations/supabase/types';
 
+// Use union type for donation status
 type DonationStatus = Database['public']['Enums']['donation_status'];
+
+type DonationRow = Database['public']['Tables']['donations']['Row'];
+type PaystackTransactionRow = Database['public']['Tables']['paystack_transactions']['Row'];
 
 export const DonationsPage = () => {
   const { toast } = useToast();
@@ -36,7 +39,7 @@ export const DonationsPage = () => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data;
+      return data as DonationRow[];
     },
   });
 

@@ -16,6 +16,7 @@ import { AdvisorsPage } from "./pages/admin/AdvisorsPage";
 import { ApplicationsPage } from "./pages/admin/ApplicationsPage";
 import { VolunteerApplicationsPage } from "./pages/admin/VolunteerApplicationsPage";
 import { DonationsPage } from "./pages/admin/DonationsPage";
+import { RecentDonorsPage } from "./pages/admin/RecentDonorsPage";
 import { ImpactReportsPage } from "./pages/admin/ImpactReportsPage";
 import { NewsPage } from "./pages/admin/NewsPage";
 import { PaystackDiagnosticsPage } from "./pages/admin/PaystackDiagnosticsPage";
@@ -24,6 +25,7 @@ import { ProjectsPage } from "./pages/admin/ProjectsPage";
 import { SponsorRequestsPage } from "./pages/admin/SponsorRequestsPage";
 import { SponsorsPage } from "./pages/admin/SponsorsPage";
 import { TeamPage } from "./pages/admin/TeamPage";
+import AnalyticsDashboard from "./pages/admin/AnalyticsDashboard";
 import { AdminThemeProvider } from "./contexts/AdminThemeContext";
 
 const queryClient = new QueryClient();
@@ -41,11 +43,13 @@ const App = () => (
             <Route path="/sponsorship" element={<Sponsorship />} />
             <Route path="/admin/login" element={<AdminLoginPage />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/analytics" element={<AnalyticsDashboard />} />
             <Route path="/admin/users" element={<AdminUsersPage />} />
             <Route path="/admin/advisors" element={<AdvisorsPage />} />
             <Route path="/admin/applications" element={<ApplicationsPage />} />
             <Route path="/admin/volunteer-applications" element={<VolunteerApplicationsPage />} />
             <Route path="/admin/donations" element={<DonationsPage />} />
+            <Route path="/admin/recent-donors" element={<RecentDonorsPage />} />
             <Route path="/admin/impact-reports" element={<ImpactReportsPage />} />
             <Route path="/admin/news" element={<NewsPage />} />
             <Route path="/admin/paystack-diagnostics" element={<PaystackDiagnosticsPage />} />

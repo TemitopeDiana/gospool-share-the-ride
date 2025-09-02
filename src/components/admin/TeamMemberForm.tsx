@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -8,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { SupabaseFileUpload } from '@/components/ui/SupabaseFileUpload';
 
 interface TeamMemberFormProps {
   member?: any;
@@ -96,7 +96,7 @@ export const TeamMemberForm = ({ member, onClose, onSuccess }: TeamMemberFormPro
   };
 
   return (
-    <Dialog open={true} onOpenChange={onClose}>
+    <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{member ? 'Edit Team Member' : 'Add New Team Member'}</DialogTitle>
@@ -172,14 +172,7 @@ export const TeamMemberForm = ({ member, onClose, onSuccess }: TeamMemberFormPro
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="image_url">Profile Image URL</Label>
-              <Input
-                id="image_url"
-                type="url"
-                value={formData.image_url}
-                onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                placeholder="https://example.com/profile.jpg"
-              />
+              {/* Profile photo upload only, URL input removed */}
             </div>
           </div>
 
@@ -213,6 +206,19 @@ export const TeamMemberForm = ({ member, onClose, onSuccess }: TeamMemberFormPro
               />
               <Label htmlFor="is_active">Active</Label>
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Photo</Label>
+            <SupabaseFileUpload
+              onUpload={url => setFormData(f => ({ ...f, image_url: url }))}
+              label="Upload Team Member Photo"
+              bucket="images"
+              folder="team"
+            />
+            {formData.image_url && (
+              <img src={formData.image_url} alt="Preview" className="w-32 h-32 object-cover rounded" />
+            )}
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">

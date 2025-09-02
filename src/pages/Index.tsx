@@ -6,8 +6,11 @@ import { CallToAction } from "@/components/CallToAction";
 import ViewImpactSection from "@/components/shared/ViewImpactSection";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
+import { usePageTracking } from "@/hooks/useAnalytics";
 
 const Index = () => {
+  usePageTracking('/');
+
   return (
     <div className="min-h-screen font-inter overflow-x-hidden">
       <Navigation />

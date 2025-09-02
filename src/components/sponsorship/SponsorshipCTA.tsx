@@ -1,5 +1,6 @@
 
 import { Button } from "@/components/ui/button";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 interface SponsorshipCTAProps {
   onDonateClick?: () => void;
@@ -7,6 +8,21 @@ interface SponsorshipCTAProps {
 }
 
 const SponsorshipCTA = ({ onDonateClick, onJoinSponsorClick }: SponsorshipCTAProps) => {
+  const { trackContentEngagement, trackDonationFunnel } = useAnalytics();
+
+  const handleDonateClick = () => {
+    trackContentEngagement('project', 'sponsorship_cta_donate', 'clicked');
+    trackDonationFunnel('initiated', undefined, {
+      source: 'sponsorship_cta',
+    });
+    onDonateClick?.();
+  };
+
+  const handleSponsorClick = () => {
+    trackContentEngagement('project', 'sponsorship_cta_sponsor', 'clicked');
+    onJoinSponsorClick?.();
+  };
+
   return (
     <section className="py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-brand-primary via-brand-dark-teal to-brand-mint relative overflow-hidden">
       {/* Modern geometric background */}
@@ -28,7 +44,7 @@ const SponsorshipCTA = ({ onDonateClick, onJoinSponsorClick }: SponsorshipCTAPro
           <Button 
             size="lg" 
             className="bg-white text-brand-primary hover:bg-brand-light-mint hover:text-brand-dark-teal px-8 py-4 text-lg font-poppins font-semibold shadow-2xl rounded-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20 w-full sm:w-auto"
-            onClick={onJoinSponsorClick}
+            onClick={handleSponsorClick}
           >
             Become an Impact Sponsor
           </Button>
@@ -36,7 +52,7 @@ const SponsorshipCTA = ({ onDonateClick, onJoinSponsorClick }: SponsorshipCTAPro
             size="lg" 
             variant="outline" 
             className="border-2 border-white text-white hover:bg-white hover:text-brand-primary px-8 py-4 text-lg font-poppins font-semibold shadow-2xl rounded-xl transform hover:scale-105 transition-all duration-300 bg-white/10 backdrop-blur-sm w-full sm:w-auto"
-            onClick={onDonateClick}
+            onClick={handleDonateClick}
           >
             Donate to the Cause
           </Button>

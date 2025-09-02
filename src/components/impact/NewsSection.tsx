@@ -1,9 +1,11 @@
-
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 const NewsSection = () => {
+  const { trackContentEngagement } = useAnalytics();
+  
   const { data: newsItems = [], isLoading } = useQuery({
     queryKey: ['published-news'],
     queryFn: async () => {
@@ -71,13 +73,28 @@ const NewsSection = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {newsItems.map((article) => (
-            <article key={article.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-brand-light-mint/30 dark:border-brand-mint/30">
-              {article.image_url && (
+            <article 
+              key={article.id} 
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-brand-light-mint/30 dark:border-brand-mint/30 cursor-pointer"
+              onClick={() => {
+                trackContentEngagement('news', article.id, 'clicked');
+              }}
+            >
+              {typeof article.image_url === 'string' && article.image_url.trim() ? (
                 <div className="h-48 overflow-hidden">
                   <img 
-                    src={article.image_url} 
+                    src={article.image_url.startsWith('http') ? article.image_url : `/${article.image_url.replace(/^\/?/, '')}`}
                     alt={article.title}
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    onError={e => { e.currentTarget.src = '/images/Logo mark v2 dark.png'; }}
+                  />
+                </div>
+              ) : (
+                <div className="h-48 flex items-center justify-center bg-gray-100 dark:bg-gray-700">
+                  <img 
+                    src="/images/Logo mark v2 dark.png"
+                    alt="News placeholder"
+                    className="w-16 h-16 object-contain"
                   />
                 </div>
               )}

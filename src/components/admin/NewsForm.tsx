@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -8,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { SupabaseFileUpload } from '@/components/ui/SupabaseFileUpload';
 
 interface NewsFormProps {
   article?: any;
@@ -90,7 +90,7 @@ export const NewsForm = ({ article, onClose, onSuccess }: NewsFormProps) => {
   };
 
   return (
-    <Dialog open={true} onOpenChange={onClose}>
+    <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{article ? 'Edit Article' : 'Add New Article'}</DialogTitle>
@@ -171,6 +171,19 @@ export const NewsForm = ({ article, onClose, onSuccess }: NewsFormProps) => {
               onCheckedChange={(checked) => setFormData({ ...formData, is_published: checked })}
             />
             <Label htmlFor="is_published">Publish immediately</Label>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Image</Label>
+            <SupabaseFileUpload
+              onUpload={url => setFormData(f => ({ ...f, image_url: url }))}
+              label="Upload News Image"
+              bucket="images"
+              folder="news"
+            />
+            {formData.image_url && (
+              <img src={formData.image_url} alt="Preview" className="w-32 h-32 object-cover rounded" />
+            )}
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">

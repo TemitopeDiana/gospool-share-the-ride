@@ -12,8 +12,11 @@ import DownloadReportSection from "@/components/sponsorship/DownloadReportSectio
 import ViewImpactSection from "@/components/shared/ViewImpactSection";
 import { Toaster } from "@/components/ui/toaster";
 import { useState, useRef } from "react";
+import { usePageTracking } from "@/hooks/useAnalytics";
 
 const Sponsorship = () => {
+  usePageTracking('/sponsorship');
+  
   const [shouldScrollToDonation, setShouldScrollToDonation] = useState(false);
   const [shouldScrollToSponsor, setShouldScrollToSponsor] = useState(false);
   const donationRef = useRef<HTMLDivElement>(null);
