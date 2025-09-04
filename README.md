@@ -2,7 +2,7 @@
 
 ## 🚗⛪ Project Overview
 
-Gospool is a comprehensive faith-based ride sharing platform that connects christian communities across Nigeria through reliable and free transportation solutions. The platform bridges the gap between isolated communities and their places of worship, ensuring that distance is no longer a barrier to faith and community participation.
+Gospool is a comprehensive faith-based ride sharing platform that connects christian communities through reliable and free transportation solutions. The platform bridges the gap between isolated communities and their places of worship, ensuring that distance is no longer a barrier to faith and community participation.
 
 ## ✨ Key Features
 
