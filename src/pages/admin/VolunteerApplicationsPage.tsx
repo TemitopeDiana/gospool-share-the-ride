@@ -111,15 +111,29 @@ export const VolunteerApplicationsPage = () => {
     {
       key: 'resume_url',
       label: 'Resume',
-      render: (value: string) => value ? (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => window.open(value, '_blank')}
-        >
-          <ExternalLink className="h-4 w-4" />
-        </Button>
-      ) : 'N/A',
+      render: (value: string) => {
+        console.log("Resume URL in column:", value); // Debug log
+        
+        // Handle null, undefined, or empty string
+        if (!value) return 'N/A';
+        
+        // Ensure the URL has proper format
+        let formattedUrl = value;
+        if (!formattedUrl.startsWith('http')) {
+          formattedUrl = `https://${formattedUrl}`;
+        }
+        
+        return (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => window.open(formattedUrl, '_blank')}
+            title={formattedUrl}
+          >
+            <ExternalLink className="h-4 w-4" />
+          </Button>
+        );
+      },
     },
     {
       key: 'actions',
@@ -214,7 +228,14 @@ export const VolunteerApplicationsPage = () => {
                   {selectedApplication.resume_url && (
                     <Button
                       variant="outline"
-                      onClick={() => window.open(selectedApplication.resume_url, '_blank')}
+                      onClick={() => {
+                        let url = selectedApplication.resume_url;
+                        // Ensure the URL has proper format
+                        if (!url.startsWith('http')) {
+                          url = `https://${url}`;
+                        }
+                        window.open(url, '_blank');
+                      }}
                     >
                       <ExternalLink className="h-4 w-4 mr-2" />
                       View Resume

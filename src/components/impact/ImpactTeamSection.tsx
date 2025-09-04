@@ -5,64 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Loader2 } from "lucide-react";
-import { Dialog, DialogTrigger, DialogContent, DialogClose } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { VolunteerFormDialog } from "../shared/VolunteerFormDialog";
 
 const ImpactTeamSection = () => {
-  const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({
-    applicant_name: '',
-    email: '',
-    phone: '',
-    preferred_areas: '',
-    resume: null,
-  });
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm(f => ({ ...f, [e.target.name]: e.target.value }));
-  };
-  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm(f => ({ ...f, resume: e.target.files?.[0] || null }));
-  };
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setSuccess(false);
-    let resume_url = '';
-    try {
-      if (form.resume) {
-        const fileExt = form.resume.name.split('.').pop();
-        const fileName = `resume-${Date.now()}.${fileExt}`;
-        const { data, error: uploadError } = await supabase.storage
-          .from('volunteer-resumes')
-          .upload(fileName, form.resume);
-        if (uploadError) throw uploadError;
-        resume_url = supabase.storage.from('volunteer-resumes').getPublicUrl(fileName).data.publicUrl;
-      }
-      const { error: dbError } = await supabase.from('volunteer_applications').insert({
-        applicant_name: form.applicant_name,
-        email: form.email,
-        phone: form.phone,
-        preferred_areas: form.preferred_areas,
-        applied_date: new Date().toISOString(),
-        resume_url,
-      });
-      if (dbError) throw dbError;
-      setSuccess(true);
-      setForm({ applicant_name: '', email: '', phone: '', preferred_areas: '', resume: null });
-      setOpen(false);
-    } catch (err: any) {
-      setError(err.message || 'Submission failed');
-    } finally {
-      setLoading(false);
-    }
-  };
   const { data: teamMembers = [], isLoading: teamLoading } = useQuery({
     queryKey: ['team-members'],
     queryFn: async () => {
@@ -235,27 +180,11 @@ const ImpactTeamSection = () => {
               <p className="text-sm sm:text-base text-gray-800 dark:text-gray-200 font-ibm-plex mb-4">
                 Be part of something meaningful! We're looking for passionate volunteers who want to make a difference in church communities across Nigeria. Whether you have technical skills, organizational abilities, or simply a heart to serve, there's a place for you in our mission.
               </p>
-              <Button className="bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white font-poppins">
-                <Dialog open={open} onOpenChange={setOpen}>
-                  <DialogTrigger asChild>
-                    <Button type="button">Volunteer With Us</Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogClose className="absolute right-4 top-4" />
-                    <h2 className="text-xl font-bold mb-4">Volunteer Application</h2>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                      <Input name="applicant_name" value={form.applicant_name} onChange={handleChange} placeholder="Applicant Name" required />
-                      <Input name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email" required />
-                      <Input name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" />
-                      <Textarea name="preferred_areas" value={form.preferred_areas} onChange={handleChange} placeholder="Preferred Areas" />
-                      <Input name="resume" type="file" accept=".pdf,.doc,.docx" onChange={handleFile} />
-                      <Button type="submit" disabled={loading} className="w-full">{loading ? 'Submitting...' : 'Submit Application'}</Button>
-                      {error && <div className="text-red-500 text-sm">{error}</div>}
-                      {success && <div className="text-green-600 text-sm">Application submitted!</div>}
-                    </form>
-                  </DialogContent>
-                </Dialog>
-              </Button>
+              <VolunteerFormDialog>
+                <Button className="bg-gradient-to-r from-brand-primary to-brand-dark-teal hover:from-brand-dark-teal hover:to-brand-mint text-white font-poppins">
+                  Volunteer With Us
+                </Button>
+              </VolunteerFormDialog>
             </div>
           </div>
       </div>

@@ -9,14 +9,14 @@ export const AdminDashboard = () => {
   const { data: stats, isLoading } = useQuery({
     queryKey: ['admin-stats'],
     queryFn: async () => {
-      const [donations, allDonations, sponsorships, reports, projects, news, applications] = await Promise.all([
+      const [donations, allDonations, sponsorships, reports, projects, news, volunteerApps] = await Promise.all([
         supabase.from('donations').select('amount').eq('status', 'completed'),
         supabase.from('donations').select('status', { count: 'exact' }),
         supabase.from('sponsorship_applications').select('id', { count: 'exact' }),
         supabase.from('impact_reports_requests').select('id', { count: 'exact' }),
         supabase.from('projects').select('id', { count: 'exact' }),
         supabase.from('news').select('id', { count: 'exact' }),
-        supabase.from('team_applications').select('id', { count: 'exact' }),
+        supabase.from('volunteer_applications').select('id', { count: 'exact' }),
       ]);
 
       const totalDonations = donations.data?.reduce((sum, d) => sum + Number(d.amount || 0), 0) || 0;
@@ -30,7 +30,7 @@ export const AdminDashboard = () => {
         reportCount: reports.count || 0,
         projectCount: projects.count || 0,
         newsCount: news.count || 0,
-        applicationCount: applications.count || 0,
+        volunteerApplicationCount: volunteerApps.count || 0,
       };
     },
   });
@@ -72,11 +72,11 @@ export const AdminDashboard = () => {
       color: 'text-red-600',
     },
     {
-      title: 'Team Applications',
-      value: stats?.applicationCount || 0,
-      description: 'Applications to join team',
+      title: 'Volunteer Applications',
+      value: stats?.volunteerApplicationCount || 0,
+      description: 'Applications to volunteer',
       icon: Users,
-      color: 'text-indigo-600',
+      color: 'text-purple-600',
     },
   ];
 

@@ -1,12 +1,9 @@
 
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Heart, Users } from 'lucide-react';
-import { VolunteerForm } from './sponsorship/VolunteerForm';
+import { VolunteerFormDialog } from './shared/VolunteerFormDialog';
 
 export const CallToAction = () => {
-  const [showVolunteerForm, setShowVolunteerForm] = useState(false);
-
   return (
     <section className="py-20 bg-gradient-to-br from-brand-dark-teal via-brand-teal to-brand-primary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -31,15 +28,16 @@ export const CallToAction = () => {
               </a>
             </Button>
             
-            <Button 
-              size="lg"
-              variant="outline"
-              onClick={() => setShowVolunteerForm(true)}
-              className="border-2 border-white text-white hover:bg-white hover:text-brand-dark-teal px-8 py-4 text-lg font-semibold bg-white/10 backdrop-blur-sm rounded-xl transform hover:scale-105 transition-all duration-300 shadow-xl"
-            >
-              <Users className="mr-2 h-5 w-5" />
-              Volunteer With Us
-            </Button>
+            <VolunteerFormDialog>
+              <Button 
+                size="lg"
+                variant="outline"
+                className="border-2 border-white text-white hover:bg-white hover:text-brand-dark-teal px-8 py-4 text-lg font-semibold bg-white/10 backdrop-blur-sm rounded-xl transform hover:scale-105 transition-all duration-300 shadow-xl"
+              >
+                <Users className="mr-2 h-5 w-5" />
+                Volunteer With Us
+              </Button>
+            </VolunteerFormDialog>
           </div>
           
           <p className="text-brand-light-mint/80 mt-6 text-sm">
@@ -47,11 +45,6 @@ export const CallToAction = () => {
           </p>
         </div>
       </div>
-      
-      <VolunteerForm 
-        open={showVolunteerForm} 
-        onClose={() => setShowVolunteerForm(false)} 
-      />
     </section>
   );
 };

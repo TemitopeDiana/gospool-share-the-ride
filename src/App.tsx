@@ -13,7 +13,6 @@ import { AdminLoginPage } from "./pages/admin/AdminLoginPage";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import { AdminUsersPage } from "./pages/admin/AdminUsersPage";
 import { AdvisorsPage } from "./pages/admin/AdvisorsPage";
-import { ApplicationsPage } from "./pages/admin/ApplicationsPage";
 import { VolunteerApplicationsPage } from "./pages/admin/VolunteerApplicationsPage";
 import { DonationsPage } from "./pages/admin/DonationsPage";
 import { RecentDonorsPage } from "./pages/admin/RecentDonorsPage";
@@ -26,6 +25,7 @@ import { SponsorRequestsPage } from "./pages/admin/SponsorRequestsPage";
 import { SponsorsPage } from "./pages/admin/SponsorsPage";
 import { TeamPage } from "./pages/admin/TeamPage";
 import AnalyticsDashboard from "./pages/admin/AnalyticsDashboard";
+import { DebugForm } from "./pages/admin/DebugForm";
 import { AdminThemeProvider } from "./contexts/AdminThemeContext";
 
 const queryClient = new QueryClient();
@@ -46,7 +46,6 @@ const App = () => (
             <Route path="/admin/analytics" element={<AnalyticsDashboard />} />
             <Route path="/admin/users" element={<AdminUsersPage />} />
             <Route path="/admin/advisors" element={<AdvisorsPage />} />
-            <Route path="/admin/applications" element={<ApplicationsPage />} />
             <Route path="/admin/volunteer-applications" element={<VolunteerApplicationsPage />} />
             <Route path="/admin/donations" element={<DonationsPage />} />
             <Route path="/admin/recent-donors" element={<RecentDonorsPage />} />
@@ -58,6 +57,7 @@ const App = () => (
             <Route path="/admin/sponsor-requests" element={<SponsorRequestsPage />} />
             <Route path="/admin/sponsors" element={<SponsorsPage />} />
             <Route path="/admin/team" element={<TeamPage />} />
+            <Route path="/admin/debug" element={<DebugForm />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

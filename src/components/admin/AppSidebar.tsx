@@ -75,11 +75,6 @@ export function AppSidebar() {
       icon: FileText,
     },
     {
-      name: 'Team Applications',
-      href: '/admin/applications',
-      icon: Users,
-    },
-    {
       name: 'Volunteer Applications',
       href: '/admin/volunteer-applications',
       icon: UserPlus,
