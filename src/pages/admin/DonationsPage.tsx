@@ -5,7 +5,7 @@ import { AdminDataTable } from '@/components/admin/AdminDataTable';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, UserX, User } from 'lucide-react';
 import { useState } from 'react';
 import { Database } from '@/integrations/supabase/types';
 
@@ -63,6 +63,31 @@ export const DonationsPage = () => {
       toast({
         title: "Error",
         description: "Failed to update donation status.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const toggleAnonymityMutation = useMutation({
+    mutationFn: async ({ id, isAnonymous }: { id: string; isAnonymous: boolean }) => {
+      const { error } = await supabase
+        .from('donations')
+        .update({ is_anonymous: isAnonymous })
+        .eq('id', id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-donations'] });
+      toast({
+        title: "Anonymity updated",
+        description: "Donation anonymity setting has been updated successfully.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to update donation anonymity.",
         variant: "destructive",
       });
     },
@@ -176,6 +201,27 @@ export const DonationsPage = () => {
           </div>
         );
       },
+    },
+    {
+      key: 'is_anonymous',
+      label: 'Anonymity',
+      render: (value: boolean, row: any) => (
+        <Button
+          variant={value ? "destructive" : "outline"}
+          size="sm"
+          onClick={() => toggleAnonymityMutation.mutate({ 
+            id: row.id, 
+            isAnonymous: !value 
+          })}
+          disabled={toggleAnonymityMutation.isPending}
+          title={value ? "Make donation public (show donor name)" : "Make donation anonymous (hide donor name)"}
+        >
+          {value ? <UserX size={16} /> : <User size={16} />}
+          <span className="ml-1 hidden sm:inline">
+            {value ? 'Anonymous' : 'Public'}
+          </span>
+        </Button>
+      ),
     },
   ];
 

@@ -10,6 +10,7 @@ interface PaymentData {
   phone: string;
   currency?: string;
   isAnonymous?: boolean;
+  showPublicly?: boolean;
   church?: string;
   isChristian?: string;
   donorType?: string;

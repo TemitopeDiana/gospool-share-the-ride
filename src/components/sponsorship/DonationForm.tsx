@@ -28,7 +28,7 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
   const [organizationName, setOrganizationName] = useState("");
   const [organizationType, setOrganizationType] = useState("");
   const [contactPerson, setContactPerson] = useState("");
-  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [showPublicly, setShowPublicly] = useState(true);
   const [showPayment, setShowPayment] = useState(false);
   const { toast } = useToast();
   const { trackDonationFunnel } = useAnalytics();
@@ -113,7 +113,7 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
       donor_type: donorType,
       currency: selectedCurrency,
       country: selectedCountry,
-      is_anonymous: isAnonymous,
+      is_anonymous: false, // Always false for user submissions
     });
 
     setShowPayment(true);
@@ -125,7 +125,7 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
       donor_type: donorType,
       currency: selectedCurrency,
       country: selectedCountry,
-      is_anonymous: isAnonymous,
+      is_anonymous: false, // Always false for user submissions
     });
 
     toast({
@@ -168,7 +168,8 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
             donorName={donorType === "individual" ? fullName : contactPerson}
             phone={phone}
             currency={selectedCurrency.split(' ')[0]}
-            isAnonymous={isAnonymous}
+            isAnonymous={false}
+            showPublicly={showPublicly}
             church={church}
             isChristian={belongsToChurch}
             donorType={donorType}
@@ -377,20 +378,23 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
             </>
           )}
 
-          <div className="space-y-2">
+          <div className="space-y-3">
             <div className="flex items-center space-x-3">
               <Checkbox
-                id="anonymous"
-                checked={isAnonymous}
-                onCheckedChange={(checked) => setIsAnonymous(checked as boolean)}
+                id="showPublicly"
+                checked={showPublicly}
+                onCheckedChange={(checked) => setShowPublicly(checked as boolean)}
                 className="border-2 border-brand-light-mint/50 data-[state=checked]:bg-brand-mint"
               />
-              <Label htmlFor="anonymous" className="text-base sm:text-lg text-gray-700 dark:text-gray-300 font-poppins">
-                Display my donation anonymously on the website
+              <Label htmlFor="showPublicly" className="text-base sm:text-lg text-gray-700 dark:text-gray-300 font-poppins">
+                Show my donation in the public recent donors list
               </Label>
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 ml-7 font-ibm-plex">
-              If you don't check this box, your name will be displayed on our website as a contributor
+              {showPublicly 
+                ? "Your donation will appear in our Recent Donors section to inspire others"
+                : "Your donation will be kept private and won't appear in public donor lists"
+              }
             </p>
           </div>
 

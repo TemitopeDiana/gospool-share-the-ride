@@ -17,6 +17,7 @@ export interface Database {
           currency: string;
           status: 'pending' | 'completed' | 'failed';
           is_anonymous: boolean;
+          show_publicly: boolean;
           created_at: string;
           updated_at: string | null;
           church_name: string | null;
