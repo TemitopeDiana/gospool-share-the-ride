@@ -98,6 +98,19 @@ export interface Database {
         Insert: Omit<Database['public']['Tables']['impact_sponsors']['Row'], 'id' | 'created_at' | 'updated_at'> & { id?: string; created_at?: string; updated_at?: string };
         Update: Partial<Database['public']['Tables']['impact_sponsors']['Row']>;
       };
+      impact_partners: {
+        Row: {
+          id: string;
+          company_name: string;
+          logo_url: string | null;
+          display_order: number;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Omit<Database['public']['Tables']['impact_partners']['Row'], 'id' | 'created_at' | 'updated_at'> & { id?: string; created_at?: string; updated_at?: string };
+        Update: Partial<Database['public']['Tables']['impact_partners']['Row']>;
+      };
     };
     Enums: {
       donation_status: 'pending' | 'completed' | 'failed';

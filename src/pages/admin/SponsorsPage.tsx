@@ -10,10 +10,14 @@ import { format } from 'date-fns';
 import { SponsorForm } from '@/components/admin/SponsorForm';
 import { AdminDataTable } from '@/components/admin/AdminDataTable';
 import { useApprovalWorkflow } from '@/hooks/useApprovalWorkflow';
+import { AddPartnerForm } from '@/components/admin/AddPartnerForm';
+import { PartnersTable } from '@/components/admin/PartnersTable';
 
 export const SponsorsPage = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingSponsor, setEditingSponsor] = useState<any>(null);
+  const [isPartnerFormOpen, setIsPartnerFormOpen] = useState(false);
+  const [editingPartner, setEditingPartner] = useState<any>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { handleChange, isSuperAdmin, isAdmin } = useApprovalWorkflow();
@@ -49,6 +53,19 @@ export const SponsorsPage = () => {
       
       if (error) throw error;
       return data;
+    },
+  });
+
+  // Query for impact partners count
+  const { data: partnersCount = 0 } = useQuery({
+    queryKey: ['impact-partners-count'],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('impact_partners')
+        .select('*', { count: 'exact', head: true });
+      
+      if (error) throw error;
+      return count || 0;
     },
   });
 
@@ -265,6 +282,17 @@ export const SponsorsPage = () => {
     setEditingSponsor(null);
   };
 
+  // Partner handlers
+  const handlePartnerEdit = (partner: any) => {
+    setEditingPartner(partner);
+    setIsPartnerFormOpen(true);
+  };
+
+  const handlePartnerFormClose = () => {
+    setIsPartnerFormOpen(false);
+    setEditingPartner(null);
+  };
+
   if (isLoading) {
     return (
       <AdminLayout>
@@ -281,18 +309,25 @@ export const SponsorsPage = () => {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Impact Sponsors</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Impact Sponsors & Partners</h1>
             <p className="text-gray-600">
-              Manage active sponsors displayed on the website
+              Manage impact sponsors and partners displayed on the website. 
+              Total: {sponsors.length} sponsors, {partnersCount} partners
               {!isSuperAdmin && (
                 <span className="text-amber-600"> • Super admin privileges required for deletions</span>
               )}
             </p>
           </div>
-          <Button onClick={() => setIsFormOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Sponsor
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={() => setIsPartnerFormOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Partner
+            </Button>
+            <Button onClick={() => setIsFormOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Sponsor
+            </Button>
+          </div>
         </div>
 
         <AdminDataTable
@@ -310,6 +345,9 @@ export const SponsorsPage = () => {
           ]}
         />
 
+        {/* Impact Partners Table */}
+        <PartnersTable onEdit={handlePartnerEdit} />
+
         {isFormOpen && (
           <SponsorForm
             sponsor={editingSponsor}
@@ -317,6 +355,19 @@ export const SponsorsPage = () => {
             onSuccess={() => {
               queryClient.invalidateQueries({ queryKey: ['admin-impact-sponsors'] });
               handleFormClose();
+            }}
+          />
+        )}
+
+        {isPartnerFormOpen && (
+          <AddPartnerForm
+            partner={editingPartner}
+            isOpen={isPartnerFormOpen}
+            onOpenChange={setIsPartnerFormOpen}
+            onSuccess={() => {
+              queryClient.invalidateQueries({ queryKey: ['impact-partners'] });
+              queryClient.invalidateQueries({ queryKey: ['impact-partners-count'] });
+              handlePartnerFormClose();
             }}
           />
         )}
