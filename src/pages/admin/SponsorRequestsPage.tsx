@@ -280,16 +280,6 @@ export const SponsorRequestsPage = () => {
           columns={columns}
           searchKey="organization_name"
           showStatus={false}
-          onApprove={handleApprove}
-          onReject={handleReject}
-          customActions={(application) => [
-            {
-              label: 'View Details',
-              onClick: () => handleViewDetails(application),
-              variant: 'outline',
-              icon: <Eye className="h-4 w-4" />,
-            }
-          ]}
         />
 
         {/* Application Details Dialog */}

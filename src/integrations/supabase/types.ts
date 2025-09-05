@@ -87,6 +87,7 @@ export interface Database {
           website_url: string | null;
           contribution_amount: number | null;
           tier: string;
+          motivation: string | null;
           start_date: string | null;
           end_date: string | null;
           is_active: boolean;

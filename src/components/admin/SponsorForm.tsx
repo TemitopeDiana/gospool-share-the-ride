@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface SponsorFormProps {
@@ -22,7 +23,7 @@ export const SponsorForm = ({ sponsor, onClose, onSuccess }: SponsorFormProps) =
     logo_url: '',
     website_url: '',
     contribution_amount: '',
-    tier: 'bronze',
+    motivation: '',
     start_date: '',
     end_date: '',
     order_index: 0,
@@ -41,7 +42,7 @@ export const SponsorForm = ({ sponsor, onClose, onSuccess }: SponsorFormProps) =
         logo_url: sponsor.logo_url || '',
         website_url: sponsor.website_url || '',
         contribution_amount: sponsor.contribution_amount ? sponsor.contribution_amount.toString() : '',
-        tier: sponsor.tier || 'bronze',
+        motivation: sponsor.motivation || '',
         start_date: sponsor.start_date || '',
         end_date: sponsor.end_date || '',
         order_index: sponsor.order_index || 0,
@@ -315,18 +316,14 @@ export const SponsorForm = ({ sponsor, onClose, onSuccess }: SponsorFormProps) =
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="tier">Tier</Label>
-              <Select value={formData.tier} onValueChange={(value) => setFormData({ ...formData, tier: value })}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="bronze">Bronze</SelectItem>
-                  <SelectItem value="silver">Silver</SelectItem>
-                  <SelectItem value="gold">Gold</SelectItem>
-                  <SelectItem value="platinum">Platinum</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label htmlFor="motivation">Motivation</Label>
+              <Textarea
+                id="motivation"
+                value={formData.motivation}
+                onChange={(e) => setFormData({ ...formData, motivation: e.target.value })}
+                placeholder="Enter the sponsor's motivation or message..."
+                className="min-h-[100px]"
+              />
             </div>
           </div>
 

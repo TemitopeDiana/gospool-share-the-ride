@@ -16,7 +16,7 @@ export const SponsorsPage = () => {
   const [editingSponsor, setEditingSponsor] = useState<any>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { handleChange, isSuperAdmin } = useApprovalWorkflow();
+  const { handleChange, isSuperAdmin, isAdmin } = useApprovalWorkflow();
 
   const copyToClipboard = async (url: string) => {
     try {
@@ -54,35 +54,42 @@ export const SponsorsPage = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const directAction = async () => {
-        const { error } = await supabase
-          .from('impact_sponsors')
-          .delete()
-          .eq('id', id);
-        
-        if (error) throw error;
-      };
-
-      await handleChange(
-        'impact_sponsors',
-        'DELETE',
-        directAction,
-        id
-      );
+      console.log('Attempting to delete sponsor with ID:', id);
+      
+      // Check if user has super admin permissions
+      if (!isSuperAdmin) {
+        throw new Error('Insufficient permissions. Only super admins can delete sponsors.');
+      }
+      
+      // Direct delete without approval workflow for immediate action
+      const { error } = await supabase
+        .from('impact_sponsors')
+        .delete()
+        .eq('id', id);
+      
+      if (error) {
+        console.error('Supabase delete error:', error);
+        throw error;
+      }
+      console.log('Delete successful');
     },
     onSuccess: () => {
+      console.log('Delete mutation onSuccess triggered');
       queryClient.invalidateQueries({ queryKey: ['admin-impact-sponsors'] });
       toast({
-        title: "Sponsor deleted",
-        description: isSuperAdmin ? 
-          "Impact sponsor has been deleted successfully." :
-          "Your deletion request has been submitted for approval.",
+        title: "Sponsor deleted permanently",
+        description: "Impact sponsor has been permanently deleted from the database.",
       });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('Delete mutation error:', error);
+      const errorMessage = error.message.includes('Insufficient permissions') 
+        ? 'You do not have permission to delete sponsors. Super admin access required.'
+        : `Failed to delete sponsor: ${error.message}`;
+      
       toast({
         title: "Error",
-        description: "Failed to delete sponsor.",
+        description: errorMessage,
         variant: "destructive",
       });
     },
@@ -111,9 +118,9 @@ export const SponsorsPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-impact-sponsors'] });
       toast({
-        title: "Status updated",
+        title: "Sponsor status updated",
         description: isSuperAdmin ? 
-          "Sponsor status has been updated successfully." :
+          "Sponsor visibility on the website has been updated successfully." :
           "Your change has been submitted for approval.",
       });
     },
@@ -182,17 +189,18 @@ export const SponsorsPage = () => {
       label: 'Type',
     },
     {
-      key: 'tier',
-      label: 'Tier',
-      render: (value: string) => (
-        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-          value === 'gold' ? 'bg-yellow-100 text-yellow-800' :
-          value === 'silver' ? 'bg-gray-100 text-gray-800' :
-          'bg-orange-100 text-orange-800'
-        }`}>
-          {value?.toUpperCase()}
-        </span>
-      ),
+      key: 'motivation',
+      label: 'Motivation',
+      render: (value: string) => {
+        if (!value) return <span className="text-gray-400">No motivation</span>;
+        return (
+          <div className="max-w-xs">
+            <p className="text-sm text-gray-600 truncate" title={value}>
+              {value.length > 50 ? `${value.substring(0, 50)}...` : value}
+            </p>
+          </div>
+        );
+      },
     },
     {
       key: 'contribution_amount',
@@ -223,16 +231,33 @@ export const SponsorsPage = () => {
   };
 
   const handleDelete = (sponsor: any) => {
-    if (confirm('Are you sure you want to delete this sponsor?')) {
+    // Check if user has super admin permissions
+    if (!isSuperAdmin) {
+      toast({
+        title: "Access Denied",
+        description: "Only super admins can delete sponsors.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (confirm(`Are you sure you want to permanently delete "${sponsor.sponsor_name}"? This action cannot be undone and will remove the sponsor from the database completely.`)) {
       deleteMutation.mutate(sponsor.id);
     }
   };
 
   const handleToggleActive = (sponsor: any) => {
-    toggleActiveMutation.mutate({ 
-      id: sponsor.id, 
-      is_active: !sponsor.is_active 
-    });
+    const action = sponsor.is_active ? 'deactivate' : 'activate';
+    const message = sponsor.is_active 
+      ? `Are you sure you want to deactivate "${sponsor.sponsor_name}"? This will hide them from the website but keep their data in the database.`
+      : `Are you sure you want to activate "${sponsor.sponsor_name}"? This will display them on the website.`;
+    
+    if (confirm(message)) {
+      toggleActiveMutation.mutate({ 
+        id: sponsor.id, 
+        is_active: !sponsor.is_active 
+      });
+    }
   };
 
   const handleFormClose = () => {
@@ -257,7 +282,12 @@ export const SponsorsPage = () => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Impact Sponsors</h1>
-            <p className="text-gray-600">Manage active sponsors displayed on the website</p>
+            <p className="text-gray-600">
+              Manage active sponsors displayed on the website
+              {!isSuperAdmin && (
+                <span className="text-amber-600"> • Super admin privileges required for deletions</span>
+              )}
+            </p>
           </div>
           <Button onClick={() => setIsFormOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
@@ -270,10 +300,10 @@ export const SponsorsPage = () => {
           columns={columns}
           searchKey="sponsor_name"
           onEdit={handleEdit}
-          onDelete={handleDelete}
+          onDelete={isSuperAdmin ? handleDelete : undefined}
           customActions={(item) => [
             {
-              label: item.is_active ? 'Deactivate' : 'Activate',
+              label: item.is_active ? 'Hide from Website' : 'Show on Website',
               onClick: () => handleToggleActive(item),
               variant: item.is_active ? 'outline' : 'default',
             }

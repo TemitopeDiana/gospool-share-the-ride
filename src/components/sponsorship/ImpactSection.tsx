@@ -8,7 +8,12 @@ const ImpactSection = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('impact_sponsors')
-        .select('*')
+        .select(`
+          *,
+          sponsorship_applications (
+            profile_picture_url
+          )
+        `)
         .eq('is_active', true)
         .order('order_index', { ascending: true });
       
@@ -61,22 +66,45 @@ const ImpactSection = () => {
         </div>
         
         {sponsors.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
-            {sponsors.map((sponsor) => (
-              <div key={sponsor.id} className="flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
-                {sponsor.logo_url ? (
-                  <img 
-                    src={sponsor.logo_url} 
-                    alt={sponsor.sponsor_name}
-                    className="max-h-12 max-w-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300"
-                  />
-                ) : (
-                  <span className="text-gray-900 dark:text-white font-medium text-sm text-center">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 items-center">
+            {sponsors.map((sponsor) => {
+              // Use logo_url first, then fallback to profile_picture_url from application
+              const logoUrl = sponsor.logo_url || sponsor.sponsorship_applications?.profile_picture_url;
+              
+              return (
+                <div 
+                  key={sponsor.id} 
+                  className="flex flex-col items-center justify-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 group cursor-pointer"
+                  title={`${sponsor.sponsor_name}${sponsor.motivation ? ` - ${sponsor.motivation}` : ''}`}
+                >
+                  {logoUrl ? (
+                    <img 
+                      src={logoUrl} 
+                      alt={sponsor.sponsor_name}
+                      className="max-h-12 max-w-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300"
+                      onError={(e) => {
+                        // If image fails to load, show the sponsor name instead
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        const parent = target.parentElement;
+                        if (parent) {
+                          parent.innerHTML = `<span class="text-gray-900 dark:text-white font-medium text-sm text-center">${sponsor.sponsor_name}</span>`;
+                        }
+                      }}
+                    />
+                  ) : (
+                    <span className="text-gray-900 dark:text-white font-medium text-sm text-center">
+                      {sponsor.sponsor_name}
+                    </span>
+                  )}
+                  
+                  {/* Show sponsor name below logo on hover */}
+                  <span className="text-xs text-gray-600 dark:text-gray-400 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center">
                     {sponsor.sponsor_name}
                   </span>
-                )}
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         ) : (
           <div className="text-center">
