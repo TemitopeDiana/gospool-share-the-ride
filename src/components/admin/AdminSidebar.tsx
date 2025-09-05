@@ -19,12 +19,14 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  ClipboardList,
 } from 'lucide-react';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Donations', href: '/admin/donations', icon: DollarSign },
   { name: 'Sponsorships', href: '/admin/sponsorships', icon: HandHeart },
+  { name: 'Sponsor Requests', href: '/admin/sponsor-requests', icon: ClipboardList },
   { name: 'Impact Reports', href: '/admin/reports', icon: FileBarChart },
   { name: 'Projects', href: '/admin/projects', icon: FolderOpen },
   { name: 'News', href: '/admin/news', icon: Newspaper },

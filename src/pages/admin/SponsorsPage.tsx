@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, Copy, ExternalLink } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { SponsorForm } from '@/components/admin/SponsorForm';
@@ -18,12 +18,33 @@ export const SponsorsPage = () => {
   const queryClient = useQueryClient();
   const { handleChange, isSuperAdmin } = useApprovalWorkflow();
 
+  const copyToClipboard = async (url: string) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      toast({
+        title: "Link copied!",
+        description: "The image URL has been copied to your clipboard.",
+      });
+    } catch (err) {
+      toast({
+        title: "Failed to copy",
+        description: "Unable to copy the link to clipboard.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const { data: sponsors = [], isLoading } = useQuery({
     queryKey: ['admin-impact-sponsors'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('impact_sponsors')
-        .select('*')
+        .select(`
+          *,
+          sponsorship_applications (
+            profile_picture_url
+          )
+        `)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -106,6 +127,49 @@ export const SponsorsPage = () => {
   });
 
   const columns = [
+    {
+      key: 'logo',
+      label: 'Logo',
+      render: (value: any, row: any) => {
+        // First check if there's a logo_url, then check for profile_picture_url from application
+        const logoUrl = row.logo_url || row.sponsorship_applications?.profile_picture_url;
+        
+        if (!logoUrl) {
+          return <span className="text-gray-400">No logo</span>;
+        }
+
+        return (
+          <div className="flex items-center space-x-2">
+            <img
+              src={logoUrl}
+              alt="Sponsor logo"
+              className="w-12 h-12 object-cover rounded-lg border"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+              }}
+            />
+            <div className="flex space-x-1">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => copyToClipboard(logoUrl)}
+                title="Copy image URL"
+              >
+                <Copy className="h-3 w-3" />
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => window.open(logoUrl, '_blank')}
+                title="Open image in new tab"
+              >
+                <ExternalLink className="h-3 w-3" />
+              </Button>
+            </div>
+          </div>
+        );
+      },
+    },
     {
       key: 'sponsor_name',
       label: 'Sponsor Name',
