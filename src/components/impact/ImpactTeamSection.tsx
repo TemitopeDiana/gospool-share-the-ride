@@ -57,7 +57,7 @@ const ImpactTeamSection = () => {
       <CardContent className="text-center space-y-3">
         {member.church_denomination && (
           <p className="text-sm text-gray-800 dark:text-gray-200 font-ibm-plex">
-            <span className="font-medium">Church:</span> {member.church_denomination}
+            {member.church_denomination}
           </p>
         )}
         {member.bio && (
