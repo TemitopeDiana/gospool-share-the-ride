@@ -1,0 +1,1 @@
+SELECT assign_super_admin('temitopediana@gmail.com');
