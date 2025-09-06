@@ -20,7 +20,7 @@ const RecentDonors = () => {
       // Get donations that are set to show publicly and completed
       const { data, error } = await supabase
         .from('donations')
-        .select('donor_name, amount, currency, created_at, is_anonymous, donor_type, organization_name, church_name, status, show_publicly')
+        .select('donor_name, amount, currency, created_at, is_anonymous, donor_type, organization_name, status, show_publicly')
         .eq('status', 'completed')
         .eq('show_publicly', true) // Only show donations marked as publicly visible
         .order('created_at', { ascending: false })
@@ -222,11 +222,6 @@ const RecentDonors = () => {
                         <p className="font-semibold text-gray-900 dark:text-white font-poppins">
                           {formatDonorName(donation)}
                         </p>
-                        {donation.church_name && !donation.is_anonymous && (
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            {donation.church_name}
-                          </p>
-                        )}
                       </div>
                       <div className="text-right">
                         <p className="font-bold text-brand-primary dark:text-brand-mint font-poppins">
