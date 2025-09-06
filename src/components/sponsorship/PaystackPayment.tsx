@@ -10,7 +10,8 @@ interface PaystackPaymentProps {
   donorName: string;
   phone: string;
   currency: string;
-  isAnonymous: boolean;
+  isAnonymous: boolean; // Keep for backward compatibility but always false from form
+  showPublicly: boolean;
   church: string;
   isChristian: string;
   donorType?: string;
@@ -38,6 +39,7 @@ const PaystackPayment = ({
   phone,
   currency,
   isAnonymous,
+  showPublicly,
   church,
   isChristian,
   donorType = 'individual',
@@ -79,6 +81,7 @@ const PaystackPayment = ({
           phone,
           currency,
           isAnonymous,
+          showPublicly,
           church,
           isChristian,
           donorType,

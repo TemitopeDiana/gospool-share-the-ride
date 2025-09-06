@@ -1,28 +1,122 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, RefreshCw, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { toast } from '@/hooks/use-toast';
 
 const RecentDonors = () => {
-  const { data: donations = [], isLoading } = useQuery({
+  const queryClient = useQueryClient();
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  
+  const { data: donations = [], isLoading, refetch, isFetching } = useQuery({
     queryKey: ['public-recent-donations'],
     queryFn: async () => {
-      // Get only public donations (not anonymous or with explicit consent) for public display
+      // Get donations that are set to show publicly and completed
       const { data, error } = await supabase
         .from('donations')
-        .select('donor_name, amount, currency, created_at, is_anonymous, donor_type, organization_name, church_name')
+        .select('donor_name, amount, currency, created_at, is_anonymous, donor_type, organization_name, church_name, status, show_publicly')
         .eq('status', 'completed')
+        .eq('show_publicly', true) // Only show donations marked as publicly visible
         .order('created_at', { ascending: false })
         .limit(15); // Show more recent donors
       
-      if (error) throw error;
-      return data;
+      if (error) {
+        console.error('Error fetching recent donations:', error);
+        throw error;
+      }
+      
+      console.log('Recent donations fetched:', data?.length || 0);
+      setLastUpdated(new Date());
+      return data || [];
     },
+    staleTime: 5 * 60 * 1000, // Consider data stale after 5 minutes
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+    refetchOnWindowFocus: true, // Refetch when window regains focus
+    refetchInterval: 2 * 60 * 1000, // Refetch every 2 minutes
   });
+
+  // Manual refresh function
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await refetch();
+    setIsRefreshing(false);
+  };
+
+  // Set up real-time subscription to listen for new completed donations
+  useEffect(() => {
+    console.log('Setting up real-time subscription for donations');
+    
+    const channel = supabase
+      .channel('donations-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'donations',
+          filter: 'status=eq.completed'
+        },
+        (payload) => {
+          console.log('Donation status updated to completed:', payload);
+          
+          // Show a toast notification for new completed donations
+          if (payload.new && (!payload.old?.status || payload.old?.status !== 'completed')) {
+            // Show notification based on admin anonymity setting
+            const donorName = payload.new.is_anonymous ? 'Someone' : 
+                           (payload.new.donor_name || 'Someone');
+            
+            toast({
+              title: "🎉 New Donation Received!",
+              description: `${donorName} just made a contribution. Thank you!`,
+              duration: 5000,
+            });
+          }
+          
+          // Invalidate and refetch the query when a donation is completed
+          queryClient.invalidateQueries({ queryKey: ['public-recent-donations'] });
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'donations',
+          filter: 'status=eq.completed'
+        },
+        (payload) => {
+          console.log('New completed donation inserted:', payload);
+          
+          // Show a toast notification for new donations
+          if (payload.new) {
+            // Show notification based on admin anonymity setting
+            const donorName = payload.new.is_anonymous ? 'Someone' : 
+                           (payload.new.donor_name || 'Someone');
+            
+            toast({
+              title: "🎉 New Donation Received!",
+              description: `${donorName} just made a contribution. Thank you!`,
+              duration: 5000,
+            });
+          }
+          
+          // Invalidate and refetch the query when a new completed donation is inserted
+          queryClient.invalidateQueries({ queryKey: ['public-recent-donations'] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      console.log('Cleaning up donations subscription');
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   const formatCurrency = (amount: number, currency: string = 'NGN') => {
     return new Intl.NumberFormat('en-NG', {
@@ -33,6 +127,7 @@ const RecentDonors = () => {
   };
 
   const formatDonorName = (donation: any) => {
+    // Show "Anonymous" if admin has marked it as anonymous, otherwise show the name
     if (donation.is_anonymous) {
       return 'Anonymous';
     }
@@ -71,19 +166,49 @@ const RecentDonors = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <Card className="dark:bg-gray-800/80 dark:border-gray-700 rounded-3xl shadow-2xl border border-brand-light-mint/30">
           <CardHeader className="text-center pb-6">
-            <CardTitle className="text-2xl lg:text-3xl text-gray-900 dark:text-white mb-3 font-playfair">
-              Recent Donors
-            </CardTitle>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex-1"></div>
+              <CardTitle className="text-2xl lg:text-3xl text-gray-900 dark:text-white font-playfair">
+                Recent Donors
+              </CardTitle>
+              <div className="flex-1 flex justify-end">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleRefresh}
+                  disabled={isRefreshing || isFetching}
+                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                >
+                  <RefreshCw className={`h-4 w-4 ${(isRefreshing || isFetching) ? 'animate-spin' : ''}`} />
+                </Button>
+              </div>
+            </div>
             <CardDescription className="text-lg text-gray-600 dark:text-gray-300 font-ibm-plex">
               Thank you to our generous supporters
+              {lastUpdated && (
+                <span className="block text-sm text-gray-400 mt-1">
+                  Last updated: {format(lastUpdated, 'MMM dd, yyyy HH:mm')}
+                </span>
+              )}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {donations.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  No donations to display yet. Be the first to contribute!
+              <div className="text-center py-12">
+                <div className="mx-auto w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
+                  <ArrowRight className="h-8 w-8 text-gray-400 dark:text-gray-500" />
+                </div>
+                <p className="text-gray-600 dark:text-gray-300 mb-2 text-lg">
+                  No donations yet
                 </p>
+                <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
+                  Be the first to make a difference! Your contribution will appear here after successful payment.
+                </p>
+                <Link to="/sponsorship">
+                  <Button className="bg-brand-primary hover:bg-brand-dark-teal text-white">
+                    Make a Donation
+                  </Button>
+                </Link>
               </div>
             ) : (
               <>

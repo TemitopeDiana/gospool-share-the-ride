@@ -1,6 +1,18 @@
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+// @ts-ignore - Edge function runtime types
+/// <reference types="https://esm.sh/@supabase/functions-js/src/edge-runtime.d.ts" />
+
+// @ts-ignore - Deno URL imports are valid in edge functions
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+// @ts-ignore - Deno URL imports are valid in edge functions
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+// Type declaration for Deno (needed for Edge Functions)
+declare const Deno: {
+  env: {
+    get(key: string): string | undefined;
+  };
+};
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -25,6 +37,7 @@ serve(async (req) => {
       phone, 
       currency = 'NGN', 
       isAnonymous = false, 
+      showPublicly = true,
       church = '', 
       isChristian = '',
       donorType = 'individual',
@@ -80,15 +93,18 @@ serve(async (req) => {
         user_id: null, // Allow anonymous donations
         amount,
         currency,
-        donor_name: isAnonymous ? null : (donorType === 'individual' ? donorName : organizationName),
+        donor_name: donorType === 'individual' ? donorName : organizationName, // Always save the name for admin use
         donor_email: email,
         donor_phone: phone,
-        is_anonymous: isAnonymous,
+        is_anonymous: false, // Never anonymous from user submissions, only admins can change this
+        show_publicly: showPublicly, // Respect user's privacy choice for public display
         status: 'pending',
         donor_type: donorType,
         organization_name: donorType === 'organization' ? organizationName : null,
         contact_person: donorType === 'organization' ? contactPerson : null,
         organization_type: donorType === 'organization' ? organizationType : null,
+        church_name: church || null,
+        belongs_to_church: isChristian || null,
       })
       .select()
       .single()
@@ -136,7 +152,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: false,
-        error: error.message,
+        error: error instanceof Error ? error.message : 'An unknown error occurred',
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

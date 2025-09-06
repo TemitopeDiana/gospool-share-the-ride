@@ -85,6 +85,34 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
       // Convert amount to number (remove commas)
       const numericAmount = parseFloat(amount.replace(/,/g, ''));
       
+      let profilePictureUrl = null;
+      
+      // Upload profile picture/logo if provided
+      if (profilePicture) {
+        const fileExt = profilePicture.name.split('.').pop();
+        const fileName = `${memberType}-${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+        
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('sponsor-logos')
+          .upload(fileName, profilePicture);
+
+        if (uploadError) {
+          console.error('Error uploading profile picture:', uploadError);
+          toast({
+            title: "Upload Failed",
+            description: "Failed to upload profile picture. Please try again.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        const { data: urlData } = supabase.storage
+          .from('sponsor-logos')
+          .getPublicUrl(uploadData.path);
+        
+        profilePictureUrl = urlData.publicUrl;
+      }
+      
       // Insert sponsorship application into database
       const { data, error } = await supabase
         .from('sponsorship_applications')
@@ -98,7 +126,7 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
           sponsor_amount: numericAmount,
           sponsor_duration: preferredContact, // Using this field to store preferred contact method
           motivation: motivation || null,
-          profile_picture_url: null, // Will be implemented later if needed
+          profile_picture_url: profilePictureUrl,
           status: 'pending'
         })
         .select()
@@ -225,13 +253,13 @@ const BoardMemberForm = ({ onClose }: BoardMemberFormProps) => {
 
             <div>
               <Label htmlFor="profilePicture" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
-                {memberType === "organization" ? "Profile Picture / Logo *" : "Profile Picture *"}
+                Upload Logo *
               </Label>
-              {memberType === "organization" && (
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-ibm-plex">
-                  You can use your organization's logo for this field
-                </p>
-              )}
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-ibm-plex">
+                {memberType === "organization" 
+                  ? "Upload your organization's logo or representative image" 
+                  : "Upload your profile picture or personal logo"}
+              </p>
               <Input
                 id="profilePicture"
                 type="file"

@@ -17,6 +17,7 @@ export interface Database {
           currency: string;
           status: 'pending' | 'completed' | 'failed';
           is_anonymous: boolean;
+          show_publicly: boolean;
           created_at: string;
           updated_at: string | null;
           church_name: string | null;
@@ -55,9 +56,65 @@ export interface Database {
         Insert: Omit<Database['public']['Tables']['volunteer_applications']['Row'], 'id' | 'applied_date'> & { id?: string; applied_date?: string };
         Update: Partial<Database['public']['Tables']['volunteer_applications']['Row']>;
       };
+      sponsorship_applications: {
+        Row: {
+          id: string;
+          user_id: string | null;
+          sponsor_type: string;
+          organization_name: string | null;
+          contact_person: string | null;
+          email: string;
+          phone: string | null;
+          address: string | null;
+          sponsor_amount: number | null;
+          sponsor_duration: string | null;
+          motivation: string | null;
+          profile_picture_url: string | null;
+          status: Database['public']['Enums']['application_status'];
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Omit<Database['public']['Tables']['sponsorship_applications']['Row'], 'id' | 'created_at' | 'updated_at'> & { id?: string; created_at?: string; updated_at?: string };
+        Update: Partial<Database['public']['Tables']['sponsorship_applications']['Row']>;
+      };
+      impact_sponsors: {
+        Row: {
+          id: string;
+          application_id: string | null;
+          sponsor_name: string;
+          sponsor_type: string;
+          logo_url: string | null;
+          website_url: string | null;
+          contribution_amount: number | null;
+          tier: string;
+          motivation: string | null;
+          start_date: string | null;
+          end_date: string | null;
+          is_active: boolean;
+          order_index: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Omit<Database['public']['Tables']['impact_sponsors']['Row'], 'id' | 'created_at' | 'updated_at'> & { id?: string; created_at?: string; updated_at?: string };
+        Update: Partial<Database['public']['Tables']['impact_sponsors']['Row']>;
+      };
+      impact_partners: {
+        Row: {
+          id: string;
+          company_name: string;
+          logo_url: string | null;
+          display_order: number;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Omit<Database['public']['Tables']['impact_partners']['Row'], 'id' | 'created_at' | 'updated_at'> & { id?: string; created_at?: string; updated_at?: string };
+        Update: Partial<Database['public']['Tables']['impact_partners']['Row']>;
+      };
     };
     Enums: {
       donation_status: 'pending' | 'completed' | 'failed';
+      application_status: 'pending' | 'approved' | 'rejected';
       // Add other enums as needed
     };
   };
