@@ -130,6 +130,24 @@ export interface Database {
         Insert: Omit<Database['public']['Tables']['impact_reports']['Row'], 'id' | 'created_at' | 'updated_at'> & { id?: string; created_at?: string; updated_at?: string };
         Update: Partial<Database['public']['Tables']['impact_reports']['Row']>;
       };
+      impact_reports_requests: {
+        Row: {
+          id: string;
+          requester_email: string;
+          requester_name: string | null;
+          organization: string | null;
+          report_type: string | null;
+          purpose: string | null;
+          status: 'pending' | 'approved' | 'rejected';
+          pitch_deck_file_url: string | null;
+          approved_by: string | null;
+          approved_at: string | null;
+          sent_at: string | null;
+          created_at: string;
+        };
+        Insert: Omit<Database['public']['Tables']['impact_reports_requests']['Row'], 'id' | 'created_at'> & { id?: string; created_at?: string };
+        Update: Partial<Database['public']['Tables']['impact_reports_requests']['Row']>;
+      };
     };
     Enums: {
       donation_status: 'pending' | 'completed' | 'failed';
