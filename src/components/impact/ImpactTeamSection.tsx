@@ -40,7 +40,7 @@ const ImpactTeamSection = () => {
     <Card key={`${member.id}-${index}`} className="hover:shadow-xl transition-all duration-300 dark:bg-gray-800/80 dark:border-gray-700 border border-brand-light-mint/30">
       <CardHeader className="text-center pb-3">
         <div className="flex justify-center mb-4">
-          <Avatar className="w-20 h-20 sm:w-24 sm:h-24">
+          <Avatar className="w-28 h-28 sm:w-32 sm:h-32">
             <AvatarImage src={member.image_url} alt={member.name} />
             <AvatarFallback className="text-lg font-semibold bg-gradient-to-br from-brand-primary to-brand-mint text-white">
               {member.name.split(' ').map((n: string) => n.charAt(0)).join('')}
@@ -56,12 +56,12 @@ const ImpactTeamSection = () => {
       </CardHeader>
       <CardContent className="text-center space-y-3">
         {member.church_denomination && (
-          <p className="text-sm text-gray-800 dark:text-gray-200 font-ibm-plex">
+          <p className="text-sm text-slate-700 dark:text-gray-200 font-ibm-plex">
             {member.church_denomination}
           </p>
         )}
         {member.bio && (
-          <p className="text-sm text-gray-800 dark:text-gray-200 font-ibm-plex">
+          <p className="text-xs text-slate-600 dark:text-gray-200 font-ibm-plex leading-relaxed">
             {member.bio}
           </p>
         )}
@@ -86,7 +86,7 @@ const ImpactTeamSection = () => {
     <Card key={`${advisor.id}-${index}`} className="hover:shadow-xl transition-all duration-300 dark:bg-gray-800/80 dark:border-gray-700 border border-brand-light-mint/30">
       <CardHeader className="text-center pb-3">
         <div className="flex justify-center mb-4">
-          <Avatar className="w-20 h-20 sm:w-24 sm:h-24">
+          <Avatar className="w-28 h-28 sm:w-32 sm:h-32">
             <AvatarImage src={advisor.image_url} alt={advisor.name} />
             <AvatarFallback className="text-lg font-semibold bg-gradient-to-br from-brand-primary to-brand-mint text-white">
               {advisor.name.split(' ').map((n: string) => n.charAt(0)).join('')}
@@ -165,7 +165,7 @@ const ImpactTeamSection = () => {
         </div>
         
         {teamMembers.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-12">
             {teamMembers.map((member, index) => renderTeamMember(member, index))}
           </div>
         )}
