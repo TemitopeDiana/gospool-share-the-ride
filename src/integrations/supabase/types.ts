@@ -111,6 +111,25 @@ export interface Database {
         Insert: Omit<Database['public']['Tables']['impact_partners']['Row'], 'id' | 'created_at' | 'updated_at'> & { id?: string; created_at?: string; updated_at?: string };
         Update: Partial<Database['public']['Tables']['impact_partners']['Row']>;
       };
+      impact_reports: {
+        Row: {
+          id: string;
+          title: string;
+          description: string | null;
+          content: string;
+          report_period_start: string | null;
+          report_period_end: string | null;
+          metrics: Json;
+          images: string[] | null;
+          file_url: string | null;
+          is_published: boolean;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Omit<Database['public']['Tables']['impact_reports']['Row'], 'id' | 'created_at' | 'updated_at'> & { id?: string; created_at?: string; updated_at?: string };
+        Update: Partial<Database['public']['Tables']['impact_reports']['Row']>;
+      };
     };
     Enums: {
       donation_status: 'pending' | 'completed' | 'failed';

@@ -6,7 +6,7 @@ import DonationSection from "@/components/sponsorship/DonationSection";
 import RecentDonors from "@/components/sponsorship/RecentDonors";
 import BoardMemberSection from "@/components/sponsorship/BoardMemberSection";
 import BenefitsSection from "@/components/sponsorship/BenefitsSection";
-import ImpactSection from "@/components/sponsorship/ImpactSection";
+import EnhancedImpactSection from "@/components/sponsorship/EnhancedImpactSection";
 import SponsorshipCTA from "@/components/sponsorship/SponsorshipCTA";
 import DownloadReportSection from "@/components/sponsorship/DownloadReportSection";
 import ViewImpactSection from "@/components/shared/ViewImpactSection";
@@ -48,7 +48,7 @@ const Sponsorship = () => {
         <BoardMemberSection shouldAutoOpen={shouldScrollToSponsor} />
       </div>
       <BenefitsSection />
-      <ImpactSection />
+      <EnhancedImpactSection />
       <DownloadReportSection />
       <ViewImpactSection />
       <SponsorshipCTA onDonateClick={handleDonateClick} onJoinSponsorClick={handleJoinSponsorClick} />
