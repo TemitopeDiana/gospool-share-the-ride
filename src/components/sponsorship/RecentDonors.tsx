@@ -13,18 +13,25 @@ const RecentDonors = () => {
   const queryClient = useQueryClient();
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showAllDonations, setShowAllDonations] = useState(false);
   
   const { data: donations = [], isLoading, refetch, isFetching } = useQuery({
-    queryKey: ['public-recent-donations'],
+    queryKey: ['public-recent-donations', showAllDonations],
     queryFn: async () => {
       // Get donations that are set to show publicly and completed
-      const { data, error } = await supabase
+      let query = supabase
         .from('donations')
         .select('donor_name, amount, currency, created_at, is_anonymous, donor_type, organization_name, church_name, status, show_publicly')
         .eq('status', 'completed')
         .eq('show_publicly', true) // Only show donations marked as publicly visible
-        .order('created_at', { ascending: false })
-        .limit(15); // Show more recent donors
+        .order('created_at', { ascending: false });
+      
+      // Only limit to 15 if not showing all donations
+      if (!showAllDonations) {
+        query = query.limit(15);
+      }
+      
+      const { data, error } = await query;
       
       if (error) {
         console.error('Error fetching recent donations:', error);
@@ -169,7 +176,7 @@ const RecentDonors = () => {
             <div className="flex items-center justify-between mb-2">
               <div className="flex-1"></div>
               <CardTitle className="text-2xl lg:text-3xl text-gray-900 dark:text-white font-playfair">
-                Recent Donors
+                {showAllDonations ? 'All Donors' : 'Recent Donors'}
               </CardTitle>
               <div className="flex-1 flex justify-end">
                 <Button
@@ -184,7 +191,10 @@ const RecentDonors = () => {
               </div>
             </div>
             <CardDescription className="text-lg text-gray-600 dark:text-gray-300 font-ibm-plex">
-              Thank you to our generous supporters
+              {showAllDonations 
+                ? 'All our generous supporters' 
+                : 'Thank you to our generous supporters'
+              }
               {lastUpdated && (
                 <span className="block text-sm text-gray-400 mt-1">
                   Last updated: {format(lastUpdated, 'MMM dd, yyyy HH:mm')}
@@ -238,15 +248,15 @@ const RecentDonors = () => {
                 </div>
                 
                 <div className="text-center mt-8">
-                  <Link to="/admin/recent-donors">
-                    <Button 
-                      variant="outline" 
-                      className="bg-white dark:bg-gray-700 hover:bg-brand-light-mint dark:hover:bg-brand-mint/20 border-brand-light-mint dark:border-brand-mint text-brand-primary dark:text-brand-mint hover:text-brand-dark-teal dark:hover:text-white transition-all duration-300 flex items-center gap-2"
-                    >
-                      View All Donors
-                      <ArrowRight size={16} />
-                    </Button>
-                  </Link>
+                  <Button 
+                    onClick={() => setShowAllDonations(!showAllDonations)}
+                    variant="outline" 
+                    className="bg-white dark:bg-gray-700 hover:bg-brand-light-mint dark:hover:bg-brand-mint/20 border-brand-light-mint dark:border-brand-mint text-brand-primary dark:text-brand-mint hover:text-brand-dark-teal dark:hover:text-white transition-all duration-300 flex items-center gap-2"
+                    disabled={isFetching}
+                  >
+                    {showAllDonations ? 'Show Recent Donors' : 'View All Donors'}
+                    <ArrowRight size={16} className={showAllDonations ? 'rotate-180' : ''} />
+                  </Button>
                 </div>
               </>
             )}

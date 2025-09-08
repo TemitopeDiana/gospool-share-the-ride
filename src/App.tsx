@@ -24,6 +24,7 @@ import { ProjectsPage } from "./pages/admin/ProjectsPage";
 import { SponsorRequestsPage } from "./pages/admin/SponsorRequestsPage";
 import { SponsorsPage } from "./pages/admin/SponsorsPage";
 import { TeamPage } from "./pages/admin/TeamPage";
+import { PitchDeckRequestsPage } from "./pages/admin/PitchDeckRequestsPage";
 import AnalyticsDashboard from "./pages/admin/AnalyticsDashboard";
 import { DebugForm } from "./pages/admin/DebugForm";
 import { AdminThemeProvider } from "./contexts/AdminThemeContext";
@@ -50,6 +51,7 @@ const App = () => (
             <Route path="/admin/donations" element={<DonationsPage />} />
             <Route path="/admin/recent-donors" element={<RecentDonorsPage />} />
             <Route path="/admin/impact-reports" element={<ImpactReportsPage />} />
+            <Route path="/admin/pitch-deck-requests" element={<PitchDeckRequestsPage />} />
             <Route path="/admin/news" element={<NewsPage />} />
             <Route path="/admin/paystack-diagnostics" element={<PaystackDiagnosticsPage />} />
             <Route path="/admin/pending-changes" element={<PendingChangesPage />} />
