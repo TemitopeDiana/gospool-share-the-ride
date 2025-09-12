@@ -40,14 +40,14 @@ export const AdvisorsPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-board-advisors'] });
       toast({
-        title: "Board advisor deleted",
-        description: "Board advisor has been deleted successfully.",
+        title: "Board member deleted",
+        description: "Board member has been deleted successfully.",
       });
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to delete board advisor.",
+        description: "Failed to delete board member.",
         variant: "destructive",
       });
     },
@@ -66,13 +66,13 @@ export const AdvisorsPage = () => {
       queryClient.invalidateQueries({ queryKey: ['admin-board-advisors'] });
       toast({
         title: "Status updated",
-        description: "Board advisor status has been updated successfully.",
+        description: "Board member status has been updated successfully.",
       });
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to update board advisor status.",
+        description: "Failed to update board member status.",
         variant: "destructive",
       });
     },
@@ -93,7 +93,7 @@ export const AdvisorsPage = () => {
     },
     {
       key: 'company',
-      label: 'Company',
+      label: 'Church',
       render: (value: string) => value || 'N/A',
     },
     {
@@ -120,7 +120,7 @@ export const AdvisorsPage = () => {
   };
 
   const handleDelete = (advisor: any) => {
-    if (window.confirm('Are you sure you want to delete this board advisor?')) {
+    if (window.confirm('Are you sure you want to delete this board member?')) {
       deleteMutation.mutate(advisor.id);
     }
   };
@@ -153,12 +153,12 @@ export const AdvisorsPage = () => {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Board Advisors</h1>
-            <p className="text-gray-600">Manage board advisors and their information</p>
+            <h1 className="text-2xl font-bold text-gray-900">Board of Jethros</h1>
+            <p className="text-gray-600">Manage board members and their information</p>
           </div>
           <Button onClick={() => setIsFormOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
-            Add Advisor
+            Add Member
           </Button>
         </div>
 

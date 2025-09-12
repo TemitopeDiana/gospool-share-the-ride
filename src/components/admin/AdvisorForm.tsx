@@ -67,8 +67,8 @@ export const AdvisorForm = ({ advisor, onClose, onSuccess }: AdvisorFormProps) =
         if (error) throw error;
         
         toast({
-          title: "Board advisor updated",
-          description: "Board advisor has been updated successfully.",
+          title: "Board member updated",
+          description: "Board member has been updated successfully.",
         });
       } else {
         const { error } = await supabase
@@ -78,8 +78,8 @@ export const AdvisorForm = ({ advisor, onClose, onSuccess }: AdvisorFormProps) =
         if (error) throw error;
         
         toast({
-          title: "Board advisor created",
-          description: "Board advisor has been created successfully.",
+          title: "Board member created",
+          description: "Board member has been created successfully.",
         });
       }
 
@@ -87,7 +87,7 @@ export const AdvisorForm = ({ advisor, onClose, onSuccess }: AdvisorFormProps) =
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to save board advisor.",
+        description: "Failed to save board member.",
         variant: "destructive",
       });
     } finally {
@@ -99,7 +99,7 @@ export const AdvisorForm = ({ advisor, onClose, onSuccess }: AdvisorFormProps) =
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{advisor ? 'Edit Board Advisor' : 'Add New Board Advisor'}</DialogTitle>
+          <DialogTitle>{advisor ? 'Edit Board Member' : 'Add New Board Member'}</DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -127,12 +127,12 @@ export const AdvisorForm = ({ advisor, onClose, onSuccess }: AdvisorFormProps) =
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="company">Company</Label>
+            <Label htmlFor="company">Church</Label>
             <Input
               id="company"
               value={formData.company}
               onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-              placeholder="Company or organization name"
+              placeholder="Church or religious organization name"
             />
           </div>
 
@@ -143,7 +143,7 @@ export const AdvisorForm = ({ advisor, onClose, onSuccess }: AdvisorFormProps) =
               value={formData.bio}
               onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
               rows={4}
-              placeholder="Brief description about the board advisor..."
+              placeholder="Brief description about the board member..."
             />
           </div>
 
@@ -200,7 +200,7 @@ export const AdvisorForm = ({ advisor, onClose, onSuccess }: AdvisorFormProps) =
             <Label>Photo</Label>
             <SupabaseFileUpload
               onUpload={url => setFormData(f => ({ ...f, image_url: url }))}
-              label="Upload Advisor Photo"
+              label="Upload Member Photo"
               bucket="images"
               folder="advisors"
             />
@@ -214,7 +214,7 @@ export const AdvisorForm = ({ advisor, onClose, onSuccess }: AdvisorFormProps) =
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Saving...' : advisor ? 'Update Advisor' : 'Create Advisor'}
+              {isLoading ? 'Saving...' : advisor ? 'Update Member' : 'Create Member'}
             </Button>
           </div>
         </form>

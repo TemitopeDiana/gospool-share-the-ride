@@ -4,7 +4,6 @@ import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import { CallToAction } from "@/components/CallToAction";
 import ViewImpactSection from "@/components/shared/ViewImpactSection";
-import RecentDonors from "@/components/sponsorship/RecentDonors";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
 import { usePageTracking } from "@/hooks/useAnalytics";
@@ -18,7 +17,6 @@ const Index = () => {
       <Hero />
       <Features />
       <ViewImpactSection />
-      <RecentDonors />
       <CallToAction />
       <Footer />
       <Toaster />

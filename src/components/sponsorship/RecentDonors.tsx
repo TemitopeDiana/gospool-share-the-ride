@@ -219,9 +219,6 @@ const RecentDonors = () => {
                         <p className="text-sm text-gray-600 dark:text-gray-300 font-ibm-plex">
                           {format(new Date(donation.created_at), 'MMM dd, yyyy')}
                         </p>
-                        <p className="font-semibold text-gray-900 dark:text-white font-poppins">
-                          {formatDonorName(donation)}
-                        </p>
                       </div>
                       <div className="text-right">
                         <p className="font-bold text-brand-primary dark:text-brand-mint font-poppins">
@@ -233,15 +230,13 @@ const RecentDonors = () => {
                 </div>
                 
                 <div className="text-center mt-8">
-                  <Link to="/admin/recent-donors">
-                    <Button 
-                      variant="outline" 
-                      className="bg-white dark:bg-gray-700 hover:bg-brand-light-mint dark:hover:bg-brand-mint/20 border-brand-light-mint dark:border-brand-mint text-brand-primary dark:text-brand-mint hover:text-brand-dark-teal dark:hover:text-white transition-all duration-300 flex items-center gap-2"
-                    >
-                      View All Donors
-                      <ArrowRight size={16} />
-                    </Button>
-                  </Link>
+                  <Button 
+                    variant="outline" 
+                    className="bg-white dark:bg-gray-700 hover:bg-brand-light-mint dark:hover:bg-brand-mint/20 border-brand-light-mint dark:border-brand-mint text-brand-primary dark:text-brand-mint hover:text-brand-dark-teal dark:hover:text-white transition-all duration-300 flex items-center gap-2"
+                  >
+                    View All Donors
+                    <ArrowRight size={16} />
+                  </Button>
                 </div>
               </>
             )}

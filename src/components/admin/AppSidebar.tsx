@@ -95,7 +95,7 @@ export function AppSidebar() {
       icon: UserCheck,
     },
     {
-      name: 'Board Advisors',
+      name: 'Board of Jethros',
       href: '/admin/advisors',
       icon: Users,
     },

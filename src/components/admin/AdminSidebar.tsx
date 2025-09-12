@@ -31,7 +31,7 @@ const navigation = [
   { name: 'Projects', href: '/admin/projects', icon: FolderOpen },
   { name: 'News', href: '/admin/news', icon: Newspaper },
   { name: 'Team Members', href: '/admin/team', icon: Users },
-  { name: 'Board Advisors', href: '/admin/advisors', icon: UserCheck },
+  { name: 'Board of Jethros', href: '/admin/advisors', icon: UserCheck },
   { name: 'Impact Sponsors', href: '/admin/sponsors', icon: Building2 },
   { name: 'Applications', href: '/admin/applications', icon: FileText },
   { name: 'Admin Users', href: '/admin/users', icon: Settings },
