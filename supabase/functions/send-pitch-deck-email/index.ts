@@ -1,6 +1,7 @@
 // Supabase Edge Function for sending pitch deck approval emails
 // This runs in Deno environment - TypeScript errors are expected in VS Code
 
+
 // @ts-ignore - Deno import
 import { serve } from "https://deno.land/std@0.208.0/http/server.ts"
 
@@ -12,7 +13,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -108,11 +109,13 @@ serve(async (req) => {
       `
     }
 
+
+    // Use Deno's global fetch
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${RESEND_API_KEY}`,
+        'Authorization': `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify(emailData),
     })
@@ -131,7 +134,8 @@ serve(async (req) => {
       })
     }
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    const message = error instanceof Error ? error.message : String(error);
+    return new Response(JSON.stringify({ error: message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })

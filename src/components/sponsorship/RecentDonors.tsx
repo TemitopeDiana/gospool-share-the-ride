@@ -229,14 +229,6 @@ const RecentDonors = () => {
                         <p className="text-sm text-gray-600 dark:text-gray-300 font-ibm-plex">
                           {format(new Date(donation.created_at), 'MMM dd, yyyy')}
                         </p>
-                        <p className="font-semibold text-gray-900 dark:text-white font-poppins">
-                          {formatDonorName(donation)}
-                        </p>
-                        {donation.church_name && !donation.is_anonymous && (
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            {donation.church_name}
-                          </p>
-                        )}
                       </div>
                       <div className="text-right">
                         <p className="font-bold text-brand-primary dark:text-brand-mint font-poppins">
@@ -246,7 +238,6 @@ const RecentDonors = () => {
                     </div>
                   ))}
                 </div>
-                
                 <div className="text-center mt-8">
                   <Button 
                     onClick={() => setShowAllDonations(!showAllDonations)}

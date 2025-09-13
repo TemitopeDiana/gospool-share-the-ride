@@ -24,9 +24,20 @@ export const AdminLogin = () => {
   const { session, isAdmin, isLoading: adminLoading } = useAdmin();
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
+  // Track if recovery token is present
+  const [hasRecoveryToken, setHasRecoveryToken] = useState(false);
 
   // Check for password reset token in URL
   useEffect(() => {
+    // ...existing code...
+    // Track if recovery token is present for redirect logic
+    if ((searchParams.get('type') === 'recovery' && searchParams.get('access_token')) ||
+        (searchParams.get('type') === 'recovery' && searchParams.get('token')) ||
+        (searchParams.get('type') === 'recovery')) {
+      setHasRecoveryToken(true);
+    } else {
+      setHasRecoveryToken(false);
+    }
     console.log('Current URL:', window.location.href);
     console.log('Search params:', Object.fromEntries(searchParams.entries()));
     
@@ -129,7 +140,8 @@ export const AdminLogin = () => {
     );
   }
 
-  if (session && isAdmin) {
+  // Only redirect if NOT in password recovery flow
+  if (session && isAdmin && !showPasswordUpdate && !hasRecoveryToken) {
     console.log('Redirecting to admin dashboard');
     return <Navigate to="/admin" replace />;
   }
@@ -249,14 +261,15 @@ export const AdminLogin = () => {
       } else {
         toast({
           title: "Password updated successfully",
-          description: "Your password has been updated. You can now log in with your new password.",
+          description: "Your password has been updated. Please sign in with your new password.",
         });
         setShowPasswordUpdate(false);
         setNewPassword('');
         setConfirmPassword('');
-        
         // Clear the URL parameters
         window.history.replaceState({}, document.title, window.location.pathname);
+        // Redirect to login page
+        window.location.href = '/admin/login';
       }
     } catch (error) {
       toast({
@@ -275,8 +288,9 @@ export const AdminLogin = () => {
           <div className="flex items-center justify-center mb-6">
             <img
               className="h-12 w-auto"
-              src="/images/Logo mark v2 dark.png"
+              src="/images/Logo%20mark%20v2%20dark.png"
               alt="Gospool"
+              onError={e => { e.currentTarget.src = '/favicon.ico'; }}
             />
           </div>
           <CardTitle className="text-2xl text-center font-bold text-foreground">
