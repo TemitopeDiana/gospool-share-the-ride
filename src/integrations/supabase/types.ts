@@ -257,11 +257,62 @@ export type Database = {
         }
         Relationships: []
       }
+      impact_reports: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          file_url: string | null
+          id: string
+          images: string[] | null
+          is_published: boolean | null
+          metrics: Json | null
+          report_period_end: string | null
+          report_period_start: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          file_url?: string | null
+          id?: string
+          images?: string[] | null
+          is_published?: boolean | null
+          metrics?: Json | null
+          report_period_end?: string | null
+          report_period_start?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          file_url?: string | null
+          id?: string
+          images?: string[] | null
+          is_published?: boolean | null
+          metrics?: Json | null
+          report_period_end?: string | null
+          report_period_start?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       impact_reports_requests: {
         Row: {
+          approved_at: string | null
+          approved_by: string | null
           created_at: string | null
           id: string
           organization: string | null
+          pitch_deck_file_url: string | null
           purpose: string | null
           report_type: string | null
           requester_email: string
@@ -270,9 +321,12 @@ export type Database = {
           status: Database["public"]["Enums"]["application_status"] | null
         }
         Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string | null
           id?: string
           organization?: string | null
+          pitch_deck_file_url?: string | null
           purpose?: string | null
           report_type?: string | null
           requester_email: string
@@ -281,9 +335,12 @@ export type Database = {
           status?: Database["public"]["Enums"]["application_status"] | null
         }
         Update: {
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string | null
           id?: string
           organization?: string | null
+          pitch_deck_file_url?: string | null
           purpose?: string | null
           report_type?: string | null
           requester_email?: string
