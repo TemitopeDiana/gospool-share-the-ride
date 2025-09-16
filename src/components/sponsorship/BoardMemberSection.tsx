@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import BoardMemberForm from "./BoardMemberForm";
+import EnhancedImpactSponsorsSection from "./EnhancedImpactSponsorsSection";
 
 interface BoardMemberSectionProps {
   shouldAutoOpen?: boolean;
@@ -15,9 +16,9 @@ const BoardMemberSection = ({ shouldAutoOpen }: BoardMemberSectionProps) => {
   const [showSponsorAmount, setShowSponsorAmount] = useState(false);
   const [showSponsorForm, setShowSponsorForm] = useState(false);
 
-  // Fetch impact sponsors from database
-  const { data: impactSponsorsData = [], isLoading } = useQuery({
-    queryKey: ['impact-sponsors'],
+  // Fetch impact sponsors data for partners metrics only
+  const { data: impactSponsorsData = [] } = useQuery({
+    queryKey: ['impact-sponsors-metrics'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('impact_sponsors')
@@ -30,13 +31,7 @@ const BoardMemberSection = ({ shouldAutoOpen }: BoardMemberSectionProps) => {
     },
   });
 
-  // Separate sponsors from partners
-  const impactSponsors = impactSponsorsData.filter(item => 
-    item.sponsor_type === 'individual' || 
-    item.sponsor_type === 'church' || 
-    item.sponsor_type === 'organization'
-  );
-  
+  // Filter partners for metrics
   const impactPartners = impactSponsorsData.filter(item => 
     item.sponsor_type === 'partner'
   );
@@ -46,11 +41,6 @@ const BoardMemberSection = ({ shouldAutoOpen }: BoardMemberSectionProps) => {
     totalPartners: impactPartners.length,
     activeProjects: impactPartners.reduce((sum, partner) => sum + (partner.contribution_amount ? 1 : 0), 0),
   };
-
-  // If no sponsors from database, show placeholder
-  const displaySponsors = impactSponsors.length > 0 ? impactSponsors : [
-    { id: 'placeholder', sponsor_name: "Coming Soon", tier: "Founding Sponsor", sponsor_type: "organization" },
-  ];
 
   useEffect(() => {
     if (shouldAutoOpen) {
@@ -155,80 +145,8 @@ const BoardMemberSection = ({ shouldAutoOpen }: BoardMemberSectionProps) => {
           </Card>
         </div>
 
-        {/* Current Impact Sponsors */}
-        <div className="max-w-4xl mx-auto mb-8 sm:mb-12 lg:mb-16">
-          <Card className="dark:bg-gray-800/80 dark:border-gray-700 rounded-xl sm:rounded-2xl shadow-2xl border border-brand-light-mint/30 mx-4 sm:mx-0">
-            <CardHeader className="text-center pb-4 sm:pb-6">
-              <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-white mb-2 sm:mb-3 font-playfair px-2">
-                Current Impact Sponsors
-              </CardTitle>
-              <CardDescription className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex px-2">
-                Visionary leaders supporting our mission
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {isLoading ? (
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary mx-auto mb-4"></div>
-                  <p className="text-gray-600 dark:text-gray-300">Loading sponsors...</p>
-                </div>
-              ) : (
-                <div className="space-y-3 sm:space-y-4">
-                  {displaySponsors.map((sponsor, index) => (
-                    <div key={sponsor.id || index} className="flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-brand-light-mint/10 dark:from-gray-700 dark:to-gray-600 rounded-xl">
-                      <div className="flex-shrink-0">
-                        {sponsor.logo_url ? (
-                          <img 
-                            src={sponsor.logo_url} 
-                            alt={`${sponsor.sponsor_name} logo`}
-                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover shadow-lg"
-                          />
-                        ) : (
-                          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-brand-blue to-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-base sm:text-lg font-poppins shadow-lg">
-                            {sponsor.sponsor_name.charAt(0).toUpperCase()}
-                          </div>
-                        )}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center space-x-2">
-                          <h4 className="font-semibold text-base sm:text-lg text-gray-900 dark:text-white font-poppins truncate">
-                            {sponsor.sponsor_name}
-                          </h4>
-                          {sponsor.tier && (
-                            <Badge variant="secondary" className="text-xs">
-                              {sponsor.tier}
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-ibm-plex capitalize">
-                          {sponsor.sponsor_type} sponsor
-                        </p>
-                        {sponsor.website_url && (
-                          <a 
-                            href={sponsor.website_url} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="text-xs sm:text-sm text-brand-blue dark:text-brand-mint font-ibm-plex hover:underline"
-                          >
-                            Visit Website
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-              
-              {impactSponsors.length === 0 && !isLoading && (
-                <div className="text-center mt-4 sm:mt-6 p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-brand-light-mint/20 dark:from-gray-700 dark:to-gray-600 rounded-xl">
-                  <p className="text-brand-blue dark:text-brand-mint font-medium text-base sm:text-lg font-poppins">
-                    Be among the first to become an impact sponsor!
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+        {/* Current Impact Sponsors - Enhanced Layout */}
+        <EnhancedImpactSponsorsSection />
 
         {/* Impact Partners Metrics */}
         {impactPartners.length > 0 && (

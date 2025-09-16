@@ -743,152 +743,218 @@ export type Database = {
       }
       volunteer_applications: {
         Row: {
-          applicant_name: string
-          applied_date: string
-          email: string
-          id: string
-          phone: string | null
-          preferred_areas: string | null
-          resume_url: string | null
-          status: string | null
-          verified_at: string | null
-          verified_by: string | null
-        }
-        Insert: {
-          applicant_name: string
-          applied_date?: string
-          email: string
-          id?: string
-          phone?: string | null
-          preferred_areas?: string | null
-          resume_url?: string | null
-          status?: string | null
-          verified_at?: string | null
-          verified_by?: string | null
-        }
-        Update: {
-          applicant_name?: string
-          applied_date?: string
-          email?: string
-          id?: string
-          phone?: string | null
-          preferred_areas?: string | null
-          resume_url?: string | null
-          status?: string | null
-          verified_at?: string | null
-          verified_by?: string | null
-        }
-        Relationships: []
-      }
-    }
-    Views: {
-      analytics_summary: {
-        Row: {
-          date: string | null
-          donations_completed: number | null
-          donations_initiated: number | null
-          page_views: number | null
-          returning_visitors: number | null
-          sponsor_applications: number | null
-          total_events: number | null
-          unique_sessions: number | null
-          unique_visitors: number | null
-          volunteer_applications: number | null
-        }
-        Relationships: []
-      }
-    }
-    Functions: {
-      approve_pending_change: {
-        Args: { change_id: string }
-        Returns: undefined
-      }
-      assign_super_admin: {
-        Args: { user_email: string }
-        Returns: string
-      }
-      create_pending_change: {
-        Args: {
-          p_action_type: string
-          p_new_data?: Json
-          p_old_data?: Json
-          p_record_id?: string
-          p_table_name: string
-        }
-        Returns: undefined
-      }
-      get_cron_jobs: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          active: boolean
-          command: string
-          database: string
-          jobid: number
-          nodename: string
-          nodeport: number
-          schedule: string
-          username: string
-        }[]
-      }
-      get_donation_conversion_rate: {
-        Args: { end_date?: string; start_date?: string }
-        Returns: {
-          completed_count: number
-          conversion_rate: number
-          initiated_count: number
-        }[]
-      }
-      get_donation_statistics: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          avg_amount: number
-          currency: string
-          total_amount: number
-          total_count: number
-        }[]
-      }
-      get_pending_changes: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          action_type: string
-          created_at: string
-          created_by: string
-          created_by_profile: Json
-          id: string
-          new_data: Json
-          old_data: Json
-          record_id: string
-          status: string
-          table_name: string
-        }[]
-      }
-      get_recent_donations_public: {
-        Args: { limit_count?: number }
-        Returns: {
-          amount: number
-          created_at: string
-          currency: string
-          donor_type: string
-          is_anonymous: boolean
-        }[]
-      }
-      has_permission: {
-        Args: { _action: string; _permission_type: string; _user_id: string }
-        Returns: boolean
-      }
-      is_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_super_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      reject_pending_change: {
-        Args: { change_id: string; reason?: string }
-        Returns: undefined
-      }
-    }
+Tables: {
+  impact_partners: {
+    Row: {
+      id: string;
+      company_name: string;
+      logo_url: string | null;
+      display_order: number;
+      is_active: boolean;
+      created_at: string;
+      updated_at: string;
+    };
+    Insert: Omit<Database['public']['Tables']['impact_partners']['Row'], 'id' | 'created_at' | 'updated_at'> & {
+      id?: string;
+      created_at?: string;
+      updated_at?: string;
+    };
+    Update: Partial<Database['public']['Tables']['impact_partners']['Row']>;
+  };
+  impact_reports: {
+    Row: {
+      id: string;
+      title: string;
+      description: string | null;
+      content: string;
+      report_period_start: string | null;
+      report_period_end: string | null;
+      metrics: Json;
+      images: string[] | null;
+      file_url: string | null;
+      is_published: boolean;
+      created_by: string | null;
+      created_at: string;
+      updated_at: string;
+    };
+    Insert: Omit<Database['public']['Tables']['impact_reports']['Row'], 'id' | 'created_at' | 'updated_at'> & {
+      id?: string;
+      created_at?: string;
+      updated_at?: string;
+    };
+    Update: Partial<Database['public']['Tables']['impact_reports']['Row']>;
+  };
+  impact_reports_requests: {
+    Row: {
+      id: string;
+      requester_email: string;
+      requester_name: string | null;
+      organization: string | null;
+      report_type: string | null;
+      purpose: string | null;
+      status: 'pending' | 'approved' | 'rejected';
+      pitch_deck_file_url: string | null;
+      approved_by: string | null;
+      approved_at: string | null;
+      sent_at: string | null;
+      created_at: string;
+    };
+    Insert: Omit<Database['public']['Tables']['impact_reports_requests']['Row'], 'id' | 'created_at'> & {
+      id?: string;
+      created_at?: string;
+    };
+    Update: Partial<Database['public']['Tables']['impact_reports_requests']['Row']>;
+  };
+  applicants: {
+    Row: {
+      applicant_name: string;
+      applied_date: string;
+      email: string;
+      id: string;
+      phone: string | null;
+      preferred_areas: string | null;
+      resume_url: string | null;
+      status: string | null;
+      verified_at: string | null;
+      verified_by: string | null;
+    };
+    Insert: {
+      applicant_name: string;
+      applied_date?: string;
+      email: string;
+      id?: string;
+      phone?: string | null;
+      preferred_areas?: string | null;
+      resume_url?: string | null;
+      status?: string | null;
+      verified_at?: string | null;
+      verified_by?: string | null;
+    };
+    Update: {
+      applicant_name?: string;
+      applied_date?: string;
+      email?: string;
+      id?: string;
+      phone?: string | null;
+      preferred_areas?: string | null;
+      resume_url?: string | null;
+      status?: string | null;
+      verified_at?: string | null;
+      verified_by?: string | null;
+    };
+    Relationships: [];
+  };
+};
+
+Views: {
+  analytics_summary: {
+    Row: {
+      date: string | null;
+      donations_completed: number | null;
+      donations_initiated: number | null;
+      page_views: number | null;
+      returning_visitors: number | null;
+      sponsor_applications: number | null;
+      total_events: number | null;
+      unique_sessions: number | null;
+      unique_visitors: number | null;
+      volunteer_applications: number | null;
+    };
+    Relationships: [];
+  };
+};
+
+Functions: {
+  approve_pending_change: {
+    Args: { change_id: string };
+    Returns: undefined;
+  };
+  assign_super_admin: {
+    Args: { user_email: string };
+    Returns: string;
+  };
+  create_pending_change: {
+    Args: {
+      p_action_type: string;
+      p_new_data?: Json;
+      p_old_data?: Json;
+      p_record_id?: string;
+      p_table_name: string;
+    };
+    Returns: undefined;
+  };
+  get_cron_jobs: {
+    Args: Record<PropertyKey, never>;
+    Returns: {
+      active: boolean;
+      command: string;
+      database: string;
+      jobid: number;
+      nodename: string;
+      nodeport: number;
+      schedule: string;
+      username: string;
+    }[];
+  };
+  get_donation_conversion_rate: {
+    Args: { end_date?: string; start_date?: string };
+    Returns: {
+      completed_count: number;
+      conversion_rate: number;
+      initiated_count: number;
+    }[];
+  };
+  get_donation_statistics: {
+    Args: Record<PropertyKey, never>;
+    Returns: {
+      avg_amount: number;
+      currency: string;
+      total_amount: number;
+      total_count: number;
+    }[];
+  };
+  get_pending_changes: {
+    Args: Record<PropertyKey, never>;
+    Returns: {
+      action_type: string;
+      created_at: string;
+      created_by: string;
+      created_by_profile: Json;
+      id: string;
+      new_data: Json;
+      old_data: Json;
+      record_id: string;
+      status: string;
+      table_name: string;
+    }[];
+  };
+  get_recent_donations_public: {
+    Args: { limit_count?: number };
+    Returns: {
+      amount: number;
+      created_at: string;
+      currency: string;
+      donor_type: string;
+      is_anonymous: boolean;
+    }[];
+  };
+  has_permission: {
+    Args: { _action: string; _permission_type: string; _user_id: string };
+    Returns: boolean;
+  };
+  is_admin: {
+    Args: Record<PropertyKey, never>;
+    Returns: boolean;
+  };
+  is_super_admin: {
+    Args: Record<PropertyKey, never>;
+    Returns: boolean;
+  };
+  reject_pending_change: {
+    Args: { change_id: string; reason?: string };
+    Returns: undefined;
+  };
+};
     Enums: {
       application_status: "pending" | "approved" | "rejected"
       donation_status: "pending" | "completed" | "failed" | "refunded"

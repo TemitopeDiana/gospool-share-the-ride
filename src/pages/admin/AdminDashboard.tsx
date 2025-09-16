@@ -3,17 +3,18 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { DollarSign, Users, FileText, Award, Briefcase, Newspaper } from 'lucide-react';
+import { DollarSign, Users, FileText, Award, Briefcase, Newspaper, Presentation } from 'lucide-react';
 
 export const AdminDashboard = () => {
   const { data: stats, isLoading } = useQuery({
     queryKey: ['admin-stats'],
     queryFn: async () => {
-      const [donations, allDonations, sponsorships, reports, projects, news, volunteerApps] = await Promise.all([
+      const [donations, allDonations, sponsorships, reports, pitchDeckRequests, projects, news, volunteerApps] = await Promise.all([
         supabase.from('donations').select('amount').eq('status', 'completed'),
         supabase.from('donations').select('status', { count: 'exact' }),
         supabase.from('sponsorship_applications').select('id', { count: 'exact' }),
         supabase.from('impact_reports_requests').select('id', { count: 'exact' }),
+        supabase.from('impact_reports_requests').select('id', { count: 'exact' }).eq('report_type', 'pitch_deck').eq('status', 'pending'),
         supabase.from('projects').select('id', { count: 'exact' }),
         supabase.from('news').select('id', { count: 'exact' }),
         supabase.from('volunteer_applications').select('id', { count: 'exact' }),
@@ -28,6 +29,7 @@ export const AdminDashboard = () => {
         totalDonationCount: allDonations.count || 0,
         sponsorshipCount: sponsorships.count || 0,
         reportCount: reports.count || 0,
+        pitchDeckRequestCount: pitchDeckRequests.count || 0,
         projectCount: projects.count || 0,
         newsCount: news.count || 0,
         volunteerApplicationCount: volunteerApps.count || 0,
@@ -56,6 +58,13 @@ export const AdminDashboard = () => {
       description: 'Reports requested',
       icon: FileText,
       color: 'text-purple-600',
+    },
+    {
+      title: 'Pitch Deck Requests',
+      value: stats?.pitchDeckRequestCount || 0,
+      description: 'Pending pitch deck access',
+      icon: Presentation,
+      color: 'text-indigo-600',
     },
     {
       title: 'Active Projects',

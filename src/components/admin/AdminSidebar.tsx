@@ -20,6 +20,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ClipboardList,
+  Presentation,
 } from 'lucide-react';
 
 const navigation = [
@@ -27,7 +28,8 @@ const navigation = [
   { name: 'Donations', href: '/admin/donations', icon: DollarSign },
   { name: 'Sponsorships', href: '/admin/sponsorships', icon: HandHeart },
   { name: 'Sponsor Requests', href: '/admin/sponsor-requests', icon: ClipboardList },
-  { name: 'Impact Reports', href: '/admin/reports', icon: FileBarChart },
+  { name: 'Impact Reports', href: '/admin/impact-reports', icon: FileBarChart },
+  { name: 'Pitch Deck Requests', href: '/admin/pitch-deck-requests', icon: Presentation },
   { name: 'Projects', href: '/admin/projects', icon: FolderOpen },
   { name: 'News', href: '/admin/news', icon: Newspaper },
   { name: 'Team Members', href: '/admin/team', icon: Users },
