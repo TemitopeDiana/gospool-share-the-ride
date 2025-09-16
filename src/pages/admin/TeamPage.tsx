@@ -93,25 +93,6 @@ export const TeamPage = () => {
       render: (value: string) => value,
     },
     {
-      key: 'team_role',
-      label: 'Team Role',
-      render: (value: string) => (
-        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-          value === 'manager' ? 'bg-purple-100 text-purple-800' :
-          value === 'support' ? 'bg-blue-100 text-blue-800' :
-          value === 'compliance' ? 'bg-orange-100 text-orange-800' :
-          'bg-gray-100 text-gray-800'
-        }`}>
-          {value || 'Member'}
-        </span>
-      ),
-    },
-    {
-      key: 'email',
-      label: 'Email',
-      render: (value: string) => value || 'N/A',
-    },
-    {
       key: 'is_active',
       label: 'Status',
       render: (value: boolean) => (

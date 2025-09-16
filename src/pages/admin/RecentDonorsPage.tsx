@@ -307,9 +307,6 @@ export const RecentDonorsPage = () => {
                             {donation.is_anonymous && (
                               <Badge variant="outline">Anonymous</Badge>
                             )}
-                            {donation.belongs_to_church === 'yes' && (
-                              <Badge variant="outline">Church Member</Badge>
-                            )}
                           </div>
                         </div>
                         
@@ -331,11 +328,6 @@ export const RecentDonorsPage = () => {
                         </div>
                       </div>
                       
-                      {donation.church_name && (!donation.is_anonymous || showAnonymousDetails) && (
-                        <p className="text-sm text-gray-600 mt-2">
-                          Church: {donation.church_name}
-                        </p>
-                      )}
                     </div>
                   </div>
                 ))}

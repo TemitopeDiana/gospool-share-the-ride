@@ -21,7 +21,7 @@ const RecentDonors = () => {
       // Get donations that are set to show publicly and completed
       let query = supabase
         .from('donations')
-        .select('donor_name, amount, currency, created_at, is_anonymous, donor_type, organization_name, church_name, status, show_publicly')
+        .select('donor_name, amount, currency, created_at, is_anonymous, donor_type, organization_name, status, show_publicly')
         .eq('status', 'completed')
         .eq('show_publicly', true) // Only show donations marked as publicly visible
         .order('created_at', { ascending: false });

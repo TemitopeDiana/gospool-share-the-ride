@@ -128,22 +128,23 @@ export const TeamMemberForm = ({ member, onClose, onSuccess }: TeamMemberFormPro
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="team_role">Team Role</Label>
+              <Label htmlFor="linkedin_url">LinkedIn URL</Label>
               <Input
-                id="team_role"
-                value={formData.team_role}
-                onChange={(e) => setFormData({ ...formData, team_role: e.target.value })}
-                placeholder="e.g., Technical Lead, Strategy Expert, Design Lead"
+                id="linkedin_url"
+                type="url"
+                value={formData.linkedin_url}
+                onChange={(e) => setFormData({ ...formData, linkedin_url: e.target.value })}
+                placeholder="https://linkedin.com/in/username"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="church_denomination">Church Denomination</Label>
               <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                id="church_denomination"
+                value={formData.church_denomination}
+                onChange={(e) => setFormData({ ...formData, church_denomination: e.target.value })}
+                placeholder="e.g., Baptist, Methodist, Presbyterian, etc."
               />
             </div>
           </div>
@@ -159,32 +160,6 @@ export const TeamMemberForm = ({ member, onClose, onSuccess }: TeamMemberFormPro
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="linkedin_url">LinkedIn URL</Label>
-              <Input
-                id="linkedin_url"
-                type="url"
-                value={formData.linkedin_url}
-                onChange={(e) => setFormData({ ...formData, linkedin_url: e.target.value })}
-                placeholder="https://linkedin.com/in/username"
-              />
-            </div>
-
-            <div className="space-y-2">
-              {/* Profile photo upload only, URL input removed */}
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="church_denomination">Church Denomination</Label>
-            <Input
-              id="church_denomination"
-              value={formData.church_denomination}
-              onChange={(e) => setFormData({ ...formData, church_denomination: e.target.value })}
-              placeholder="e.g., Baptist, Methodist, Presbyterian, etc."
-            />
-          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">

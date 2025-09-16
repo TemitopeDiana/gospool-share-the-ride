@@ -37,7 +37,7 @@ const Sponsorship = () => {
   };
 
   return (
-    <div className="min-h-screen font-inter overflow-x-hidden">
+    <div className="min-h-screen font-inter overflow-x-hidden pt-16">
       <Navigation />
       <SponsorshipHero onDonateClick={handleDonateClick} onJoinSponsorClick={handleJoinSponsorClick} />
       <div ref={donationRef}>

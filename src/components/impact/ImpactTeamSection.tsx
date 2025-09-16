@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { VolunteerFormDialog } from "../shared/VolunteerFormDialog";
 
 const ImpactTeamSection = () => {
@@ -40,7 +40,7 @@ const ImpactTeamSection = () => {
     <Card key={`${member.id}-${index}`} className="hover:shadow-xl transition-all duration-300 dark:bg-gray-800/80 dark:border-gray-700 border border-brand-light-mint/30">
       <CardHeader className="text-center pb-3">
         <div className="flex justify-center mb-4">
-          <Avatar className="w-20 h-20 sm:w-24 sm:h-24">
+          <Avatar className="w-28 h-28 sm:w-32 sm:h-32">
             <AvatarImage src={member.image_url} alt={member.name} />
             <AvatarFallback className="text-lg font-semibold bg-gradient-to-br from-brand-primary to-brand-mint text-white">
               {member.name.split(' ').map((n: string) => n.charAt(0)).join('')}
@@ -55,8 +55,13 @@ const ImpactTeamSection = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="text-center space-y-3">
+        {member.church_denomination && (
+          <p className="text-sm text-slate-700 dark:text-gray-200 font-ibm-plex">
+            {member.church_denomination}
+          </p>
+        )}
         {member.bio && (
-          <p className="text-sm text-gray-800 dark:text-gray-200 font-ibm-plex">
+          <p className="text-xs text-slate-600 dark:text-gray-200 font-ibm-plex leading-relaxed">
             {member.bio}
           </p>
         )}
@@ -67,7 +72,9 @@ const ImpactTeamSection = () => {
             className="w-full border-brand-mint/50 hover:bg-brand-mint/10 dark:border-brand-mint dark:hover:bg-brand-mint/20"
             onClick={() => window.open(member.linkedin_url, '_blank')}
           >
-            <ExternalLink className="h-4 w-4 mr-2" />
+            <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
             LinkedIn
           </Button>
         )}
@@ -79,7 +86,7 @@ const ImpactTeamSection = () => {
     <Card key={`${advisor.id}-${index}`} className="hover:shadow-xl transition-all duration-300 dark:bg-gray-800/80 dark:border-gray-700 border border-brand-light-mint/30">
       <CardHeader className="text-center pb-3">
         <div className="flex justify-center mb-4">
-          <Avatar className="w-20 h-20 sm:w-24 sm:h-24">
+          <Avatar className="w-28 h-28 sm:w-32 sm:h-32">
             <AvatarImage src={advisor.image_url} alt={advisor.name} />
             <AvatarFallback className="text-lg font-semibold bg-gradient-to-br from-brand-primary to-brand-mint text-white">
               {advisor.name.split(' ').map((n: string) => n.charAt(0)).join('')}
@@ -96,7 +103,7 @@ const ImpactTeamSection = () => {
       <CardContent className="text-center space-y-3">
         {advisor.company && (
           <p className="text-sm text-gray-800 dark:text-gray-200 font-ibm-plex">
-            <span className="font-medium">Company:</span> {advisor.company}
+            <span className="font-medium">Church:</span> {advisor.company}
           </p>
         )}
         {advisor.bio && (
@@ -111,7 +118,9 @@ const ImpactTeamSection = () => {
             className="w-full border-brand-mint/50 hover:bg-brand-mint/10 dark:border-brand-mint dark:hover:bg-brand-mint/20"
             onClick={() => window.open(advisor.linkedin_url, '_blank')}
           >
-            <ExternalLink className="h-4 w-4 mr-2" />
+            <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
             LinkedIn
           </Button>
         )}
@@ -156,7 +165,7 @@ const ImpactTeamSection = () => {
         </div>
         
         {teamMembers.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-12">
             {teamMembers.map((member, index) => renderTeamMember(member, index))}
           </div>
         )}
@@ -164,7 +173,7 @@ const ImpactTeamSection = () => {
         {boardAdvisors.length > 0 && (
           <div className="mb-8 sm:mb-12">
             <h3 className="font-playfair text-xl sm:text-2xl lg:text-3xl font-bold text-center bg-gradient-to-r from-brand-primary to-brand-mint dark:from-brand-mint dark:to-brand-light-mint bg-clip-text text-transparent mb-6 sm:mb-8">
-              Board of Advisors
+              Board of Jethros
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
               {boardAdvisors.map((advisor, index) => renderBoardAdvisor(advisor, index))}
