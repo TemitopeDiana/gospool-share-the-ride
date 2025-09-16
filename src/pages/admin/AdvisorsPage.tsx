@@ -88,7 +88,7 @@ export const AdvisorsPage = () => {
     },
     {
       key: 'title',
-      label: 'Title',
+      label: 'Role',
       render: (value: string) => value,
     },
     {

@@ -22,7 +22,7 @@ const PERMISSION_TYPES = [
   { key: 'projects', label: 'Projects' },
   { key: 'news', label: 'News' },
   { key: 'team', label: 'Team Members' },
-  { key: 'advisors', label: 'Board Advisors' },
+  { key: 'advisors', label: 'Board of Jethros' },
   { key: 'sponsors', label: 'Impact Sponsors' },
   { key: 'applications', label: 'Applications' },
 ];
