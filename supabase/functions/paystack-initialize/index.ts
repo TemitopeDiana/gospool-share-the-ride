@@ -19,7 +19,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
@@ -43,7 +43,8 @@ serve(async (req) => {
       donorType = 'individual',
       organizationName = '',
       organizationType = '',
-      contactPerson = ''
+      contactPerson = '',
+      projectId
     } = await req.json()
 
     if (!amount || !email) {
@@ -76,6 +77,7 @@ serve(async (req) => {
           organization_name: organizationName,
           organization_type: organizationType,
           contact_person: contactPerson,
+          project_id: projectId, // Add project_id to metadata
         }
       }),
     })
@@ -105,6 +107,7 @@ serve(async (req) => {
         organization_type: donorType === 'organization' ? organizationType : null,
         church_name: church || null,
         belongs_to_church: isChristian || null,
+        project_id: projectId || null, // Link donation to specific project if provided
       })
       .select()
       .single()

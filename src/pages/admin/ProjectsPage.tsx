@@ -4,15 +4,21 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, Pause, Play } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { ProjectForm } from '@/components/admin/ProjectForm';
 import { AdminDataTable } from '@/components/admin/AdminDataTable';
+import { ProjectPauseResumeModal } from '@/components/admin/ProjectPauseResumeModal';
 
 export const ProjectsPage = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<any>(null);
+  const [pauseResumeModal, setPauseResumeModal] = useState<{
+    isOpen: boolean;
+    project: any;
+    action: 'pause' | 'resume';
+  }>({ isOpen: false, project: null, action: 'pause' });
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -72,7 +78,11 @@ export const ProjectsPage = () => {
       label: 'Status',
       render: (value: string) => (
         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-          value === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+          value === 'active' 
+            ? 'bg-green-100 text-green-800' 
+            : value === 'paused'
+            ? 'bg-orange-100 text-orange-800'
+            : 'bg-gray-100 text-gray-800'
         }`}>
           {value}
         </span>
@@ -111,6 +121,52 @@ export const ProjectsPage = () => {
     setEditingProject(null);
   };
 
+  const handlePauseProject = (project: any) => {
+    setPauseResumeModal({
+      isOpen: true,
+      project,
+      action: 'pause'
+    });
+  };
+
+  const handleResumeProject = (project: any) => {
+    setPauseResumeModal({
+      isOpen: true,
+      project,
+      action: 'resume'
+    });
+  };
+
+  const handlePauseResumeClose = () => {
+    setPauseResumeModal({
+      isOpen: false,
+      project: null,
+      action: 'pause'
+    });
+  };
+
+  const getCustomActions = (project: any) => {
+    const actions = [];
+    
+    if (project.status === 'active') {
+      actions.push({
+        label: 'Pause',
+        onClick: () => handlePauseProject(project),
+        variant: 'outline' as const,
+        icon: <Pause className="h-4 w-4" />
+      });
+    } else if (project.status === 'paused') {
+      actions.push({
+        label: 'Resume',
+        onClick: () => handleResumeProject(project),
+        variant: 'default' as const,
+        icon: <Play className="h-4 w-4" />
+      });
+    }
+    
+    return actions;
+  };
+
   if (isLoading) {
     return (
       <AdminLayout>
@@ -142,6 +198,7 @@ export const ProjectsPage = () => {
           searchKey="title"
           onEdit={handleEdit}
           onDelete={handleDelete}
+          customActions={getCustomActions}
         />
 
         {isFormOpen && (
@@ -154,6 +211,13 @@ export const ProjectsPage = () => {
             }}
           />
         )}
+
+        <ProjectPauseResumeModal
+          project={pauseResumeModal.project}
+          isOpen={pauseResumeModal.isOpen}
+          onClose={handlePauseResumeClose}
+          action={pauseResumeModal.action}
+        />
       </div>
     </AdminLayout>
   );

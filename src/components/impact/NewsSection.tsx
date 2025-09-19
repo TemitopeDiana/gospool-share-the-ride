@@ -2,9 +2,13 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 import { useAnalytics } from '@/hooks/useAnalytics';
+import { useState } from 'react';
+import NewsArticleModal from './NewsArticleModal';
 
 const NewsSection = () => {
   const { trackContentEngagement } = useAnalytics();
+  const [selectedArticle, setSelectedArticle] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   const { data: newsItems = [], isLoading } = useQuery({
     queryKey: ['published-news'],
@@ -20,6 +24,17 @@ const NewsSection = () => {
       return data;
     },
   });
+
+  const handleArticleClick = (article: any) => {
+    trackContentEngagement('news', article.id, 'clicked');
+    setSelectedArticle(article);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedArticle(null);
+  };
 
   if (isLoading) {
     return (
@@ -76,9 +91,7 @@ const NewsSection = () => {
             <article 
               key={article.id} 
               className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-brand-light-mint/30 dark:border-brand-mint/30 cursor-pointer"
-              onClick={() => {
-                trackContentEngagement('news', article.id, 'clicked');
-              }}
+              onClick={() => handleArticleClick(article)}
             >
               {typeof article.image_url === 'string' && article.image_url.trim() ? (
                 <div className="h-48 overflow-hidden">
@@ -138,6 +151,12 @@ const NewsSection = () => {
           </div>
         )}
       </div>
+
+      <NewsArticleModal 
+        article={selectedArticle}
+        open={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </section>
   );
 };

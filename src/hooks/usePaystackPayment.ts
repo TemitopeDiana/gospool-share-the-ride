@@ -17,6 +17,7 @@ interface PaymentData {
   organizationName?: string;
   organizationType?: string;
   contactPerson?: string;
+  projectId?: string;
 }
 
 export const usePaystackPayment = () => {

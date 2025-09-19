@@ -8,10 +8,12 @@ import { CalendarIcon, MapPin, Target, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { useNavigate } from "react-router-dom";
 
 const ProjectsSection = () => {
   const { toast } = useToast();
   const { trackContentEngagement, trackDonationFunnel } = useAnalytics();
+  const navigate = useNavigate();
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
 
   // Fetch projects from database
@@ -47,10 +49,12 @@ const ProjectsSection = () => {
       project_title: projectTitle,
     });
 
-    setSelectedProject(projectId);
-    toast({
-      title: "Project Donation",
-      description: `Donation to "${projectTitle}" will be available soon. For now, please use the general donation option.`,
+    // Navigate to sponsorship page with project pre-selected
+    navigate('/sponsorship', { 
+      state: { 
+        selectedProjectId: projectId,
+        selectedProjectTitle: projectTitle 
+      } 
     });
   };
 
