@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Loader2, AlertTriangle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAnalytics } from "@/hooks/useAnalytics";
@@ -39,7 +41,12 @@ const DonationForm = ({ selectedCountry, selectedCurrency, preSelectedProjectId,
   const { trackDonationFunnel } = useAnalytics();
 
   // Fetch active projects for the dropdown
-  const { data: projects = [] } = useQuery({
+  const { 
+    data: projects = [], 
+    isLoading: projectsLoading, 
+    isError: projectsError,
+    error: projectsErrorDetails 
+  } = useQuery({
     queryKey: ['active-projects'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -48,8 +55,11 @@ const DonationForm = ({ selectedCountry, selectedCurrency, preSelectedProjectId,
         .eq('status', 'active')
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
-      return data;
+      if (error) {
+        console.error('Failed to fetch projects:', error);
+        throw error;
+      }
+      return data || [];
     },
   });
 
@@ -60,6 +70,29 @@ const DonationForm = ({ selectedCountry, selectedCurrency, preSelectedProjectId,
       currency: selectedCurrency,
     });
   }, [selectedCountry, selectedCurrency, trackDonationFunnel]);
+
+  // Reset selected project if there's an error loading projects or if the selected project no longer exists
+  useEffect(() => {
+    if (projectsError && selectedProjectId) {
+      setSelectedProjectId("");
+      toast({
+        title: "Project Selection Reset",
+        description: "Unable to load projects. Your donation will be processed as a general donation.",
+        variant: "default",
+      });
+    } else if (!projectsLoading && !projectsError && selectedProjectId && projects.length > 0) {
+      // Check if the currently selected project still exists
+      const projectExists = projects.some(project => project.id === selectedProjectId);
+      if (!projectExists && selectedProjectId !== "") {
+        setSelectedProjectId("");
+        toast({
+          title: "Project No Longer Available",
+          description: "The selected project is no longer available. Please choose another project or proceed with a general donation.",
+          variant: "default",
+        });
+      }
+    }
+  }, [projectsError, projectsLoading, selectedProjectId, projects, toast]);
 
   // Track form field completion
   const handleFieldChange = (field: string, value: string) => {
@@ -378,22 +411,62 @@ const DonationForm = ({ selectedCountry, selectedCurrency, preSelectedProjectId,
             <Label htmlFor="project" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
               Support a Specific Project (Optional)
             </Label>
-            <Select value={selectedProjectId} onValueChange={setSelectedProjectId}>
+            
+            {projectsError && (
+              <Alert className="mt-2 border-orange-200 bg-orange-50 dark:bg-orange-900/20 dark:border-orange-800">
+                <AlertTriangle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                <AlertDescription className="text-orange-800 dark:text-orange-200">
+                  Unable to load projects. You can still make a general donation.
+                  {projectsErrorDetails && (
+                    <details className="mt-1 text-sm opacity-75">
+                      <summary className="cursor-pointer">Error details</summary>
+                      <p className="mt-1">{projectsErrorDetails.message || 'Unknown error occurred'}</p>
+                    </details>
+                  )}
+                </AlertDescription>
+              </Alert>
+            )}
+            
+            <Select 
+              value={selectedProjectId} 
+              onValueChange={setSelectedProjectId}
+              disabled={projectsLoading}
+            >
               <SelectTrigger className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg">
-                <SelectValue placeholder="Choose a project or donate to general fund" />
+                {projectsLoading ? (
+                  <div className="flex items-center">
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Loading projects...
+                  </div>
+                ) : (
+                  <SelectValue placeholder="Choose a project or donate to general fund" />
+                )}
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="">General Donation (No specific project)</SelectItem>
-                {projects.map((project) => (
+                {!projectsError && !projectsLoading && projects.map((project) => (
                   <SelectItem key={project.id} value={project.id}>
                     {project.title}
                   </SelectItem>
                 ))}
+                {projectsError && (
+                  <SelectItem value="" disabled>
+                    Projects unavailable - using general donation
+                  </SelectItem>
+                )}
               </SelectContent>
             </Select>
-            {selectedProjectId && (
+            
+            {selectedProjectId && !projectsError && (
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                 Your donation will support this specific project
+              </p>
+            )}
+            
+            {projectsLoading && (
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center">
+                <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                Loading available projects...
               </p>
             )}
           </div>

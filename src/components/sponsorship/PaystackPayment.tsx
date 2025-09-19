@@ -177,6 +177,7 @@ const PaystackPayment = ({
           organization_name: organizationName,
           organization_type: organizationType,
           contact_person: contactPerson,
+          project_id: projectId,
         },
         callback: function(response: any) {
           handlePaymentSuccess(response);

@@ -431,6 +431,7 @@ export type Database = {
           created_at: string | null
           created_by: string | null
           excerpt: string | null
+          external_links: Json | null
           id: string
           image_url: string | null
           is_published: boolean | null
@@ -446,6 +447,7 @@ export type Database = {
           created_at?: string | null
           created_by?: string | null
           excerpt?: string | null
+          external_links?: Json | null
           id?: string
           image_url?: string | null
           is_published?: boolean | null
@@ -461,6 +463,7 @@ export type Database = {
           created_at?: string | null
           created_by?: string | null
           excerpt?: string | null
+          external_links?: Json | null
           id?: string
           image_url?: string | null
           is_published?: boolean | null

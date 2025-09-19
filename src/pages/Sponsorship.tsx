@@ -32,9 +32,10 @@ const Sponsorship = () => {
     // If we have a pre-selected project, automatically scroll to donation section
     if (preSelectedProject) {
       setShouldScrollToDonation(true);
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         donationRef.current?.scrollIntoView({ behavior: 'smooth' });
       }, 500); // Longer delay to ensure components are loaded
+      return () => clearTimeout(timeoutId);
     }
   }, [preSelectedProject]);
 

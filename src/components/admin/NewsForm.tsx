@@ -8,6 +8,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { SupabaseFileUpload } from '@/components/ui/SupabaseFileUpload';
+import { Plus, Trash2, ExternalLink } from 'lucide-react';
+
+interface ExternalLink {
+  platform: string;
+  url: string;
+  title: string;
+}
 
 interface NewsFormProps {
   article?: any;
@@ -25,6 +32,7 @@ export const NewsForm = ({ article, onClose, onSuccess }: NewsFormProps) => {
     image_url: '',
     is_published: false,
   });
+  const [externalLinks, setExternalLinks] = useState<ExternalLink[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -39,16 +47,51 @@ export const NewsForm = ({ article, onClose, onSuccess }: NewsFormProps) => {
         image_url: article.image_url || '',
         is_published: article.is_published || false,
       });
+      
+      // Parse external links safely
+      try {
+        const links = article.external_links;
+        if (Array.isArray(links)) {
+          setExternalLinks(links);
+        } else if (typeof links === 'string') {
+          setExternalLinks(JSON.parse(links));
+        } else {
+          setExternalLinks([]);
+        }
+      } catch {
+        setExternalLinks([]);
+      }
     }
   }, [article]);
+
+  const addExternalLink = () => {
+    setExternalLinks([...externalLinks, { platform: '', url: '', title: '' }]);
+  };
+
+  const removeExternalLink = (index: number) => {
+    setExternalLinks(externalLinks.filter((_, i) => i !== index));
+  };
+
+  const updateExternalLink = (index: number, field: keyof ExternalLink, value: string) => {
+    const updatedLinks = externalLinks.map((link, i) => 
+      i === index ? { ...link, [field]: value } : link
+    );
+    setExternalLinks(updatedLinks);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
+      // Filter out empty external links
+      const validExternalLinks = externalLinks.filter(link => 
+        link.platform.trim() && link.url.trim()
+      );
+
       const data = {
         ...formData,
+        external_links: validExternalLinks as any,
         published_at: formData.is_published ? new Date().toISOString() : null,
       };
 
@@ -162,6 +205,84 @@ export const NewsForm = ({ article, onClose, onSuccess }: NewsFormProps) => {
               required
               placeholder="Write your article content here..."
             />
+          </div>
+
+          {/* External Links Section */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label className="text-base font-medium">External Links</Label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addExternalLink}
+                className="flex items-center gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                Add Link
+              </Button>
+            </div>
+            
+            {externalLinks.map((link, index) => (
+              <div key={index} className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    External Link {index + 1}
+                  </span>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => removeExternalLink(index)}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <Label htmlFor={`platform-${index}`} className="text-sm">Platform</Label>
+                    <Input
+                      id={`platform-${index}`}
+                      value={link.platform}
+                      onChange={(e) => updateExternalLink(index, 'platform', e.target.value)}
+                      placeholder="e.g., Medium, LinkedIn"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor={`url-${index}`} className="text-sm">URL</Label>
+                    <Input
+                      id={`url-${index}`}
+                      type="url"
+                      value={link.url}
+                      onChange={(e) => updateExternalLink(index, 'url', e.target.value)}
+                      placeholder="https://..."
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor={`title-${index}`} className="text-sm">Link Title</Label>
+                    <Input
+                      id={`title-${index}`}
+                      value={link.title}
+                      onChange={(e) => updateExternalLink(index, 'title', e.target.value)}
+                      placeholder="Custom title (optional)"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+            
+            {externalLinks.length === 0 && (
+              <div className="text-center py-6 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg">
+                <ExternalLink className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  No external links added yet. Click "Add Link" to feature this article on other platforms.
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center space-x-2">
