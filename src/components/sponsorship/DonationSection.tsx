@@ -8,9 +8,11 @@ import { useToast } from "@/hooks/use-toast";
 
 interface DonationSectionProps {
   shouldAutoOpen?: boolean;
+  preSelectedProjectId?: string | null;
+  preSelectedProjectTitle?: string | null;
 }
 
-const DonationSection = ({ shouldAutoOpen }: DonationSectionProps) => {
+const DonationSection = ({ shouldAutoOpen, preSelectedProjectId, preSelectedProjectTitle }: DonationSectionProps) => {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedCurrency, setSelectedCurrency] = useState("");
   const [showDonationForm, setShowDonationForm] = useState(false);
@@ -81,6 +83,8 @@ const DonationSection = ({ shouldAutoOpen }: DonationSectionProps) => {
             selectedCountry={selectedCountry}
             selectedCurrency={selectedCurrency}
             onClose={() => setShowDonationForm(false)}
+            preSelectedProjectId={preSelectedProjectId}
+            preSelectedProjectTitle={preSelectedProjectTitle}
           />
         </div>
       </section>

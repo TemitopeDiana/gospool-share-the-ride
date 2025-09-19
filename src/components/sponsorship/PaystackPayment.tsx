@@ -18,6 +18,7 @@ interface PaystackPaymentProps {
   organizationName?: string;
   organizationType?: string;
   contactPerson?: string;
+  projectId?: string; // Add project_id support
   onSuccess: () => void;
   onError: (error: string) => void;
 }
@@ -46,6 +47,7 @@ const PaystackPayment = ({
   organizationName,
   organizationType,
   contactPerson,
+  projectId,
   onSuccess,
   onError,
 }: PaystackPaymentProps) => {
@@ -88,6 +90,7 @@ const PaystackPayment = ({
           organizationName,
           organizationType,
           contactPerson,
+          projectId,
         });
         
         console.log('Payment initialization successful:', data);

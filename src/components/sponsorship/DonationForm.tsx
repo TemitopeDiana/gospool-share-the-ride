@@ -9,20 +9,25 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import PaystackPayment from "./PaystackPayment";
 
 interface DonationFormProps {
   selectedCountry: string;
   selectedCurrency: string;
+  preSelectedProjectId?: string | null;
+  preSelectedProjectTitle?: string | null;
   onClose: () => void;
 }
 
-const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFormProps) => {
+const DonationForm = ({ selectedCountry, selectedCurrency, preSelectedProjectId, preSelectedProjectTitle, onClose }: DonationFormProps) => {
   const [donorType, setDonorType] = useState("individual");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [amount, setAmount] = useState("");
+  const [selectedProjectId, setSelectedProjectId] = useState(preSelectedProjectId || "");
   const [belongsToChurch, setBelongsToChurch] = useState("");
   const [church, setChurch] = useState("");
   const [organizationName, setOrganizationName] = useState("");
@@ -32,6 +37,21 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
   const [showPayment, setShowPayment] = useState(false);
   const { toast } = useToast();
   const { trackDonationFunnel } = useAnalytics();
+
+  // Fetch active projects for the dropdown
+  const { data: projects = [] } = useQuery({
+    queryKey: ['active-projects'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('id, title, status')
+        .eq('status', 'active')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data;
+    },
+  });
 
   // Track donation funnel initiation
   useEffect(() => {
@@ -176,6 +196,7 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
             organizationName={organizationName}
             organizationType={organizationType}
             contactPerson={contactPerson}
+            projectId={selectedProjectId || undefined}
             onSuccess={handlePaymentSuccess}
             onError={handlePaymentError}
           />
@@ -201,6 +222,16 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
         <CardDescription className="text-base sm:text-lg text-gray-600 dark:text-gray-400 font-ibm-plex">
           Individuals and organizations can contribute from {selectedCountry} in {selectedCurrency}
         </CardDescription>
+        {preSelectedProjectTitle && (
+          <div className="mt-4 p-3 bg-gradient-to-r from-brand-light-mint/30 to-brand-mint/20 dark:from-brand-dark-teal/20 dark:to-brand-mint/10 rounded-lg border border-brand-mint/30">
+            <p className="text-sm font-medium text-brand-primary dark:text-brand-mint font-poppins">
+              🎯 Project Selected: {preSelectedProjectTitle}
+            </p>
+            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+              Your donation will support this specific project
+            </p>
+          </div>
+        )}
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
@@ -341,6 +372,30 @@ const DonationForm = ({ selectedCountry, selectedCurrency, onClose }: DonationFo
               placeholder="Enter amount"
               required
             />
+          </div>
+
+          <div>
+            <Label htmlFor="project" className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 font-poppins">
+              Support a Specific Project (Optional)
+            </Label>
+            <Select value={selectedProjectId} onValueChange={setSelectedProjectId}>
+              <SelectTrigger className="mt-2 h-12 sm:h-12 dark:bg-gray-700 dark:border-gray-600 dark:text-white border-2 border-brand-light-mint/50 focus:border-brand-mint rounded-xl text-base sm:text-lg">
+                <SelectValue placeholder="Choose a project or donate to general fund" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">General Donation (No specific project)</SelectItem>
+                {projects.map((project) => (
+                  <SelectItem key={project.id} value={project.id}>
+                    {project.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {selectedProjectId && (
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                Your donation will support this specific project
+              </p>
+            )}
           </div>
 
           {donorType === "individual" && (
