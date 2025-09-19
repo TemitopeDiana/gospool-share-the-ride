@@ -591,7 +591,12 @@ export type Database = {
           id: string
           image_url: string | null
           location: string | null
+          pause_reason: string | null
+          paused_at: string | null
+          paused_by: string | null
           progress_percentage: number | null
+          resumed_at: string | null
+          resumed_by: string | null
           start_date: string | null
           status: string | null
           title: string
@@ -607,7 +612,12 @@ export type Database = {
           id?: string
           image_url?: string | null
           location?: string | null
+          pause_reason?: string | null
+          paused_at?: string | null
+          paused_by?: string | null
           progress_percentage?: number | null
+          resumed_at?: string | null
+          resumed_by?: string | null
           start_date?: string | null
           status?: string | null
           title: string
@@ -623,7 +633,12 @@ export type Database = {
           id?: string
           image_url?: string | null
           location?: string | null
+          pause_reason?: string | null
+          paused_at?: string | null
+          paused_by?: string | null
           progress_percentage?: number | null
+          resumed_at?: string | null
+          resumed_by?: string | null
           start_date?: string | null
           status?: string | null
           title?: string
@@ -631,6 +646,47 @@ export type Database = {
           updated_by?: string | null
         }
         Relationships: []
+      }
+      project_status_history: {
+        Row: {
+          changed_at: string | null
+          changed_by: string | null
+          id: string
+          metadata: Json | null
+          new_status: string
+          old_status: string | null
+          project_id: string
+          reason: string | null
+        }
+        Insert: {
+          changed_at?: string | null
+          changed_by?: string | null
+          id?: string
+          metadata?: Json | null
+          new_status: string
+          old_status?: string | null
+          project_id: string
+          reason?: string | null
+        }
+        Update: {
+          changed_at?: string | null
+          changed_by?: string | null
+          id?: string
+          metadata?: Json | null
+          new_status?: string
+          old_status?: string | null
+          project_id?: string
+          reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_status_history_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       sponsorship_applications: {
         Row: {

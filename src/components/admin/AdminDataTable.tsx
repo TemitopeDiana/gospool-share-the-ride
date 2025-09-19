@@ -23,6 +23,7 @@ interface CustomAction {
   label: string;
   onClick: () => void;
   variant?: 'default' | 'outline' | 'destructive';
+  icon?: React.ReactNode;
 }
 
 interface AdminDataTableProps {
@@ -189,7 +190,9 @@ export const AdminDataTable = ({
                             size="sm"
                             variant={action.variant || 'default'}
                             onClick={action.onClick}
+                            className="flex items-center gap-1"
                           >
+                            {action.icon}
                             {action.label}
                           </Button>
                         ))}
