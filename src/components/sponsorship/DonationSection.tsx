@@ -13,9 +13,9 @@ interface DonationSectionProps {
 }
 
 const DonationSection = ({ shouldAutoOpen, preSelectedProjectId, preSelectedProjectTitle }: DonationSectionProps) => {
-  const [selectedCountry, setSelectedCountry] = useState("");
-  const [selectedCurrency, setSelectedCurrency] = useState("");
-  const [showDonationForm, setShowDonationForm] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState(shouldAutoOpen ? "Nigeria" : "");
+  const [selectedCurrency, setSelectedCurrency] = useState(shouldAutoOpen ? "NGN (₦)" : "");
+  const [showDonationForm, setShowDonationForm] = useState(shouldAutoOpen || false);
   const { toast } = useToast();
   
   const countries = [
@@ -38,13 +38,14 @@ const DonationSection = ({ shouldAutoOpen, preSelectedProjectId, preSelectedProj
     { name: "Other", currency: "Multiple currencies available", available: false }
   ];
 
+  // Handle subsequent changes to shouldAutoOpen
   useEffect(() => {
-    if (shouldAutoOpen) {
-      // Auto-select Nigeria as default when opened from hero
+    if (shouldAutoOpen && !showDonationForm) {
       setSelectedCountry("Nigeria");
       setSelectedCurrency("NGN (₦)");
+      setShowDonationForm(true);
     }
-  }, [shouldAutoOpen]);
+  }, [shouldAutoOpen, showDonationForm]);
 
   const handleCountryChange = (country: string) => {
     setSelectedCountry(country);

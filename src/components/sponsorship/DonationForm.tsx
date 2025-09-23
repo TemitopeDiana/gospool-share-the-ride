@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, AlertTriangle } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useQuery } from "@tanstack/react-query";
@@ -29,7 +29,7 @@ const DonationForm = ({ selectedCountry, selectedCurrency, preSelectedProjectId,
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [amount, setAmount] = useState("");
-  const [selectedProjectId, setSelectedProjectId] = useState(preSelectedProjectId || "");
+  const [selectedProjectId, setSelectedProjectId] = useState(preSelectedProjectId || "general");
   const [belongsToChurch, setBelongsToChurch] = useState("");
   const [church, setChurch] = useState("");
   const [organizationName, setOrganizationName] = useState("");
@@ -49,42 +49,54 @@ const DonationForm = ({ selectedCountry, selectedCurrency, preSelectedProjectId,
   } = useQuery({
     queryKey: ['active-projects'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('projects')
-        .select('id, title, status')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false });
-      
-      if (error) {
-        console.error('Failed to fetch projects:', error);
-        throw error;
+      try {
+        const { data, error } = await supabase
+          .from('projects')
+          .select('id, title, status')
+          .eq('status', 'active')
+          .order('created_at', { ascending: false });
+        
+        if (error) {
+          console.error('Failed to fetch projects:', error);
+          throw error;
+        }
+        return data || [];
+      } catch (err) {
+        console.error('Query error:', err);
+        throw err;
       }
-      return data || [];
     },
+    retry: 2,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
   });
 
-  // Track donation funnel initiation
+  // Track donation funnel initiation (only once when component mounts with valid data)
   useEffect(() => {
-    trackDonationFunnel('initiated', undefined, {
-      country: selectedCountry,
-      currency: selectedCurrency,
-    });
+    const hasTracked = sessionStorage.getItem('donation_initiated_tracked');
+    if (selectedCountry && selectedCurrency && !hasTracked) {
+      trackDonationFunnel('initiated', undefined, {
+        country: selectedCountry,
+        currency: selectedCurrency,
+      });
+      sessionStorage.setItem('donation_initiated_tracked', 'true');
+    }
   }, [selectedCountry, selectedCurrency, trackDonationFunnel]);
 
   // Reset selected project if there's an error loading projects or if the selected project no longer exists
   useEffect(() => {
-    if (projectsError && selectedProjectId) {
-      setSelectedProjectId("");
+    if (projectsError && selectedProjectId && selectedProjectId !== "general") {
+      setSelectedProjectId("general");
       toast({
         title: "Project Selection Reset",
         description: "Unable to load projects. Your donation will be processed as a general donation.",
         variant: "default",
       });
-    } else if (!projectsLoading && !projectsError && selectedProjectId && projects.length > 0) {
+    } else if (!projectsLoading && !projectsError && selectedProjectId && selectedProjectId !== "general" && projects.length > 0) {
       // Check if the currently selected project still exists
       const projectExists = projects.some(project => project.id === selectedProjectId);
-      if (!projectExists && selectedProjectId !== "") {
-        setSelectedProjectId("");
+      if (!projectExists) {
+        setSelectedProjectId("general");
         toast({
           title: "Project No Longer Available",
           description: "The selected project is no longer available. Please choose another project or proceed with a general donation.",
@@ -94,19 +106,22 @@ const DonationForm = ({ selectedCountry, selectedCurrency, preSelectedProjectId,
     }
   }, [projectsError, projectsLoading, selectedProjectId, projects, toast]);
 
-  // Track form field completion
-  const handleFieldChange = (field: string, value: string) => {
+  // Track form field completion with debouncing
+  const handleFieldChange = useCallback((field: string, value: string) => {
+    // Only track significant progress to avoid excessive calls
     const filledFields = [fullName, email, phone, amount].filter(Boolean).length;
-    if (filledFields >= 2) {
+    if (filledFields === 3 && !sessionStorage.getItem('form_progress_tracked')) {
       trackDonationFunnel('form_filled', undefined, {
         step: 'contact_details',
-        completion_percentage: Math.round((filledFields / 4) * 100),
+        completion_percentage: 75,
         donor_type: donorType,
       });
+      sessionStorage.setItem('form_progress_tracked', 'true');
     }
-  };
+  }, [fullName, email, phone, amount, donorType, trackDonationFunnel]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Optimized form submission handler
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     
     if (!selectedCountry) {
@@ -170,7 +185,7 @@ const DonationForm = ({ selectedCountry, selectedCurrency, preSelectedProjectId,
     });
 
     setShowPayment(true);
-  };
+  }, [selectedCountry, email, phone, amount, donorType, fullName, belongsToChurch, organizationName, contactPerson, organizationType, toast, trackDonationFunnel, selectedCurrency]);
 
   const handlePaymentSuccess = () => {
     // Track successful donation
@@ -229,7 +244,7 @@ const DonationForm = ({ selectedCountry, selectedCurrency, preSelectedProjectId,
             organizationName={organizationName}
             organizationType={organizationType}
             contactPerson={contactPerson}
-            projectId={selectedProjectId || undefined}
+            projectId={selectedProjectId && selectedProjectId !== "general" ? selectedProjectId : undefined}
             onSuccess={handlePaymentSuccess}
             onError={handlePaymentError}
           />
@@ -443,21 +458,21 @@ const DonationForm = ({ selectedCountry, selectedCurrency, preSelectedProjectId,
                 )}
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">General Donation (No specific project)</SelectItem>
+                <SelectItem value="general">General Donation (No specific project)</SelectItem>
                 {!projectsError && !projectsLoading && projects.map((project) => (
                   <SelectItem key={project.id} value={project.id}>
                     {project.title}
                   </SelectItem>
                 ))}
                 {projectsError && (
-                  <SelectItem value="" disabled>
+                  <SelectItem value="general" disabled>
                     Projects unavailable - using general donation
                   </SelectItem>
                 )}
               </SelectContent>
             </Select>
             
-            {selectedProjectId && !projectsError && (
+            {selectedProjectId && selectedProjectId !== "general" && !projectsError && (
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                 Your donation will support this specific project
               </p>

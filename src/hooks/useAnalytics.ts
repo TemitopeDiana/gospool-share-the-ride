@@ -31,13 +31,13 @@ export const useAnalytics = () => {
     return true;
   };
 
-  // Track page view
+  // Track page view with error handling
   const trackPageView = async (pagePath: string) => {
     try {
       const sessionId = getSessionId();
       const isReturning = isReturningVisitor();
       
-      await supabase.from('analytics_events').insert({
+      const { error } = await supabase.from('analytics_events').insert({
         event_type: 'page_view',
         page_path: pagePath,
         user_agent: navigator.userAgent,
@@ -50,17 +50,22 @@ export const useAnalytics = () => {
           viewport_size: `${window.innerWidth}x${window.innerHeight}`,
         }
       });
+      
+      if (error) {
+        console.error('Analytics page view error:', error);
+      }
     } catch (error) {
       console.error('Analytics tracking error:', error);
+      // Silently fail - don't block user experience
     }
   };
 
-  // Track custom events
+  // Track custom events with error handling
   const trackEvent = async (eventType: string, metadata?: Record<string, any>) => {
     try {
       const sessionId = getSessionId();
       
-      await supabase.from('analytics_events').insert({
+      const { error } = await supabase.from('analytics_events').insert({
         event_type: eventType,
         page_path: window.location.pathname,
         user_agent: navigator.userAgent,
@@ -70,8 +75,13 @@ export const useAnalytics = () => {
           timestamp: new Date().toISOString(),
         }
       });
+      
+      if (error) {
+        console.error('Analytics event error:', error);
+      }
     } catch (error) {
       console.error('Analytics tracking error:', error);
+      // Silently fail - don't block user experience
     }
   };
 
