@@ -37,6 +37,21 @@ export const AdminDashboard = () => {
     },
   });
 
+  if (isLoading) {
+    return (
+      <AdminLayout>
+        <div className="animate-pulse space-y-6">
+          <div className="h-8 bg-muted rounded w-1/4"></div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="h-32 bg-muted rounded"></div>
+            ))}
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
   const statCards = [
     {
       title: 'Total Donations (Completed)',
@@ -88,21 +103,6 @@ export const AdminDashboard = () => {
       color: 'text-purple-600',
     },
   ];
-
-  if (isLoading) {
-    return (
-      <AdminLayout>
-        <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-muted rounded w-1/4"></div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-32 bg-muted rounded"></div>
-            ))}
-          </div>
-        </div>
-      </AdminLayout>
-    );
-  }
 
   return (
     <AdminLayout>
