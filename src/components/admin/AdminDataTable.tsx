@@ -184,7 +184,7 @@ export const AdminDataTable = ({
                         )}
 
                         {/* Custom actions */}
-                        {customActions && customActions(item).map((action, actionIndex) => (
+                        {customActions && Array.isArray(customActions(item)) && customActions(item).map((action, actionIndex) => (
                           <Button
                             key={actionIndex}
                             size="sm"

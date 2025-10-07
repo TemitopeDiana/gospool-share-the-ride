@@ -28,6 +28,9 @@ export const useAdmin = () => {
       }
       
       console.log('User roles result:', data);
+      if (data) {
+        console.log('User roles:', data.map(r => r.role));
+      }
       return data || [];
     },
     enabled: !!session?.user?.id,
