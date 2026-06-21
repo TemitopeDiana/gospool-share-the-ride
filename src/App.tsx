@@ -8,6 +8,7 @@ import { navItems } from "./nav-items";
 import Index from "./pages/Index";
 import Impact from "./pages/Impact";
 import Sponsorship from "./pages/Sponsorship";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotFound from "./pages/NotFound";
 import { AdminLoginPage } from "./pages/admin/AdminLoginPage";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
@@ -42,6 +43,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/impact" element={<Impact />} />
             <Route path="/sponsorship" element={<Sponsorship />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/admin/login" element={<AdminLoginPage />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/analytics" element={<AnalyticsDashboard />} />
