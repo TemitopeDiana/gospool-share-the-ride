@@ -49,7 +49,7 @@ const Footer = () => {
             <ul className="space-y-2 font-ibm-plex">
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Safety</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+              <li><Link to="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link></li>
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
             </ul>
           </div>
